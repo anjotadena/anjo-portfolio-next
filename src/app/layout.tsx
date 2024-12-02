@@ -74,7 +74,7 @@ export default function RootLayout({
             alt="Logo"
             width={355}
             height={83}
-            src={"/2bitSynergyColor2.png"}
+            src={"/assets/images/logo.svg"}
             style={{ height: "10%", width: "auto" }}
           />
         </div>

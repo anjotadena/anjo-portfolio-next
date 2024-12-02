@@ -3,11 +3,11 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { LuDownloadCloud, LuMenu, LuX, LuPhoneCall } from "react-icons/lu";
+import { LuDownloadCloud, LuMenu, LuPhoneCall, LuX } from "react-icons/lu";
 
+import logo from "@/assets/images/logo.svg";
 import { toSentenceCase } from "@/helpers";
 import { on } from "@/utils";
-import logo from "@/assets/images/logo.svg";
 
 export const TopNavBar = ({
   menuItems,
@@ -19,14 +19,15 @@ export const TopNavBar = ({
   hasDownloadButton?: boolean;
 }) => {
   const navbarRef = useRef<HTMLDivElement>(null);
-  const hash = window.location.hash;
 
   useEffect(() => {
+    const hash = window?.location.hash;
+
     document.addEventListener("scroll", (e) => {
       e.preventDefault();
       activeSection();
       if (navbarRef.current) {
-        if (window.scrollY >= 80) navbarRef.current.classList.add("nav-sticky");
+        if (window?.scrollY >= 80) navbarRef.current.classList.add("nav-sticky");
         else navbarRef.current.classList.remove("nav-sticky");
       }
     });
@@ -40,14 +41,14 @@ export const TopNavBar = ({
 
     return () => {
       clearTimeout(timeout);
-      window.removeEventListener("scroll", activeSection);
+      window?.removeEventListener("scroll", activeSection);
     };
   }, []);
 
   const [activation, setActivation] = useState<string>(menuItems[0]);
 
   const activeSection = () => {
-    const scrollY = window.scrollY;
+    const scrollY = window?.scrollY;
 
     for (let i = menuItems.length - 1; i >= 0; i--) {
       const section = menuItems[i];
