@@ -5,12 +5,12 @@ import Image from "next/image";
 import NextTopLoader from "nextjs-toploader";
 import { type ReactNode } from "react";
 
-import "@/assets/css/style.css";
+import "@/assets/css/styles.css";
+
 import { TopNavBar } from "@/components/layout";
 
 const AppProvidersWrapper = dynamic(
-  () => import("@/AppProviderWrapper"),
-  { ssr: false }
+  () => import("@/AppProviderWrapper")
 );
 const BackToTop = dynamic(() => import("@/components/ui/BackToTop"));
 

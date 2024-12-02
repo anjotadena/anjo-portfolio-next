@@ -1,0 +1,10 @@
+/* Plugin Base css */
+/* @import "swiper/swiper-bundle.css"; */
+/* @import "glightbox/dist/css/glightbox.min.css"; */
+
+/* Custom css */
+@import "custom/_reboot.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
