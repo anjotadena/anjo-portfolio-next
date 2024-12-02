@@ -2,6 +2,9 @@
 
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";
+import { LayoutProvider } from "./context/LayoutContext";
+
+const HTML_STATIC_TIMEOUT = 4000;
 
 /**
  * Change document title based on tab visibility
@@ -43,9 +46,17 @@ const AppProviderWrapper = ({
 
   useEffect(() => {
     setTimeout(() => {
-      // if (window.HSStat)
-    });
-  });
+      if (window.HSStaticMethods) {
+        window.HSStaticMethods.autoInit();
+      }
+    }, HTML_STATIC_TIMEOUT);
+  }, [pathname]);
+
+  return (
+    <>
+      <LayoutProvider>{children}</LayoutProvider>
+    </>
+  );
 };
 
 export default AppProviderWrapper;
