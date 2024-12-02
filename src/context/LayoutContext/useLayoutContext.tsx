@@ -1,7 +1,7 @@
 import React from "react";
 import { LayoutContext } from "./LayouContext";
 
-const useLayoutContext = () => {
+export const useLayoutContext = () => {
     const context = React.useContext(LayoutContext);
 
     if (context === undefined) {
@@ -9,5 +9,3 @@ const useLayoutContext = () => {
     }
     return context;
 };
-
-export default useLayoutContext;

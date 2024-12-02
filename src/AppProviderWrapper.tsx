@@ -2,6 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";
+
 import { LayoutProvider } from "./context/LayoutContext";
 
 const HTML_STATIC_TIMEOUT = 4000;

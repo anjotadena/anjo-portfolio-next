@@ -4,16 +4,15 @@ import { REM } from "next/font/google";
 import Image from "next/image";
 import NextTopLoader from "nextjs-toploader";
 import { type ReactNode } from "react";
-import { Toaster } from "sonner";
 
 import "@/assets/css/style.css";
-import { TopNavBar } from "@/components";
+import { TopNavBar } from "@/components/layout";
 
 const AppProvidersWrapper = dynamic(
-  () => import("@/AppsProviderWrapper"),
+  () => import("@/AppProviderWrapper"),
   { ssr: false }
 );
-const BackToTop = dynamic(() => import("@/components/BackToTop"));
+const BackToTop = dynamic(() => import("@/components/ui/BackToTop"));
 
 const rem = REM({
   weight: ["200", "300", "400", "500", "600", "700"],
@@ -85,7 +84,6 @@ export default function RootLayout({
             <TopNavBar menuItems={["About", "Resume", "Projects", "Contact"]} position="fixed" />
             {children}
             <BackToTop />
-            <Toaster richColors />
           </AppProvidersWrapper>
         </div>
       </body>

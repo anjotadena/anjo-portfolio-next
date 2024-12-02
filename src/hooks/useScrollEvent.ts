@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-const useScrollEvent = () => {
+export const useScrollEvent = () => {
   const [scrollPassed, setScrollPassed] = useState(0);
   const [scrollY, setScrollY] = useState(0);
   const [scrollHeight, setScrollHeight] = useState(0);
@@ -29,5 +29,3 @@ const useScrollEvent = () => {
     scrollHeight,
   };
 };
-
-export default useScrollEvent;
