@@ -23,10 +23,10 @@ const rem = REM({
 
 export const metadata: Metadata = {
   title: {
-    default: "2Bit Synergy",
+    default: "Anjo Tadena",
     template: "%s",
   },
-  description: "2bitsynerg Description",
+  description: "Anjo Tadena",
 };
 
 const splashScreenStyles = `
