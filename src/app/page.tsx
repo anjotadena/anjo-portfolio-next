@@ -1,7 +1,7 @@
 
-export default function Home() {
+export default function About() {
   return (
-    <main className="min-h-screen flex flex-col justify-center items-center">
+    <div className="min-h-screen flex flex-col justify-center items-center">
       <div className="w-34 md:w-40">
         <img
           src="https://avatars.githubusercontent.com/u/12849968?v=4" /* Replace with your image path */
@@ -78,6 +78,6 @@ export default function Home() {
       >
         Explore Portfolio
       </a>
-    </main>
+    </div>
   );
 }
