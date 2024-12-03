@@ -72,37 +72,23 @@ export const TopNavBar = ({
       >
         <div className="flex h-full items-center py-4">
           <div className="container">
-            <nav className="flex flex-wrap items-center justify-between gap-4 lg:flex-nowrap">
-              <div className="flex w-full items-center justify-between lg:w-auto">
+            <nav className="flex flex-wrap items-center gap-4 lg:flex-nowrap">
+              <div className="flex w-full items-center lg:w-auto justify-between">
                 <Link href="/">
                   <Image
                     src={logo}
                     alt="logo"
                     height={50}
-                    width={200}
                     className="flex h-10 dark:hidden"
                   />
                   <Image
                     src={logo}
                     alt="logo"
                     height={50}
-                    width={200}
                     className="hidden h-10 dark:flex"
                   />
                 </Link>
                 <div className="flex items-center gap-2">
-                  {hasDownloadButton && (
-                    <div className="inline-flex shrink gap-2 lg:hidden">
-                      <Link
-                        target="_blank"
-                        href="https://calendly.com/tadena-anjo/30min"
-                        className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-1.5 text-base text-white transition-all hover:bg-primary-700"
-                      >
-                        <LuDownloadCloud className="h-4 w-4 fill-white/40" />
-                        <span className="hidden sm:block">Book a call</span>
-                      </Link>
-                    </div>
-                  )}
                   <button
                     className="hs-collapse-toggle inline-block lg:hidden"
                     data-hs-overlay="#mobile-menu"
@@ -111,7 +97,7 @@ export const TopNavBar = ({
                   </button>
                 </div>
               </div>
-              <ul className="menu relative mx-auto hidden grow items-center justify-center lg:flex">
+              <ul className="menu relative mx-auto hidden grow items-center justify-end lg:flex">
                 {menuItems.map((item, idx) => {
                   return (
                     <li
@@ -131,16 +117,6 @@ export const TopNavBar = ({
                   );
                 })}
               </ul>
-              <div className="ms-auto hidden shrink gap-2 lg:inline-flex">
-                <Link
-                  target="_blank"
-                  href="https://calendly.com/tadena-anjo/30min"
-                  className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-1.5 text-base text-white transition-all hover:bg-primary-700"
-                >
-                  <LuPhoneCall className="h-4 w-4 fill-white/40" />
-                  <span className="hidden sm:block">Book a call</span>
-                </Link>
-              </div>
             </nav>
           </div>
         </div>
@@ -149,39 +125,23 @@ export const TopNavBar = ({
       {/* mobile menu */}
       <div
         id="mobile-menu"
-        className="hs-overlay fixed bottom-0 left-0 top-0 z-[61] hidden h-screen w-full max-w-[270px] -translate-x-full transform border-r border-default-200 bg-white transition-all [--body-scroll:true] [--overlay-backdrop:false] hs-overlay-open:translate-x-0 dark:bg-default-50"
+        className="hs-overlay fixed bottom-0 left-0 top-0 z-[61] hidden h-screen w-full -translate-x-full transform border-r border-default-200 bg-white transition-all [--body-scroll:true] [--overlay-backdrop:false] hs-overlay-open:translate-x-0 dark:bg-default-50"
         tabIndex={-1}
       >
-        <div className="flex h-[74px] items-center justify-between border-b border-dashed border-default-200 px-4 transition-all duration-300">
-          <Link href="/">
-            <Image
-              src={logo}
-              alt="logo"
-              height={40}
-              width={147}
-              className="flex h-10 dark:hidden"
-            />
-            <Image
-              src={logo}
-              alt="logo"
-              height={40}
-              width={147}
-              className="hidden h-10 dark:flex"
-            />
-          </Link>
+        <div className="flex h-[74px] items-center justify-end border-b border-dashed border-default-200 px-4 transition-all duration-300">
           <div data-hs-overlay="#mobile-menu" className="hs-collapse-toggle">
             <LuX size={24} />
           </div>
         </div>
         <div className="h-[calc(100%-4rem)] overflow-y-auto">
-          <nav className="hs-accordion-group flex h-full w-full flex-col flex-wrap p-4">
+          <nav className="hs-accordion-group flex h-full w-full flex-col flex-wrap p-4 justify-center">
             <ul className="space-y-1">
               {menuItems.map((item, idx) => {
                 return (
                   <li
                     key={idx}
                     className={on(
-                      "rounded text-sm font-medium capitalize text-default-900 transition-all duration-300 hover:bg-default-100 hover:text-primary [&.active]:bg-default-100 [&.active]:text-primary",
+                      "text-center rounded text-sm font-medium capitalize text-default-900 transition-all duration-300 hover:bg-default-100 hover:text-primary [&.active]:bg-default-100 [&.active]:text-primary",
                       activation == `${item}` && "active"
                     )}
                   >
