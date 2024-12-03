@@ -3,7 +3,7 @@
 export default function Projects() {
   const projects = [
     {
-      title: "Domino's Pizza",
+      title: "Project 1",
       subtitle: "POS middleware & real-time dashboard",
       description: `Led the design and development of a custom middleware system to optimize Domino's delivery and customer service operations.
 
@@ -20,7 +20,7 @@ All order and customer details were exposed through a customer service and analy
   ];
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white p-6">
+    <div className="min-h-screen  text-white p-6">
       <div className="container mx-auto">
         <h1 className="text-4xl font-bold mb-6 text-center">Projects</h1>
         <p className="text-lg text-gray-400 mb-12 text-center">

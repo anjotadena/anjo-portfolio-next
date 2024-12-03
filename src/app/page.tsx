@@ -73,10 +73,10 @@ export default function About() {
         solutions and sharing what you learn are things I am enthusiastic about.
       </p>
       <a
-        href="/portfolio"
+        href="/resume"
         className="px-6 py-3 bg-white text-blue-500 font-semibold rounded-md shadow-md hover:bg-gray-200"
       >
-        Explore Portfolio
+        Explore
       </a>
     </div>
   );

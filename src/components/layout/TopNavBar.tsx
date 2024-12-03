@@ -109,7 +109,7 @@ export const TopNavBar = ({
                     >
                       <Link
                         className="inline-flex items-center rounded-full px-2 py-0.5 text-sm font-medium capitalize lg:text-base"
-                        href={`/${item.toLowerCase()}`}
+                        href={item === "About" ? "/" : `/${item.toLowerCase()}`}
                       >
                         {toSentenceCase(item)}
                       </Link>
