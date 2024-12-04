@@ -1,3 +1,6 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faHtml5, faCss3Alt, faJs, faReact, faAngular, faVuejs, faNodeJs, faPython, faDocker, faAws } from "@fortawesome/free-brands-svg-icons";
+import { faDatabase, faCogs } from "@fortawesome/free-solid-svg-icons";
 
 export default function About() {
   return (
@@ -61,22 +64,105 @@ export default function About() {
           </a>
         </div>
       </div>
-      <h1 className="text-5xl font-bold mb-4 mt-6">Hi, I'm Anjo</h1>
-      <p className="text-center text-xl mb-6 md:w-[70%]">
-        Software Engineer with 10 years of full-stack web development
-        experience. Have had the opportunity to be part of some exciting
-        projects using ASP.NET, Angular, ReactJS, and React Native, and been
-        able to explore the power of platforms like Azure and AWS on the cloud.
-        Over the years, I have explored different architectures: microservices,
-        serverless, and even monolithic systems. And recently, I was interested
-        in how AI tools change the way we write software. Scalable, efficient
-        solutions and sharing what you learn are things I am enthusiastic about.
+      <h2>Scaling Businesses with Expert</h2>
+      <p className="text-center text-md mb-6 md:w-[70%]">
+      I am a software engineer with a decade of experience specializing in web development to create scalable, high-performing applications. I have partnered with startups, small businesses, medium-sized companies, and enterprises to deliver customized solutions that align with their unique objectives and requirements.
       </p>
+      <h1 className="text-2xl font-bold text-gray-900 mb-6">Why Work With Me</h1>
+      <ul className="space-y-4">
+        <li>
+          <h2 className="text-lg font-semibold text-gray-800">Extensive Experience</h2>
+          <p className="text-gray-600">
+            A decade in the industry has equipped me with the skills to handle complex projects efficiently.
+          </p>
+        </li>
+        <li>
+          <h2 className="text-lg font-semibold text-gray-800">Scalable Solutions Expert</h2>
+          <p className="text-gray-600">
+            I specialize in building web applications that grow seamlessly with your business.
+          </p>
+        </li>
+        <li>
+          <h2 className="text-lg font-semibold text-gray-800">Versatile Collaboration</h2>
+          <p className="text-gray-600">
+            My experience across various company sizes allows me to adapt quickly to different team dynamics and project requirements.
+          </p>
+        </li>
+        <li>
+          <h2 className="text-lg font-semibold text-gray-800">Problem-Solving Mindset</h2>
+          <p className="text-gray-600">
+            I excel at identifying challenges and implementing effective solutions promptly.
+          </p>
+        </li>
+        <li>
+          <h2 className="text-lg font-semibold text-gray-800">Client-Centric Approach</h2>
+          <p className="text-gray-600">
+            Your business goals are my top priority; I ensure that the solutions provided align perfectly with your objectives.
+          </p>
+        </li>
+      </ul>
+
+      <h1 className="text-2xl font-bold text-gray-900 mb-6">Technologies I've Used</h1>
+      <div className="space-y-6">
+        <div>
+          <h2 className="text-lg font-semibold text-gray-800 flex items-center">
+            Front-End
+          </h2>
+          <div className="flex items-center space-x-4 mt-2">
+            <FontAwesomeIcon icon={faHtml5} className="text-orange-500 text-2xl" />
+            <FontAwesomeIcon icon={faCss3Alt} className="text-blue-500 text-2xl" />
+            <FontAwesomeIcon icon={faJs} className="text-yellow-400 text-2xl" />
+            <FontAwesomeIcon icon={faReact} className="text-blue-400 text-2xl" />
+            <FontAwesomeIcon icon={faAngular} className="text-red-500 text-2xl" />
+            <FontAwesomeIcon icon={faVuejs} className="text-green-500 text-2xl" />
+          </div>
+        </div>
+
+        <div>
+          <h2 className="text-lg font-semibold text-gray-800 flex items-center">
+            Back-End
+          </h2>
+          <div className="flex items-center space-x-4 mt-2">
+            <FontAwesomeIcon icon={faNodeJs} className="text-green-500 text-2xl" />
+            <FontAwesomeIcon icon={faPython} className="text-blue-500 text-2xl" />
+            <FontAwesomeIcon icon={faCogs} className="text-gray-600 text-2xl" title="Ruby on Rails / PHP / Java" />
+          </div>
+        </div>
+
+        <div>
+          <h2 className="text-lg font-semibold text-gray-800 flex items-center">
+            Databases
+          </h2>
+          <div className="flex items-center space-x-4 mt-2">
+            <FontAwesomeIcon icon={faDatabase} className="text-purple-500 text-2xl" title="MySQL / PostgreSQL / MongoDB / Redis" />
+          </div>
+        </div>
+
+        <div>
+          <h2 className="text-lg font-semibold text-gray-800 flex items-center">
+            DevOps
+          </h2>
+          <div className="flex items-center space-x-4 mt-2">
+            <FontAwesomeIcon icon={faDocker} className="text-blue-500 text-2xl" />
+            <FontAwesomeIcon icon={faAws} className="text-orange-500 text-2xl" />
+            <FontAwesomeIcon icon={faCogs} className="text-gray-600 text-2xl" title="Kubernetes / Azure / CI/CD Pipelines" />
+          </div>
+        </div>
+
+        <div>
+          <h2 className="text-lg font-semibold text-gray-800 flex items-center">
+            Tools & Methodologies
+          </h2>
+          <div className="flex items-center space-x-4 mt-2">
+            <FontAwesomeIcon icon={faCogs} className="text-gray-600 text-2xl" title="Git / Jenkins / Jira / Agile / TDD" />
+          </div>
+        </div>
+      </div>
       <a
-        href="/resume"
+        href="/contact"
         className="px-6 py-3 bg-white text-blue-500 font-semibold rounded-md shadow-md hover:bg-gray-200"
       >
-        Explore
+        Connect with me!
       </a>
     </div>
   );
