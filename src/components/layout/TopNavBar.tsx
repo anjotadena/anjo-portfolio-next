@@ -5,7 +5,8 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { LuDownloadCloud, LuMenu, LuPhoneCall, LuX } from "react-icons/lu";
 
-import logo from "@/assets/images/logo.svg";
+import LightLogo from "@/assets/images/logo.png";
+import DarkLogo from "@/assets/images/logo-dark.svg";
 import { toSentenceCase } from "@/helpers";
 import { on } from "@/utils";
 
@@ -75,18 +76,7 @@ export const TopNavBar = ({
             <nav className="flex flex-wrap items-center gap-4 lg:flex-nowrap">
               <div className="flex w-full items-center lg:w-auto justify-between">
                 <Link href="/">
-                  <Image
-                    src={logo}
-                    alt="logo"
-                    height={50}
-                    className="flex h-10 dark:hidden"
-                  />
-                  <Image
-                    src={logo}
-                    alt="logo"
-                    height={50}
-                    className="hidden h-10 dark:flex"
-                  />
+                  {'ANJO'}
                 </Link>
                 <div className="flex items-center gap-2">
                   <button

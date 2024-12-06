@@ -8,6 +8,7 @@ import { type ReactNode } from "react";
 import "@/assets/css/styles.css";
 
 import { TopNavBar } from "@/components/layout";
+import LightLogo from "@/assets/images/logo-light.svg";
 
 const AppProvidersWrapper = dynamic(
   () => import("@/AppProviderWrapper")
@@ -72,9 +73,7 @@ export default function RootLayout({
         <div id="splash-screen">
           <Image
             alt="Logo"
-            width={355}
-            height={83}
-            src={"/assets/images/logo.svg"}
+            src={LightLogo}
             style={{ height: "10%", width: "auto" }}
           />
         </div>
