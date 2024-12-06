@@ -80,7 +80,7 @@ export default function RootLayout({
         <NextTopLoader color="#0e01ff" showSpinner={false} />
         <div id="__next_splash">
           <AppProvidersWrapper>
-            <TopNavBar menuItems={["About", "Resume", "Projects", "Contact"]} position="fixed" />
+            <TopNavBar menuItems={["About", "Resume", "Projects", "Contact"]} position="sticky" />
             {children}
             <BackToTop />
           </AppProvidersWrapper>
