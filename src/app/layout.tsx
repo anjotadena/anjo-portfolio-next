@@ -10,9 +10,7 @@ import "@/assets/css/styles.css";
 import { TopNavBar } from "@/components/layout";
 import LightLogo from "@/assets/images/logo-light.svg";
 
-const AppProvidersWrapper = dynamic(
-  () => import("@/AppProviderWrapper")
-);
+const AppProvidersWrapper = dynamic(() => import("@/AppProviderWrapper"));
 const BackToTop = dynamic(() => import("@/components/ui/BackToTop"));
 
 const rem = REM({
@@ -80,9 +78,19 @@ export default function RootLayout({
         <NextTopLoader color="#0e01ff" showSpinner={false} />
         <div id="__next_splash">
           <AppProvidersWrapper>
-            <TopNavBar menuItems={["About", "Resume", "Projects", "Contact"]} position="sticky" />
-            {children}
+            <div className="flex flex-col justify-around item-center min-h-screen">
+              <TopNavBar
+                menuItems={["About", "Resume", "Projects", "Contact"]}
+                position="sticky"
+              />
+              <main className="flex-grow">{children}</main>
+              <div className="h-20 flex justify-center align-center py-8 border">
+                &copy; Anjo Tadena, {new Date().getFullYear()}. All rights
+                reserved.
+              </div>
+            </div>
             <BackToTop />
+            {/* create footer */}
           </AppProvidersWrapper>
         </div>
       </body>
