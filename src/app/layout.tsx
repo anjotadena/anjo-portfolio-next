@@ -9,6 +9,7 @@ import "@/assets/css/styles.css";
 
 import { TopNavBar } from "@/components/layout";
 import LightLogo from "@/assets/images/logo-light.svg";
+import { usePathname } from "next/navigation";
 
 const AppProvidersWrapper = dynamic(() => import("@/AppProviderWrapper"));
 const BackToTop = dynamic(() => import("@/components/ui/BackToTop"));
@@ -80,7 +81,7 @@ export default function RootLayout({
           <AppProvidersWrapper>
             <div className="flex flex-col justify-around item-center min-h-screen">
               <TopNavBar
-                menuItems={["About", "Resume", "Projects", "Contact"]}
+                menuItems={["About", "Resume", "Projects", "Blog", "Contact"]}
                 position="sticky"
               />
               <main className="container mx-auto">{children}</main>

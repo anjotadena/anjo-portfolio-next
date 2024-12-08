@@ -6,6 +6,7 @@ import { LuMenu, LuX } from "react-icons/lu";
 
 import { toSentenceCase } from "@/helpers";
 import { on } from "@/utils";
+import { usePathname } from "next/navigation";
 
 export const TopNavBar = ({
   menuItems,
@@ -16,7 +17,11 @@ export const TopNavBar = ({
   position: "sticky" | "fixed";
   hasDownloadButton?: boolean;
 }) => {
+  const pathname = usePathname();
   const navbarRef = useRef<HTMLDivElement>(null);
+  const [activation, setActivation] = useState<string>(pathname.split("/")[1]);
+
+  console.log("pathname", pathname.split("/")[1]);
 
   useEffect(() => {
     const hash = window?.location.hash;
@@ -43,7 +48,6 @@ export const TopNavBar = ({
     };
   }, []);
 
-  const [activation, setActivation] = useState<string>(menuItems[0]);
 
   const activeSection = () => {
     const scrollY = window?.scrollY;
@@ -51,6 +55,7 @@ export const TopNavBar = ({
     for (let i = menuItems.length - 1; i >= 0; i--) {
       const section = menuItems[i];
       const el: HTMLElement | null = document.getElementById(section);
+
       if (el && el.offsetTop <= scrollY + 100) {
         setActivation(section);
         return;
@@ -91,7 +96,7 @@ export const TopNavBar = ({
                       key={idx}
                       className={on(
                         "menu-item mx-2 text-default-800 transition-all duration-300 hover:text-primary [&.active]:text-primary",
-                        activation === item && "active"
+                        pathname.split("/")[1] === item.toLowerCase() && "active"
                       )}
                     >
                       <Link

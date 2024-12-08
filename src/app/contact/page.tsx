@@ -19,78 +19,93 @@ export default function Contact() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center text-white px-4">
-      <h1 className="text-4xl font-bold mb-4">Contact Form</h1>
-      <p className="text-lg mb-8 text-gray-400 text-center">
-        Want to discuss working together or just want to say hi? Fill out and submit the form below, and I'll get back to you as soon as I can (usually within 1 business day).
-      </p>
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="w-full max-w-md p-6 rounded-lg shadow-md space-y-4"
-      >
-        {/* Name Field */}
-        <div>
-          <label className="block mb-2 text-sm font-medium">Name</label>
-          <input
-            type="text"
-            placeholder="Please enter your name"
-            {...register("name", { required: "Name is required" })}
-            className="w-full px-4 py-2 border border-gray-600 rounded-md focus:ring-2 focus:ring-purple-600 focus:outline-none"
-          />
-          {errors.name && (
-            <p className="text-red-500 text-sm mt-1">{errors.name.message?.toString() ?? ""}</p>
-          )}
-        </div>
+    <div className="min-h-[85vh] text-gray-700 p-6">
+      <div className="container mx-auto">
+        <h1 className="text-4xl font-bold mb-6 text-center">Contact Form</h1>
+        <p className="text-lg text-gray-700 mb-12 text-center">
+          Interested in collaborating or just want to say hello? Complete the
+          form below, and I’ll respond promptly—typically within one business
+          day.
+        </p>
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="w-2/4 p-6 rounded-lg space-y-4 mx-auto pt-12"
+        >
+          {/* Name Field */}
+          <div>
+            <label className="block mb-2 text-sm font-medium">Name</label>
+            <input
+              type="text"
+              placeholder="Please enter your name"
+              {...register("name", { required: "Name is required" })}
+              className="w-full px-4 py-2 border border-gray-600 rounded-md focus:ring-2 focus:ring-blue-600 focus:outline-none"
+              autoComplete="off"
+            />
+            {errors.name && (
+              <p className="text-red-400 text-sm mt-1">
+                {errors.name.message?.toString() ?? ""}
+              </p>
+            )}
+          </div>
 
-        {/* Email Field */}
-        <div>
-          <label className="block mb-2 text-sm font-medium">Your email</label>
-          <input
-            type="email"
-            placeholder="name@yourdomain.com"
-            {...register("email", {
-              required: "Email is required",
-              pattern: {
-                value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
-                message: "Invalid email address",
-              },
-            })}
-            className="w-full px-4 py-2 border border-gray-600 rounded-md focus:ring-2 focus:ring-purple-600 focus:outline-none"
-          />
-          {errors.email && (
-            <p className="text-red-500 text-sm mt-1">{errors.email.message?.toString() ?? ""}</p>
-          )}
-        </div>
+          {/* Email Field */}
+          <div>
+            <label className="block mb-2 text-sm font-medium">Your email</label>
+            <input
+              type="email"
+              placeholder="name@yourdomain.com"
+              {...register("email", {
+                required: "Email is required",
+                pattern: {
+                  value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
+                  message: "Invalid email address",
+                },
+              })}
+              className="w-full px-4 py-2 border border-gray-600 rounded-md focus:ring-2 focus:ring-blue-600 focus:outline-none"
+              autoComplete="off"
+            />
+            {errors.email && (
+              <p className="text-red-400 text-sm mt-1">
+                {errors.email.message?.toString() ?? ""}
+              </p>
+            )}
+          </div>
 
-        {/* Message Field */}
-        <div>
-          <label className="block mb-2 text-sm font-medium">Your message</label>
-          <textarea
-            placeholder="Enter your message here..."
-            {...register("message", { required: "Message is required" })}
-            className="w-full px-4 py-2 border border-gray-600 rounded-md focus:ring-2 focus:ring-purple-600 focus:outline-none"
-            rows={4}
-          />
-          {errors.message && (
-            <p className="text-red-500 text-sm mt-1">{errors.message.message?.toString() ?? ""}</p>
-          )}
-        </div>
+          {/* Message Field */}
+          <div>
+            <label className="block mb-2 text-sm font-medium">
+              Your message
+            </label>
+            <textarea
+              placeholder="Enter your message here..."
+              {...register("message", { required: "Message is required" })}
+              className="w-full px-4 py-2 border border-gray-600 rounded-md focus:ring-2 focus:ring-blue-600 focus:outline-none"
+              rows={4}
+              autoComplete="off"
+            />
+            {errors.message && (
+              <p className="text-red-400 text-sm mt-1">
+                {errors.message.message?.toString() ?? ""}
+              </p>
+            )}
+          </div>
 
-        {/* Submit Button */}
-        <div>
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className={`w-full py-2 px-4 rounded-md font-medium ${
-              isSubmitting
-                ? "bg-purple-500 cursor-not-allowed"
-                : "bg-purple-600 hover:bg-purple-700"
-            }`}
-          >
-            {isSubmitting ? "Sending..." : "Send message"}
-          </button>
-        </div>
-      </form>
+          {/* Submit Button */}
+          <div>
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className={`flex items-center text-blue-700 border border-blue-600 py-2 px-6 gap-2 rounded inline-flex items-center text-blue-700 ${
+                isSubmitting
+                  ? "cursor-not-allowed"
+                  : "hover:text-white hover:bg-blue-800"
+              }`}
+            >
+              {isSubmitting ? "Sending..." : "Send message"}
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }
