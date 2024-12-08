@@ -1,12 +1,9 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { LuDownloadCloud, LuMenu, LuPhoneCall, LuX } from "react-icons/lu";
+import { LuMenu, LuX } from "react-icons/lu";
 
-import LightLogo from "@/assets/images/logo.png";
-import DarkLogo from "@/assets/images/logo-dark.svg";
 import { toSentenceCase } from "@/helpers";
 import { on } from "@/utils";
 
@@ -99,7 +96,7 @@ export const TopNavBar = ({
                     >
                       <Link
                         className="inline-flex items-center rounded-full px-2 py-0.5 text-sm font-medium capitalize lg:text-base"
-                        href={item === "About" ? "/" : `/${item.toLowerCase()}`}
+                        href={`/${item.toLowerCase()}`}
                       >
                         {toSentenceCase(item)}
                       </Link>
