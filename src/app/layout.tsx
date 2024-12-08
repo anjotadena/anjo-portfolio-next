@@ -9,7 +9,6 @@ import "@/assets/css/styles.css";
 
 import { TopNavBar } from "@/components/layout";
 import LightLogo from "@/assets/images/logo-light.svg";
-import { usePathname } from "next/navigation";
 
 const AppProvidersWrapper = dynamic(() => import("@/AppProviderWrapper"));
 const BackToTop = dynamic(() => import("@/components/ui/BackToTop"));

@@ -1,86 +1,60 @@
 const technologiesUsed = [
-    {
-        "name": "Backend Development",
-        "items": [
-            "ASP.NET",
-            "TSQL",
-            "C#",
-            "Laravel",
-            "PHP",
-            "NodeJS",
-            "Serverless"
-        ]
-    },
-    {
-        "name": "Frontend Development",
-        "items": [
-            "Angular",
-            "Typescript",
-            "ReactJS",
-            "NextJS",
-            "TailwindCSS"
-        ]
-    },
-    {
-        "name": "Mobile Development",
-        "items": [
-            "React Native",
-            ".NET MAUI"
-        ]
-    },
-    {
-        "name": "Databases",
-        "items": [
-            "MongoDB",
-            "MSSQL",
-            "Postgres",
-            "MySQL"
-        ]
-    },
-    {
-        "name": "DevOps",
-        "items": [
-            "Azure",
-            "GitHub Actions",
-            "Docker",
-            "Circle CI",
-            "Travis CI",
-            "GitLab"
-        ]
-    },
-    {
-        "name": "Architecture",
-        "items": [
-            "Microservices",
-            "Event Sourcing",
-            "CQRS",
-            "CQRS/ES",
-            "CQRS/ES with Event Sourcing",
-            "Serverless"
-        ]
-    },
-    {
-        "name": "Tools",
-        "items": [
-            "Visual Studio",
-            "Visual Studio Code",
-            "Postman",
-            "Vim",
-            "Git",
-            "Jira",
-            "Azure DevOps",
-            "Bitbucket"
-        ]
-    },
-    {
-        "name": "Operating Systems",
-        "items": [
-            "Windows",
-            "Linux",
-            "MacOS"
-        ]
-    }
-]
+  {
+    name: "Backend Development",
+    items: ["ASP.NET", "TSQL", "C#", "Laravel", "PHP", "NodeJS", "Serverless"],
+  },
+  {
+    name: "Frontend Development",
+    items: ["Angular", "Typescript", "ReactJS", "NextJS", "TailwindCSS"],
+  },
+  {
+    name: "Mobile Development",
+    items: ["React Native", ".NET MAUI"],
+  },
+  {
+    name: "Databases",
+    items: ["MongoDB", "MSSQL", "Postgres", "MySQL"],
+  },
+  {
+    name: "DevOps",
+    items: [
+      "Azure",
+      "GitHub Actions",
+      "Docker",
+      "Circle CI",
+      "Travis CI",
+      "GitLab",
+    ],
+  },
+  {
+    name: "Architecture",
+    items: [
+      "Microservices",
+      "Event Sourcing",
+      "CQRS",
+      "CQRS/ES",
+      "CQRS/ES with Event Sourcing",
+      "Serverless",
+    ],
+  },
+  {
+    name: "Tools",
+    items: [
+      "Visual Studio",
+      "Visual Studio Code",
+      "Postman",
+      "Vim",
+      "Git",
+      "Jira",
+      "Azure DevOps",
+      "Bitbucket",
+    ],
+  },
+  {
+    name: "Operating Systems",
+    items: ["Windows", "Linux", "MacOS"],
+  },
+];
 
 const About = () => (
   <div className="min-h-[85vh] max-w-4xl mx-auto flex flex-col items-center">
@@ -115,18 +89,21 @@ const About = () => (
         While I am continually expanding my skill set, here are the core
         technologies I work with:
       </p>
-      {
-        technologiesUsed.map((tech) => (
-            <div className="text-center my-4">
-                <h3 className="font-medium text-gray-800 mb-2">{tech.name}</h3>
-                <div className="flex justify-center gap-2 items-center align-center">
-                    {tech.items.map((item) => (
-                <span className="text-blue-600 border border-blue-600 px-2 rounded-sm hover:bg-blue-600 hover:text-white hover:cursor-pointer">{item}</span>
-                    ))}
-                </div>
-            </div>
-        ))
-      }
+      {technologiesUsed.map((tech, index) => (
+        <div key={index} className="text-center my-4">
+          <h3 className="font-medium text-gray-800 mb-2">{tech.name}</h3>
+          <div className="flex justify-center gap-2 items-center align-center">
+            {tech.items.map((item, itemIndex) => (
+              <span
+                key={itemIndex}
+                className="text-blue-600 border border-blue-600 px-2 rounded-sm hover:bg-blue-600 hover:text-white hover:cursor-pointer"
+              >
+                {item}
+              </span>
+            ))}
+          </div>
+        </div>
+      ))}
       <p className="text-md text-gray-700 mt-12 text-center">
         I am committed to continuous improvement and adapting to the needs of
         each project. Whether working on new features, debugging issues, or

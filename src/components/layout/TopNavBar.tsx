@@ -11,11 +11,9 @@ import { usePathname } from "next/navigation";
 export const TopNavBar = ({
   menuItems,
   position,
-  hasDownloadButton,
 }: {
   menuItems: string[];
   position: "sticky" | "fixed";
-  hasDownloadButton?: boolean;
 }) => {
   const pathname = usePathname();
   const navbarRef = useRef<HTMLDivElement>(null);
@@ -30,7 +28,8 @@ export const TopNavBar = ({
       e.preventDefault();
       activeSection();
       if (navbarRef.current) {
-        if (window?.scrollY >= 80) navbarRef.current.classList.add("nav-sticky");
+        if (window?.scrollY >= 80)
+          navbarRef.current.classList.add("nav-sticky");
         else navbarRef.current.classList.remove("nav-sticky");
       }
     });
@@ -47,7 +46,6 @@ export const TopNavBar = ({
       window?.removeEventListener("scroll", activeSection);
     };
   }, []);
-
 
   const activeSection = () => {
     const scrollY = window?.scrollY;
@@ -77,9 +75,7 @@ export const TopNavBar = ({
           <div className="container">
             <nav className="flex flex-wrap items-center gap-4 lg:flex-nowrap">
               <div className="flex w-full items-center lg:w-auto justify-between">
-                <Link href="/">
-                  {'ANJO'}
-                </Link>
+                <Link href="/">{"ANJO"}</Link>
                 <div className="flex items-center gap-2">
                   <button
                     className="hs-collapse-toggle inline-block lg:hidden"
@@ -96,7 +92,8 @@ export const TopNavBar = ({
                       key={idx}
                       className={on(
                         "menu-item mx-2 text-default-800 transition-all duration-300 hover:text-primary [&.active]:text-primary",
-                        pathname.split("/")[1] === item.toLowerCase() && "active"
+                        pathname.split("/")[1] === item.toLowerCase() &&
+                          "active"
                       )}
                     >
                       <Link

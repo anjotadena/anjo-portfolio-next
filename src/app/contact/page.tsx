@@ -10,7 +10,7 @@ export default function Contact() {
     formState: { errors, isSubmitting },
   } = useForm();
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: Partial<{ name: string; email: string, message: string }>) => {
     console.log("Form Data:", data);
     // Simulate form submission
     await new Promise((resolve) => setTimeout(resolve, 2000));

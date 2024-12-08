@@ -3,8 +3,8 @@ import TypingEffect from "@/components/ui/TypingEffect";
 const Headline = () => (
   <div className="w-full">
     <h1 className="text-6xl font-extrabold text-gray-900 leading-tight">
-      Hi, I'm Anjo Tadena
-      <br />|{" "}
+      {`Hi, I'm Anjo Tadena`}
+      <br />|
       <span className="text-blue-600">
         <TypingEffect
           texts={["Software Engineer", "Web Developer", "Tech Enthusiast"]}
@@ -18,43 +18,42 @@ const Headline = () => (
       Software engineer passionate about building impactful web solutions and
       growing as a team leader.
     </p>
-   
-    <div className="py-5 flex">
-        <a
-          href="/contact"
-          className="flex items-center text-blue-700 border border-blue-600 py-2 px-6 gap-2 rounded inline-flex items-center hover:bg-blue-600 hover:text-white hover:cursor-pointer"
-        >
-          <span>Get in Touch</span>
-          <svg
-            className="w-4 w-6 h-6 ml-2"
-            fill="none"
-            stroke="currentColor"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            viewBox="0 0 24 24"
-          >
-            <path d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
-          </svg>
-        </a>
-      </div>
 
-       {/* List of links icon such as github, linkedin */}
-    <div>
+    <div className="py-5 flex">
+      <a
+        href="/contact"
+        className="flex items-center text-blue-700 border border-blue-600 py-2 px-6 gap-2 rounded inline-flex items-center hover:bg-blue-600 hover:text-white hover:cursor-pointer"
+      >
+        <span>Get in Touch</span>
+        <svg
+          className="w-4 w-6 h-6 ml-2"
+          fill="none"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          viewBox="0 0 24 24"
+        >
+          <path d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+        </svg>
+      </a>
     </div>
+
+    {/* List of links icon such as github, linkedin */}
+    <div></div>
   </div>
 );
 
 const ProfilePicture = () => (
   <div className="flex flex-col">
-  <img
-    src="/assets/img/anjo_solo.png" /* Replace with your image path */
-    alt="Software Engineer"
-    width={250}
-    height={250}
-    className="object-cover rounded-full mx-auto thumbnail"
-  />
-  <SocialLinks />
+    <img
+      src="/assets/img/anjo_solo.png" /* Replace with your image path */
+      alt="Software Engineer"
+      width={250}
+      height={250}
+      className="object-cover rounded-full mx-auto thumbnail"
+    />
+    <SocialLinks />
   </div>
 );
 
@@ -112,7 +111,6 @@ export default function Page() {
           </div>
         </div>
       </section>
-
     </>
   );
 }
