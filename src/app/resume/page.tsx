@@ -1,12 +1,11 @@
-
 import React from "react";
 
 const Resume = () => {
   const timelineData = [
     {
-      date: "August 2023 — NOW",
-      title: "Software Consultant",
-      company: "Slashnode Pty Ltd (Sydney)",
+      date: "December 2023 — PRESENT",
+      title: "Software Engineer",
+      company: "Nelnet Philippines Inc. - Manila",
       description:
         "Slashnode works with SMEs and startups in Australia and abroad to execute web projects using best-in-class processes, tools, and technology stacks, with a focus on Laravel and NestJS frameworks. Slashnode offers a range of services and solutions, including:",
       points: [
@@ -16,9 +15,9 @@ const Resume = () => {
       ],
     },
     {
-      date: "September 2017 — August 2023",
-      title: "CTO",
-      company: "Tech Solutions Co.",
+      date: "May 2023 — October 2023",
+      title: "Senior Software Engineer",
+      company: "Prosource BPO - Manila",
       description:
         "Spearheaded technical operations and development strategies for a mid-sized technology company.",
       points: [
@@ -28,9 +27,45 @@ const Resume = () => {
       ],
     },
     {
-      date: "July 2015 — August 2017",
-      title: "Full-Stack Developer",
-      company: "Innovatech Inc.",
+      date: "March 2022 - March 2023",
+      title: "Software Engineer",
+      company: "Arcanys/XLR8 Hub Inc. - Cebu",
+      description:
+        "Developed and maintained web applications for various industries, contributing to the full development lifecycle.",
+      points: [
+        "Designed and implemented RESTful APIs using Node.js and Express.",
+        "Built responsive front-end interfaces with React and Angular.",
+        "Collaborated with cross-functional teams to meet client requirements on time.",
+      ],
+    },
+    {
+      date: "August 2019 - March 2022",
+      title: "Software Engineer",
+      company: "Sprobe Inc. - Cebu",
+      description:
+        "Developed and maintained web applications for various industries, contributing to the full development lifecycle.",
+      points: [
+        "Designed and implemented RESTful APIs using Node.js and Express.",
+        "Built responsive front-end interfaces with React and Angular.",
+        "Collaborated with cross-functional teams to meet client requirements on time.",
+      ],
+    },
+    {
+      date: "January 2016 - August 2019",
+      title: "Software Engineer",
+      company: "Code Republic/Ark Creative Studio - Cebu",
+      description:
+        "Developed and maintained web applications for various industries, contributing to the full development lifecycle.",
+      points: [
+        "Designed and implemented RESTful APIs using Node.js and Express.",
+        "Built responsive front-end interfaces with React and Angular.",
+        "Collaborated with cross-functional teams to meet client requirements on time.",
+      ],
+    },
+    {
+      date: "April 2015 - August 2015",
+      title: "Software Engineer",
+      company: "Central Mindanao University - Mindanao",
       description:
         "Developed and maintained web applications for various industries, contributing to the full development lifecycle.",
       points: [
@@ -44,30 +79,35 @@ const Resume = () => {
   return (
     <div className="py-10 px-6 sm:px-10">
       <div className="max-w-4xl mx-auto">
-        <h2 className="text-4xl font-bold mb-6 text-center">Resume</h2>
-        <p className="text-center text-gray-400 mb-12">
-          A comprehensive list of my professional experience and relevant achievements in each role.
+        <h1 className="text-6xl font-extrabold text-gray-900 leading-tight text-center">
+          Resume
+        </h1>
+        <p className="text-center mb-12">
+          An overview of my professional experience and key accomplishments in
+          each role.
         </p>
 
         {/* Timeline as a List */}
-        <ol className="relative border-s border-gray-200 dark:border-gray-700">
+        <ol className="relative border-s border-gray-500 dark:border-gray-700">
           {timelineData.map((item, index) => (
             <li key={index} className="mb-10 ml-6">
               {/* Dot */}
-              <span className="absolute w-3 h-3 bg-gray-200 rounded-full mt-1.5 -start-1.5 border border-white dark:border-gray-900 dark:bg-gray-700"></span>
+              <span className="absolute w-3 h-3 bg-gray-700 rounded-full mt-1.5 -start-1.5 border border-white dark:border-gray-900 dark:bg-gray-700"></span>
 
               {/* Date */}
-              <p className="text-sm text-gray-400">{item.date}</p>
+              <p className="text-sm text-gray-900">{item.date}</p>
 
               {/* Title and Company */}
               <h3 className="text-xl font-semibold">{item.title}</h3>
-              <h4 className="text-lg font-light text-blue-400">{item.company}</h4>
+              <h4 className="text-lg font-light text-gray-900">
+                {item.company}
+              </h4>
 
               {/* Description */}
-              <p className="mt-2 text-gray-400">{item.description}</p>
+              <p className="mt-2 text-gray-900">{item.description}</p>
 
               {/* Bullet Points */}
-              <ul className="mt-4 space-y-2 text-gray-300 list-disc list-inside">
+              <ul className="mt-4 space-y-2 text-gray-900 list-disc list-inside">
                 {item.points.map((point, i) => (
                   <li key={i} className="flex items-start">
                     <span className="text-green-400 mt-1 mr-2">✔</span>

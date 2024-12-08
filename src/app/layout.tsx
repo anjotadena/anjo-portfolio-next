@@ -83,7 +83,7 @@ export default function RootLayout({
                 menuItems={["About", "Resume", "Projects", "Contact"]}
                 position="sticky"
               />
-              <main className="flex-grow">{children}</main>
+              <main className="container mx-auto">{children}</main>
               <div className="h-20 flex justify-center align-center py-8 border">
                 &copy; Anjo Tadena, {new Date().getFullYear()}. All rights
                 reserved.
