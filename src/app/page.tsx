@@ -18,10 +18,11 @@ const Headline = () => (
       Software engineer passionate about building impactful web solutions and
       growing as a team leader.
     </p>
+   
     <div className="py-5 flex">
         <a
           href="/contact"
-          className="flex items-center text-blue-700 border border-blue-600 py-2 px-6 gap-2 rounded inline-flex items-center"
+          className="flex items-center text-blue-700 border border-blue-600 py-2 px-6 gap-2 rounded inline-flex items-center hover:bg-blue-600 hover:text-white hover:cursor-pointer"
         >
           <span>Get in Touch</span>
           <svg
@@ -37,10 +38,15 @@ const Headline = () => (
           </svg>
         </a>
       </div>
+
+       {/* List of links icon such as github, linkedin */}
+    <div>
+    </div>
   </div>
 );
 
 const ProfilePicture = () => (
+  <div className="flex flex-col">
   <img
     src="/assets/img/anjo_solo.png" /* Replace with your image path */
     alt="Software Engineer"
@@ -48,6 +54,8 @@ const ProfilePicture = () => (
     height={250}
     className="object-cover rounded-full mx-auto thumbnail"
   />
+  <SocialLinks />
+  </div>
 );
 
 const SocialLinks = () => (
@@ -65,23 +73,6 @@ const SocialLinks = () => (
         className="w-6 h-6"
       >
         <path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.799 8.207 11.387.6.11.793-.261.793-.577 0-.285-.01-1.04-.015-2.04-3.338.726-4.042-1.61-4.042-1.61-.546-1.384-1.332-1.753-1.332-1.753-1.089-.745.082-.729.082-.729 1.205.085 1.839 1.238 1.839 1.238 1.07 1.835 2.809 1.305 3.495.998.108-.775.42-1.305.762-1.606-2.665-.303-5.466-1.332-5.466-5.93 0-1.31.468-2.381 1.236-3.221-.124-.303-.535-1.522.117-3.176 0 0 1.008-.323 3.3 1.23.957-.266 1.984-.399 3.006-.403 1.02.004 2.049.137 3.006.403 2.291-1.553 3.297-1.23 3.297-1.23.653 1.654.242 2.873.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.804 5.624-5.476 5.921.43.371.823 1.102.823 2.222 0 1.606-.014 2.901-.014 3.292 0 .319.192.694.8.576C20.565 21.795 24 17.297 24 12c0-6.63-5.37-12-12-12z" />
-      </svg>
-    </a>
-
-    {/* Twitter */}
-    <a
-      href="https://twitter.com/your-profile" /* Replace with your Twitter link */
-      target="_blank"
-      rel="noopener noreferrer"
-      className="text-gray-600 hover:text-blue-900"
-    >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        fill="currentColor"
-        viewBox="0 0 24 24"
-        className="w-6 h-6"
-      >
-        <path d="M24 4.557a9.834 9.834 0 0 1-2.828.775 4.932 4.932 0 0 0 2.165-2.724 9.864 9.864 0 0 1-3.127 1.195 4.92 4.92 0 0 0-8.384 4.482A13.957 13.957 0 0 1 1.671 3.149a4.92 4.92 0 0 0 1.524 6.573 4.903 4.903 0 0 1-2.23-.616c-.054 2.281 1.582 4.415 3.949 4.89a4.928 4.928 0 0 1-2.224.085 4.923 4.923 0 0 0 4.604 3.417 9.874 9.874 0 0 1-6.102 2.104c-.396 0-.788-.023-1.175-.068A13.933 13.933 0 0 0 7.548 21c9.056 0 14.01-7.502 14.01-14.01 0-.213-.004-.425-.013-.636A10.01 10.01 0 0 0 24 4.557z" />
       </svg>
     </a>
 

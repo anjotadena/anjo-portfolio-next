@@ -79,10 +79,10 @@ const Resume = () => {
   return (
     <div className="py-10 px-6 sm:px-10">
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-6xl font-extrabold text-gray-900 leading-tight text-center">
+        <h1 className="text-4xl font-bold mb-6 text-center">
           Resume
         </h1>
-        <p className="text-center mb-12">
+        <p className="text-lg text-gray-700 mb-12 text-center">
           An overview of my professional experience and key accomplishments in
           each role.
         </p>
@@ -98,8 +98,8 @@ const Resume = () => {
               <p className="text-sm text-gray-900">{item.date}</p>
 
               {/* Title and Company */}
-              <h3 className="text-xl font-semibold">{item.title}</h3>
-              <h4 className="text-lg font-light text-gray-900">
+              <h3 className="text-xl font-semibold text-blue-700">{item.title}</h3>
+              <h4 className="text-md font-light text-blue-500">
                 {item.company}
               </h4>
 
