@@ -44,7 +44,7 @@ const QUERY = gql`
   }
 `;
 
-export async function fetchArticles(): Promise<PostEdge[]> {
+async function fetchArticles(): Promise<PostEdge[]> {
   const client = new GraphQLClient(API_URL);
   const response = (await client.request(QUERY)) as ApiResponse;
 
