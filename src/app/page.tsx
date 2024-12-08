@@ -111,6 +111,7 @@ export default function Page() {
           </div>
         </div>
       </section>
+      <code>T: {process.env.NEXT_HASHNODE_PERSONAL_ACCESS_TOKEN}</code>
     </>
   );
 }
