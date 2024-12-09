@@ -22,10 +22,18 @@ const rem = REM({
 
 export const metadata: Metadata = {
   title: {
-    default: "Anjo Tadena",
+    default: "Anjo Tadena | Portfolio",
     template: "%s",
   },
   description: "Anjo Tadena",
+  icons: {
+    icon: [
+      { url: '/favicon.ico' }
+    ],
+    apple: [
+      { url: '/apple-icon.png' },
+    ],
+  },
 };
 
 const splashScreenStyles = `
