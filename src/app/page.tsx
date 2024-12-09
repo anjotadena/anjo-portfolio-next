@@ -98,7 +98,7 @@ export default function Page() {
   return (
     <>
       {/* Hero Section */}
-      <section className="h-[85vh] flex items-center justify-center">
+      <section className="h-[84vh] flex items-center justify-center">
         <div className="max-w-4xl mx-auto grid grid-cols-4 md:grid-cols-4 gap-6 items-center">
           {/* Headline Section */}
           <div className="col-span-3">

@@ -8,7 +8,7 @@ import { usePathname } from "next/navigation";
 
 import { toSentenceCase } from "@/helpers";
 import { on } from "@/utils";
-import AnjoLogoLightSrc from "@/assets/images/logo-light.png";
+import AnjoInitialLogoSrc from "@/assets/images/initial-logo.png";
 
 export const TopNavBar = ({
   menuItems,
@@ -78,7 +78,7 @@ export const TopNavBar = ({
             <nav className="flex flex-wrap items-center gap-4 lg:flex-nowrap">
               <div className="flex w-full items-center lg:w-auto justify-between">
                 <Link href="/">
-                  <Image alt="Anjo Tadena" src={AnjoLogoLightSrc} width={100} height={100} />
+                  <Image alt="Anjo Tadena" src={AnjoInitialLogoSrc} height={35} className="w-auto" />
                 </Link>
                 <div className="flex items-center gap-2">
                   <button
