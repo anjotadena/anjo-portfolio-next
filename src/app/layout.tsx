@@ -8,7 +8,7 @@ import { type ReactNode } from "react";
 import "@/assets/css/styles.css";
 
 import { TopNavBar } from "@/components/layout";
-import LightLogo from "@/assets/images/logo-light.svg";
+import LightLogo from "@/assets/images/logo-light.png";
 
 const AppProvidersWrapper = dynamic(() => import("@/AppProviderWrapper"));
 const BackToTop = dynamic(() => import("@/components/ui/BackToTop"));
@@ -72,7 +72,8 @@ export default function RootLayout({
           <Image
             alt="Logo"
             src={LightLogo}
-            style={{ height: "10%", width: "auto" }}
+            height={100}
+            style={{ width: "auto" }}
           />
         </div>
         <NextTopLoader color="#0e01ff" showSpinner={false} />

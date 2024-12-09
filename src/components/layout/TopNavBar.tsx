@@ -3,10 +3,12 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { LuMenu, LuX } from "react-icons/lu";
+import Image from "next/image";
+import { usePathname } from "next/navigation";
 
 import { toSentenceCase } from "@/helpers";
 import { on } from "@/utils";
-import { usePathname } from "next/navigation";
+import AnjoLogoLightSrc from "@/assets/images/logo-light.png";
 
 export const TopNavBar = ({
   menuItems,
@@ -75,7 +77,9 @@ export const TopNavBar = ({
           <div className="container">
             <nav className="flex flex-wrap items-center gap-4 lg:flex-nowrap">
               <div className="flex w-full items-center lg:w-auto justify-between">
-                <Link href="/">{"ANJO"}</Link>
+                <Link href="/">
+                  <Image alt="Anjo Tadena" src={AnjoLogoLightSrc} width={100} height={100} />
+                </Link>
                 <div className="flex items-center gap-2">
                   <button
                     className="hs-collapse-toggle inline-block lg:hidden"
