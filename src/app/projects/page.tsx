@@ -15,6 +15,19 @@ export default function Projects() {
       technologies: ["aws", "typescript", "react", "serverless", "nodejs"],
       image: "/assets/img/uccone.png", // Replace with your image path
     },
+    {
+      title: "Xelphahealth",
+      subtitle: "Empowering Healthcare Through Technology and Innovation",
+      description: `XELPHAhealth is a digital healthcare solutions company dedicated to enhancing healthcare delivery through technology. By facilitating engagement between providers and patients, as well as empowering individuals to connect with their health data, XELPHAhealth aims to improve healthcare outcomes and overall quality of life`,
+      achievements: [
+        "Ensured compatibility across desktop, tablet, and mobile devices for a seamless user experience.",
+        "Included dynamic components such as navigation menus, call-to-action buttons, and form submissions for better engagement.",
+        "Implemented best practices for faster load times, including lazy loading of assets and optimized bundling.",
+        "Integrated meta tags, structured data, and accessible design to enhance search engine visibility and user inclusivity.",
+      ],
+      technologies: ["typescript", "angular"],
+      image: "/assets/img/xelpha.png", // Replace with your image path
+    },
   ];
 
   return (
