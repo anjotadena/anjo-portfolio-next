@@ -61,22 +61,31 @@ const About = () => (
     <section className="mb-6 mt-6">
       <h1 className="text-4xl font-bold mb-6 text-center">About Me</h1>
       <p className="text-md text-gray-700 mb-12 text-center">
-        I am a software engineer with a growing passion for leading and
-        collaborating with teams to deliver high-quality software solutions.
-        Currently, I am honing my skills in designing and building scalable web
-        and mobile applications, while taking on new challenges as a team
-        leader.
+        I am a dedicated and results-driven Lead Software Engineer with
+        extensive experience in full-stack development and a strong focus on
+        delivering innovative, high-quality solutions. My expertise spans a wide
+        range of technologies, including ASP.NET Core, Angular, TypeScript,
+        ReactJS, VueJS, C#, Laravel, Node.js, MongoDB, SQL Server, AWS, and
+        Azure. I have successfully led and collaborated on projects involving
+        monolithic and microservices architectures, demonstrating proficiency in
+        cloud-native development, CI/CD pipelines, and modern UI frameworks.
+        Beyond technical skills, I value mentorship, fostering team growth, and
+        continuous learning to drive project success.
       </p>
     </section>
 
     <section className="mb-6">
       <h2 className="text-3xl font-bold mb-6 text-center">Why Work with Me?</h2>
       <p className="text-md text-gray-700 mb-12 text-center">
-        I bring a proactive approach to problem-solving and collaboration. While
-        I am still growing in my leadership journey, I am dedicated to fostering
-        a positive team environment and ensuring the successful delivery of
-        projects. My focus is on continuous learning, both technically and
-        professionally, to provide value to any project I contribute to.
+        I bring a combination of technical expertise, proven experience, and a
+        collaborative approach to every project. My skills in modern
+        technologies, full-stack development, and scalable architectures ensure
+        efficient and innovative solutions. I excel in working closely with
+        clients and teams to align goals, deliver high-quality results, and
+        foster growth. With a strong focus on leadership, adaptability, and a
+        passion for excellence, I am committed to creating impactful software
+        that drives success. Partnering with me means working with someone who
+        values both technical precision and lasting relationships.
       </p>
     </section>
 
@@ -105,10 +114,10 @@ const About = () => (
         </div>
       ))}
       <p className="text-md text-gray-700 mt-12 text-center">
-        I am committed to continuous improvement and adapting to the needs of
-        each project. Whether working on new features, debugging issues, or
-        exploring innovative solutions, I bring enthusiasm and a growth mindset
-        to every challenge.
+        Working with me means partnering with a professional who is passionate
+        about creating impactful software while building strong, lasting
+        relationships with clients and teams. Let's collaborate to turn your
+        vision into reality!
       </p>
     </section>
   </div>

@@ -1,11 +1,12 @@
 import TypingEffect from "@/components/ui/TypingEffect";
+import Image from "next/image";
 
 const Headline = () => (
   <div className="w-full">
-    <h1 className="text-6xl font-extrabold text-gray-900 leading-tight">
+    <h1 className="text-6xl font-extrabold text-gray-900 leading-tight dark:text-gray-200">
       {`Hi, I'm Anjo Tadena`}
       <br />|
-      <span className="text-blue-600">
+      <span className="text-blue-600 dark:text-blue">
         <TypingEffect
           texts={["Software Engineer", "Web Developer", "Tech Enthusiast"]}
           speed={200}
@@ -14,7 +15,7 @@ const Headline = () => (
         />
       </span>
     </h1>
-    <p className="mt-4 text-lg text-gray-600">
+    <p className="mt-4 text-lg text-gray-600 dark:text-gray-300">
       Software engineer passionate about building impactful web solutions and
       growing as a team leader.
     </p>
@@ -22,7 +23,7 @@ const Headline = () => (
     <div className="py-5 flex">
       <a
         href="/contact"
-        className="flex items-center text-blue-700 border border-blue-600 py-2 px-6 gap-2 rounded inline-flex items-center hover:bg-blue-600 hover:text-white hover:cursor-pointer"
+        className="flex items-center text-blue-700 dark:text-white border border-blue-600 dark:border-white dark:bg-blue-700 py-2 px-6 gap-2 rounded inline-flex items-center hover:bg-blue-600 hover:dark:bg-white dark:hover:text-blue-700 hover:text-white hover:cursor-pointer"
       >
         <span>Get in Touch</span>
         <svg
@@ -46,12 +47,12 @@ const Headline = () => (
 
 const ProfilePicture = () => (
   <div className="flex flex-col">
-    <img
+    <Image
       src="/assets/img/anjo_solo.png" /* Replace with your image path */
-      alt="Software Engineer"
+      alt="Anjo Tadena"
       width={250}
       height={250}
-      className="object-cover rounded-full mx-auto thumbnail"
+      className="object-cover rounded-full mx-auto thumbnail bg-gray-400 dark:bg-gray-200"
     />
     <SocialLinks />
   </div>
@@ -60,10 +61,10 @@ const ProfilePicture = () => (
 const SocialLinks = () => (
   <div className="flex align-center item-center justify-center py-8 gap gap-4">
     <a
-      href="https://github.com/your-profile" /* Replace with your GitHub link */
+      href="https://github.com/anjotadena" /* Replace with your GitHub link */
       target="_blank"
       rel="noopener noreferrer"
-      className="text-gray-600 hover:text-blue-900"
+      className="text-gray-300 hover:text-blue-600 dark:hover:text-white"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -77,10 +78,10 @@ const SocialLinks = () => (
 
     {/* LinkedIn */}
     <a
-      href="https://linkedin.com/in/your-profile" /* Replace with your LinkedIn link */
+      href="https://www.linkedin.com/in/anjotadena" /* Replace with your LinkedIn link */
       target="_blank"
       rel="noopener noreferrer"
-      className="text-gray-600 hover:text-blue-900"
+      className="text-gray-300 hover:text-blue-600 dark:hover:text-white"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
