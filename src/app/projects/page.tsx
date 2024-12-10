@@ -28,6 +28,29 @@ export default function Projects() {
       technologies: ["typescript", "angular"],
       image: "/assets/img/xelpha.png", // Replace with your image path
     },
+    {
+      "title": "Toledo City Water District Admin Dashboard",
+      "subtitle": "Streamlining Operations and Elevating Customer Engagement",
+      "description": "The TCWD Admin Dashboard is a comprehensive platform designed to manage accounts, announcements, complaints, forms, tickets, and reports. It empowers TCWD to enhance operational efficiency and provide exceptional service to its customers.",
+      "achievements": [
+        "Developed a responsive and user-friendly admin interface accessible on all devices to accommodate diverse user needs.",
+        "Integrated a real-time ticket and complaint management system, reducing resolution time by 50%.",
+        "Automated generation of reports with actionable insights, saving over 30% of administrative effort.",
+        "Implemented secure role-based access control (RBAC) to ensure data integrity and compliance with organizational policies.",
+        "Introduced a digital form submission system, eliminating paperwork and improving data tracking.",
+        "Analyzed existing workflows and tools used by the Toledo City Water District to identify inefficiencies and gaps.",
+        "Benchmarked industry standards for ticket management and report generation to ensure best practices.",
+        "Conducted surveys and interviews with end-users to understand their needs and pain points.",
+        "Explored and evaluated modern technologies like Laravel, Angular, and Chart.js to deliver a scalable solution.",
+        "Held regular meetings with TCWD stakeholders to align on project goals and timelines.",
+        "Provided prototypes and demos for feedback during development phases.",
+        "Delivered comprehensive documentation and user guides to facilitate smooth onboarding.",
+        "Set up a dedicated communication channel for real-time updates and issue resolution.",
+        "Post-deployment, ensured ongoing support and training sessions for the TCWD team."
+      ],
+      "technologies": ["laravel", "mysql", "angular"],
+      "image": "/assets/img/tcwd.png"
+    }
   ];
 
   return (

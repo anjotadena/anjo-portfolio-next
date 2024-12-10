@@ -30,7 +30,6 @@ const API_URL = "https://gql.hashnode.com";
 const QUERY = gql`
   query Publication {
     publication(host: "anjotadena.hashnode.dev") {
-      isTeam
       title
       posts(first: 10) {
         edges {
@@ -65,14 +64,14 @@ const Blog = async () => {
           {articles.map(({ node }, index) => (
             <>
               <div key={index} className="bg-white p-4 dark:bg-transparent">
-                <h2 className="text-xl font-semibold mb-2">{node.title}</h2>
+                <h2 className="text-xl font-semibold mb-2 dark:text-gray-200">{node.title}</h2>
                 <h5 className="text-sm text-gray-500 dark:text-gray-300 mb-2">Published: {node.publishedAt}</h5>
                 <p className="text-gray-600 text-sm mb-4 dark:text-gray-200">{node.brief}</p>
                 <a
                   href={node.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-blue-600 hover:underline dark:text-gray-400"
+                  className="text-gray-500 hover:underline dark:text-gray-500"
                 >
                   Read More →
                 </a>
