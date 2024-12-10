@@ -15,65 +15,13 @@ export default function Projects() {
       technologies: ["aws", "typescript", "react", "serverless", "nodejs"],
       image: "/assets/img/uccone.png", // Replace with your image path
     },
-    {
-      title: "UCCOne",
-      subtitle: "Streamline UCC Filings with Efficiency and Precision",
-      description: ` is a robust and user-friendly platform designed to simplify the management and processing of Uniform Commercial Code (UCC) filings. It enables businesses and legal professionals to seamlessly manage filings, search records, and ensure compliance with UCC regulations. With its intuitive interface and powerful features, UCCOne enhances productivity, accuracy, and compliance for UCC-related tasks.`,
-      achievements: [
-        "Architected a secure, cloud-native solution leveraging AWS, enabling scalability, reliability, and compliance with industry standards.",
-        "Developed an intuitive platform with file upload capabilities that reduced manual filing efforts by 40% through automated workflows, enhancing efficiency and accuracy in UCC filing management.",
-        "Designed a powerful search system with filters for filing number, business details, and secured party data, enabling precise and rapid record retrieval.",
-        "Enhanced database query performance by 50% through advanced indexing, optimization techniques, and the integration of OpenSearch for efficient data retrieval, ensuring a seamless user experience even under high workloads.",
-      ],
-      technologies: ["aws", "typescript", "react", "serverless", "nodejs"],
-      image: "/assets/img/uccone.png", // Replace with your image path
-    },
-    {
-      title: "UCCOne",
-      subtitle: "Streamline UCC Filings with Efficiency and Precision",
-      description: ` is a robust and user-friendly platform designed to simplify the management and processing of Uniform Commercial Code (UCC) filings. It enables businesses and legal professionals to seamlessly manage filings, search records, and ensure compliance with UCC regulations. With its intuitive interface and powerful features, UCCOne enhances productivity, accuracy, and compliance for UCC-related tasks.`,
-      achievements: [
-        "Architected a secure, cloud-native solution leveraging AWS, enabling scalability, reliability, and compliance with industry standards.",
-        "Developed an intuitive platform with file upload capabilities that reduced manual filing efforts by 40% through automated workflows, enhancing efficiency and accuracy in UCC filing management.",
-        "Designed a powerful search system with filters for filing number, business details, and secured party data, enabling precise and rapid record retrieval.",
-        "Enhanced database query performance by 50% through advanced indexing, optimization techniques, and the integration of OpenSearch for efficient data retrieval, ensuring a seamless user experience even under high workloads.",
-      ],
-      technologies: ["aws", "typescript", "react", "serverless", "nodejs"],
-      image: "/assets/img/uccone.png", // Replace with your image path
-    },
-    {
-      title: "UCCOne",
-      subtitle: "Streamline UCC Filings with Efficiency and Precision",
-      description: ` is a robust and user-friendly platform designed to simplify the management and processing of Uniform Commercial Code (UCC) filings. It enables businesses and legal professionals to seamlessly manage filings, search records, and ensure compliance with UCC regulations. With its intuitive interface and powerful features, UCCOne enhances productivity, accuracy, and compliance for UCC-related tasks.`,
-      achievements: [
-        "Architected a secure, cloud-native solution leveraging AWS, enabling scalability, reliability, and compliance with industry standards.",
-        "Developed an intuitive platform with file upload capabilities that reduced manual filing efforts by 40% through automated workflows, enhancing efficiency and accuracy in UCC filing management.",
-        "Designed a powerful search system with filters for filing number, business details, and secured party data, enabling precise and rapid record retrieval.",
-        "Enhanced database query performance by 50% through advanced indexing, optimization techniques, and the integration of OpenSearch for efficient data retrieval, ensuring a seamless user experience even under high workloads.",
-      ],
-      technologies: ["aws", "typescript", "react", "serverless", "nodejs"],
-      image: "/assets/img/uccone.png", // Replace with your image path
-    },
-    {
-      title: "UCCOne",
-      subtitle: "Streamline UCC Filings with Efficiency and Precision",
-      description: ` is a robust and user-friendly platform designed to simplify the management and processing of Uniform Commercial Code (UCC) filings. It enables businesses and legal professionals to seamlessly manage filings, search records, and ensure compliance with UCC regulations. With its intuitive interface and powerful features, UCCOne enhances productivity, accuracy, and compliance for UCC-related tasks.`,
-      achievements: [
-        "Architected a secure, cloud-native solution leveraging AWS, enabling scalability, reliability, and compliance with industry standards.",
-        "Developed an intuitive platform with file upload capabilities that reduced manual filing efforts by 40% through automated workflows, enhancing efficiency and accuracy in UCC filing management.",
-        "Designed a powerful search system with filters for filing number, business details, and secured party data, enabling precise and rapid record retrieval.",
-        "Enhanced database query performance by 50% through advanced indexing, optimization techniques, and the integration of OpenSearch for efficient data retrieval, ensuring a seamless user experience even under high workloads.",
-      ],
-      technologies: ["aws", "typescript", "react", "serverless", "nodejs"],
-      image: "/assets/img/uccone.png", // Replace with your image path
-    },
   ];
 
   return (
     <div className="min-h-screen p-6">
       <div className="container mx-auto">
-        <h1 className="text-4xl font-bold mb-6 text-center">Projects</h1>
-        <p className="text-lg text-gray-700 mb-12 text-center">
+        <h1 className="text-4xl font-bold mb-6 text-center dark:text-white">Projects</h1>
+        <p className="text-lg text-gray-700 mb-12 text-center dark:text-gray-200">
           A collection of projects where I contributed in a technical leadership
           role.
         </p>
@@ -101,23 +49,23 @@ export default function Projects() {
                   </div>
                   {/* Content Section */}
                   <div>
-                    <h2 className="text-3xl font-bold mb-2 text-blue-600">
+                    <h2 className="text-3xl font-bold mb-2 text-gray-600 dark:text-white">
                       {project.title}
                     </h2>
-                    <h3 className="text-xl text-blue-400 font-medium mb-4">
+                    <h3 className="text-xl text-gray-700 font-medium mb-4 dark:text-gray-200">
                       {project.subtitle}
                     </h3>
-                    <p className="text-gray-700 le7ding-relaxed mb-6 whitespace-pre-line">
+                    <p className="text-gray-700 le7ding-relaxed mb-6 whitespace-pre-line dark:text-gray-400">
                       {project.description}
                     </p>
-                    <h4 className="text-lg font-bold mb-2">Achievements</h4>
-                    <ul className="list-disc list-inside space-y-2 text-gray-700">
+                    <h4 className="text-lg font-bold mb-2 dark:text-gray-200">Achievements</h4>
+                    <ul className="list-disc list-inside space-y-2 text-gray-700 dark:text-gray-400">
                       {project.achievements.map((achievement, i) => (
                         <li key={i}>{achievement}</li>
                       ))}
                     </ul>
                     <div className="flex flex-col space-x-4 mt-6">
-                      <h4>Technology Used:</h4>
+                      <h4 className="text-lg font-bold mb-2 dark:text-gray-200">Technology Used:</h4>
                       <div className="flex space-x-4 mt-6">
                         {project.technologies.map((tech, i) => (
                           <img

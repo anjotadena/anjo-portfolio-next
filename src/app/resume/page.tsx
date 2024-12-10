@@ -121,10 +121,10 @@ const Resume = () => {
               </p>
 
               {/* Title and Company */}
-              <h3 className="text-2xl font-semibold text-blue-800 dark:text-gray-100">
+              <h3 className="text-2xl font-semibold text-gray-700 dark:text-gray-100">
                 {item.title}
               </h3>
-              <h4 className="text-xs font-light text-blue-500 dark:text-gray-300">
+              <h4 className="text-xs font-light text-gray-500 dark:text-gray-300">
                 {item.company}
               </h4>
 
