@@ -21,8 +21,8 @@ export default function Contact() {
   return (
     <div className="min-h-[85vh] text-gray-700 p-6">
       <div className="container mx-auto">
-        <h1 className="text-4xl font-bold mb-6 text-center">Contact Form</h1>
-        <p className="text-lg text-gray-700 mb-12 text-center">
+        <h1 className="text-4xl font-bold mb-6 text-center dark:text-white">Contact Form</h1>
+        <p className="text-lg text-gray-700 mb-12 text-center dark:text-gray-200">
           Interested in collaborating or just want to say hello? Complete the
           form below, and I’ll respond promptly—typically within one business
           day.
@@ -33,12 +33,12 @@ export default function Contact() {
         >
           {/* Name Field */}
           <div>
-            <label className="block mb-2 text-sm font-medium">Name</label>
+            <label className="block mb-2 text-sm font-medium dark:text-gray-200">Name</label>
             <input
               type="text"
               placeholder="Please enter your name"
               {...register("name", { required: "Name is required" })}
-              className="w-full px-4 py-2 border border-gray-600 rounded-md focus:ring-2 focus:ring-blue-600 focus:outline-none"
+              className="dark:bg-gray-800 dark:text-gray-200 w-full px-4 py-2 border border-gray-600 rounded-md focus:ring-2 focus:ring-blue-600 focus:outline-none"
               autoComplete="off"
             />
             {errors.name && (
@@ -50,7 +50,7 @@ export default function Contact() {
 
           {/* Email Field */}
           <div>
-            <label className="block mb-2 text-sm font-medium">Your email</label>
+            <label className="block mb-2 text-sm font-medium dark:text-gray-200">Your email</label>
             <input
               type="email"
               placeholder="name@yourdomain.com"
@@ -61,7 +61,7 @@ export default function Contact() {
                   message: "Invalid email address",
                 },
               })}
-              className="w-full px-4 py-2 border border-gray-600 rounded-md focus:ring-2 focus:ring-blue-600 focus:outline-none"
+              className="dark:bg-gray-800 dark:text-gray-200 w-full px-4 py-2 border border-gray-600 rounded-md focus:ring-2 focus:ring-blue-600 focus:outline-none"
               autoComplete="off"
             />
             {errors.email && (
@@ -73,13 +73,13 @@ export default function Contact() {
 
           {/* Message Field */}
           <div>
-            <label className="block mb-2 text-sm font-medium">
+            <label className="block mb-2 text-sm font-medium dark:text-gray-200">
               Your message
             </label>
             <textarea
               placeholder="Enter your message here..."
               {...register("message", { required: "Message is required" })}
-              className="w-full px-4 py-2 border border-gray-600 rounded-md focus:ring-2 focus:ring-blue-600 focus:outline-none"
+              className="dark:bg-gray-800 dark:text-gray-200 w-full px-4 py-2 border border-gray-600 rounded-md focus:ring-2 focus:ring-blue-600 focus:outline-none"
               rows={4}
               autoComplete="off"
             />
@@ -95,7 +95,7 @@ export default function Contact() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className={`flex items-center text-blue-700 border border-blue-600 py-2 px-6 gap-2 rounded inline-flex items-center text-blue-700 ${
+              className={`flex items-center text-blue-700 dark:text-white border border-blue-600 dark:border-white dark:bg-blue-700 py-2 px-6 gap-2 rounded inline-flex items-center hover:bg-blue-600 hover:dark:bg-white dark:hover:text-blue-700 hover:text-white hover:cursor-pointer ${
                 isSubmitting
                   ? "cursor-not-allowed"
                   : "hover:text-white hover:bg-blue-800"

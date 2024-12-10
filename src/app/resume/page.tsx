@@ -13,7 +13,7 @@ const Resume = () => {
         "Architect, develop, and optimize microservices-based solutions to improve scalability, performance, and reliability.",
         "Leverage AWS and Azure for building cloud-native solutions, including serverless architectures and containerized services.",
         "Guide and support junior engineers through code reviews and technical mentorship, fostering skill development within the team.",
-        "Drive process optimizations, CI/CD pipeline enhancements, and the adoption of emerging technologies to improve team efficiency and product quality."
+        "Drive process optimizations, CI/CD pipeline enhancements, and the adoption of emerging technologies to improve team efficiency and product quality.",
       ],
     },
     {
@@ -27,7 +27,7 @@ const Resume = () => {
         "Designed and implemented new features to meet client requirements while ensuring product quality and reliability.",
         "Reported directly to the Product Owner, providing updates and aligning on project goals and deliverables.",
         "Collaborated with cross-functional teams to ensure smooth project execution and timely delivery of tasks.",
-        "Leveraged Azure for cloud-based solutions and utilized modern frameworks like VueJS and Ionic for enhanced user experience."
+        "Leveraged Azure for cloud-based solutions and utilized modern frameworks like VueJS and Ionic for enhanced user experience.",
       ],
     },
     {
@@ -41,7 +41,7 @@ const Resume = () => {
         "Engaged directly with the client to gather requirements, provide progress updates, and ensure the delivered solutions met their expectations.",
         "Implemented best practices in coding standards, conducted code reviews, and performed thorough testing to ensure high-quality deliverables.",
         "Collaborated with cross-functional teams, including designers, testers, and project managers, to ensure seamless integration and functionality of the system.",
-        "Created and maintained comprehensive documentation of the system architecture, codebase, and user guides to facilitate knowledge sharing and future maintenance."
+        "Created and maintained comprehensive documentation of the system architecture, codebase, and user guides to facilitate knowledge sharing and future maintenance.",
       ],
     },
     {
@@ -55,7 +55,7 @@ const Resume = () => {
         "Engaged directly with clients to gather requirements, provide progress updates, and ensure the delivered solutions met their expectations.",
         "Implemented best practices in coding standards, conducted code reviews, and performed thorough testing to ensure high-quality deliverables.",
         "Collaborated with cross-functional teams, including designers, testers, and project managers, to ensure seamless integration and functionality of the system.",
-        "Created and maintained comprehensive documentation of the system architecture, codebase, and user guides to facilitate knowledge sharing and future maintenance."
+        "Created and maintained comprehensive documentation of the system architecture, codebase, and user guides to facilitate knowledge sharing and future maintenance.",
       ],
     },
     {
@@ -70,7 +70,7 @@ const Resume = () => {
         "Worked directly with clients to gather requirements, provide progress updates, and deliver tailored solutions to meet their business objectives.",
         "Ensured high-quality deliverables through best coding practices, regular code reviews, and thorough testing procedures.",
         "Collaborated with designers, testers, and project managers to ensure the timely delivery of robust and user-friendly solutions.",
-        "Created and maintained comprehensive technical documentation, including system architecture, API references, and user guides, to facilitate seamless knowledge sharing and system maintenance."
+        "Created and maintained comprehensive technical documentation, including system architecture, API references, and user guides, to facilitate seamless knowledge sharing and system maintenance.",
       ],
     },
     {
@@ -85,47 +85,67 @@ const Resume = () => {
         "Integrated logic to identify and flag potential duplicate submissions, promoting originality and integrity in academic research.",
         "Designed and optimized the database schema to store and manage large volumes of research data efficiently.",
         "Engaged with university administrators, librarians, and students to gather requirements and ensure the system met their specific needs.",
-        "Deployed the system, provided technical support, and trained end-users to ensure smooth adoption and usage across the university."
+        "Deployed the system, provided technical support, and trained end-users to ensure smooth adoption and usage across the university.",
       ],
+    },
+    {
+      date: "Graduated 2014",
+      title: "Bachelor of Science in Information Technology",
+      company: "Central Mindanao University - Mindanao",
+      description: "",
+      points: [],
     },
   ];
 
   return (
     <div className="py-10 px-6 sm:px-10">
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-4xl font-bold mb-6 text-center">
+        <h1 className="text-4xl font-bold mb-6 text-center dark:text-white">
           Resume
         </h1>
-        <p className="text-lg text-gray-700 mb-12 text-center">
+        <p className="text-lg text-gray-700 mb-12 text-center dark:text-gray-200">
           An overview of my professional experience and key accomplishments in
           each role.
         </p>
 
         {/* Timeline as a List */}
-        <ol className="relative border-s border-gray-300 dark:border-gray-600">
+        <ol className="relative border-s border-gray-300 dark:border-gray-200">
           {timelineData.map((item, index) => (
             <li key={index} className="mb-10 ml-6">
               {/* Dot */}
-              <span className="absolute w-3 h-3 bg-gray-400 rounded-full mt-1.5 -start-1.5 border border-white dark:border-gray-900 dark:bg-gray-700"></span>
+              <span className="absolute w-3 h-3 bg-gray-400 rounded-full mt-1.5 -start-1.5 border border-white dark:border-gray-200 dark:bg-gray-100"></span>
 
               {/* Date */}
-              <p className="text-sm text-gray-500">{item.date}</p>
+              <p className="text-sm text-gray-500 dark:text-gray-300">
+                {item.date}
+              </p>
 
               {/* Title and Company */}
-              <h3 className="text-xl font-semibold text-blue-800">{item.title}</h3>
-              <h4 className="text-md font-light text-blue-500">
+              <h3 className="text-2xl font-semibold text-blue-800 dark:text-gray-100">
+                {item.title}
+              </h3>
+              <h4 className="text-xs font-light text-blue-500 dark:text-gray-300">
                 {item.company}
               </h4>
 
               {/* Description */}
-              <p className="mt-2 text-gray-900">{item.description}</p>
+              <p className="mt-2 text-gray-900 dark:text-gray-400">
+                {item.description}
+              </p>
 
               {/* Bullet Points */}
-              <h5 className="mt-4 font-semibold">Key Responsibilities:</h5>
+              {item.points.length > 0 && (
+                <h5 className="mt-4 font-semibold text-gray-900 dark:text-gray-100">
+                  Key Responsibilities:
+                </h5>
+              )}
+
               <ul className="mt-4 space-y-2 text-gray-900 list-disc list-inside">
                 {item.points.map((point, i) => (
-                  <li key={i} className="flex items-start">
-                    <span className="text-blue-500 mt-1 mr-2">✔</span>
+                  <li key={i} className="flex items-start dark:text-gray-400">
+                    <span className="dark:text-gray-200 text-blue-500 mt-1 mr-2">
+                      *
+                    </span>
                     {point}
                   </li>
                 ))}

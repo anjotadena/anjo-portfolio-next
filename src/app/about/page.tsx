@@ -59,8 +59,8 @@ const technologiesUsed = [
 const About = () => (
   <div className="min-h-[85vh] max-w-4xl mx-auto flex flex-col items-center">
     <section className="mb-6 mt-6">
-      <h1 className="text-4xl font-bold mb-6 text-center">About Me</h1>
-      <p className="text-md text-gray-700 mb-12 text-center">
+      <h1 className="text-4xl font-bold mb-6 text-center dark:text-white">About Me</h1>
+      <p className="text-md text-gray-700 mb-12 text-center dark:text-gray-200">
         I am a dedicated and results-driven Lead Software Engineer with
         extensive experience in full-stack development and a strong focus on
         delivering innovative, high-quality solutions. My expertise spans a wide
@@ -75,8 +75,8 @@ const About = () => (
     </section>
 
     <section className="mb-6">
-      <h2 className="text-3xl font-bold mb-6 text-center">Why Work with Me?</h2>
-      <p className="text-md text-gray-700 mb-12 text-center">
+      <h2 className="text-3xl font-bold mb-6 text-center dark:text-white">Why Work with Me?</h2>
+      <p className="text-md text-gray-700 mb-12 text-center dark:text-gray-200">
         I bring a combination of technical expertise, proven experience, and a
         collaborative approach to every project. My skills in modern
         technologies, full-stack development, and scalable architectures ensure
@@ -90,22 +90,22 @@ const About = () => (
     </section>
 
     <section className="mb-6">
-      <h2 className="text-3xl font-bold mb-6 text-center">
+      <h2 className="text-3xl font-bold mb-6 text-center dark:text-white">
         Technology Expertise
       </h2>
-      <p className="text-md text-gray-700 mb-12 text-center">
+      <p className="text-md text-gray-700 mb-12 text-center dark:text-gray-200">
         My technical stack includes experience with modern frameworks and tools.
         While I am continually expanding my skill set, here are the core
         technologies I work with:
       </p>
       {technologiesUsed.map((tech, index) => (
         <div key={index} className="text-center my-4">
-          <h3 className="font-medium text-gray-800 mb-2">{tech.name}</h3>
+          <h3 className="font-medium text-gray-800 mb-2 dark:text-white">{tech.name}</h3>
           <div className="flex justify-center gap-2 items-center align-center">
             {tech.items.map((item, itemIndex) => (
               <span
                 key={itemIndex}
-                className="text-blue-600 border border-blue-600 px-2 rounded-sm hover:bg-blue-600 hover:text-white hover:cursor-pointer"
+                className="text-blue-600 dark:text-white border dark:border-white border-blue-600 px-2 rounded-sm hover:bg-blue-600 hover:text-white hover:cursor-pointer"
               >
                 {item}
               </span>
@@ -113,7 +113,7 @@ const About = () => (
           </div>
         </div>
       ))}
-      <p className="text-md text-gray-700 mt-12 text-center">
+      <p className="text-md text-gray-700 mt-12 text-center dark:text-gray-200">
         Working with me means partnering with a professional who is passionate
         about creating impactful software while building strong, lasting
         relationships with clients and teams. Let's collaborate to turn your
