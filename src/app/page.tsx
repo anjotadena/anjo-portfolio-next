@@ -99,15 +99,15 @@ export default function Page() {
   return (
     <>
       {/* Hero Section */}
-      <section className="h-[84vh] flex items-center justify-center">
-        <div className="max-w-4xl mx-auto grid grid-cols-4 md:grid-cols-4 gap-6 items-center">
+      <section className="h-[84vh] md:flex md:items-center md:justify-center">
+        <div className="max-w-4xl mx-auto mt-[100px] grid grid-cols-1 md:grid-cols-4 md:gap-6 items-center">
           {/* Headline Section */}
-          <div className="col-span-3">
+          <div className="col-span-3 order-2 md:order-1">
             <Headline />
           </div>
 
           {/* Profile Picture Section */}
-          <div className="col-span-1 flex justify-center">
+          <div className="col-span-1 flex justify-center order-1 md:order-2">
             <ProfilePicture />
           </div>
         </div>
