@@ -78,7 +78,12 @@ export const TopNavBar = ({
             <nav className="flex flex-wrap items-center gap-4 lg:flex-nowrap">
               <div className="flex w-full items-center lg:w-auto justify-between">
                 <Link href="/">
-                  <Image alt="Anjo Tadena" src={AnjoInitialLogoSrc} height={35} className="w-auto" />
+                  <Image
+                    alt="Anjo Tadena"
+                    src={AnjoInitialLogoSrc}
+                    height={35}
+                    className="w-auto"
+                  />
                 </Link>
                 <div className="flex items-center gap-2">
                   <button
@@ -134,13 +139,21 @@ export const TopNavBar = ({
                   <li
                     key={idx}
                     className={on(
-                      "text-center rounded text-sm font-medium capitalize text-default-900 transition-all duration-300 hover:bg-default-100 hover:text-primary [&.active]:bg-default-100 [&.active]:text-primary",
-                      activation == `${item}` && "active"
+                      "text-center menu-item mx-2 text-default-800 transition-all duration-300 hover:text-primary [&.active]:text-primary",
+                      pathname.split("/")[1] === item.toLowerCase() && "active"
                     )}
                   >
-                    <a className="block w-full px-4 py-2.5" href={`#${item}`}>
-                      {toSentenceCase(item)}
-                    </a>
+                    <div
+                      data-hs-overlay="#mobile-menu"
+                      className="hs-collapse-toggle"
+                    >
+                      <Link
+                        className="block w-full px-4 py-2.5"
+                        href={`/${item.toLowerCase()}`}
+                      >
+                        {toSentenceCase(item)}
+                      </Link>
+                    </div>
                   </li>
                 );
               })}
