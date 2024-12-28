@@ -1,4 +1,4 @@
-"use client"; // If you're using interactivity
+"use client";
 
 export default function Projects() {
   const projects = [

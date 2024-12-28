@@ -1,14 +1,14 @@
 "use client";
 
-import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
-import { LuMenu, LuX } from "react-icons/lu";
 import Image from "next/image";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useRef } from "react";
+import { LuMenu, LuX } from "react-icons/lu";
 
+import AnjoInitialLogoSrc from "@/assets/images/initial-logo.png";
 import { toSentenceCase } from "@/helpers";
 import { on } from "@/utils";
-import AnjoInitialLogoSrc from "@/assets/images/initial-logo.png";
 
 export const TopNavBar = ({
   menuItems,
@@ -19,49 +19,6 @@ export const TopNavBar = ({
 }) => {
   const pathname = usePathname();
   const navbarRef = useRef<HTMLDivElement>(null);
-  const [activation, setActivation] = useState<string>(pathname.split("/")[1]);
-
-  console.log("pathname", pathname.split("/")[1]);
-
-  useEffect(() => {
-    const hash = window?.location.hash;
-
-    document.addEventListener("scroll", (e) => {
-      e.preventDefault();
-      activeSection();
-      if (navbarRef.current) {
-        if (window?.scrollY >= 80)
-          navbarRef.current.classList.add("nav-sticky");
-        else navbarRef.current.classList.remove("nav-sticky");
-      }
-    });
-
-    const timeout = setTimeout(() => {
-      if (hash) {
-        const element = document.querySelector(hash);
-        if (element) element.scrollIntoView({ behavior: "instant" });
-      }
-    }, 0);
-
-    return () => {
-      clearTimeout(timeout);
-      window?.removeEventListener("scroll", activeSection);
-    };
-  }, []);
-
-  const activeSection = () => {
-    const scrollY = window?.scrollY;
-
-    for (let i = menuItems.length - 1; i >= 0; i--) {
-      const section = menuItems[i];
-      const el: HTMLElement | null = document.getElementById(section);
-
-      if (el && el.offsetTop <= scrollY + 100) {
-        setActivation(section);
-        return;
-      }
-    }
-  };
 
   return (
     <>
@@ -70,7 +27,7 @@ export const TopNavBar = ({
         id="navbar"
         className={on(
           position,
-          "inset-x-0 top-0 z-[60] w-full  border-b bg-white transition-all duration-300 dark:bg-default-50 lg:bg-transparent [&.nav-sticky]:bg-white/90 [&.nav-sticky]:shadow-md [&.nav-sticky]:backdrop-blur-3xl dark:[&.nav-sticky]:bg-default-50/80"
+          "inset-x-0 top-0 z-[60] w-full  border-b bg-white transition-all duration-300 dark:bg-default-50 lg:bg-white [&.nav-sticky]:bg-white/90 [&.nav-sticky]:shadow-md [&.nav-sticky]:backdrop-blur-3xl dark:[&.nav-sticky]:bg-default-50/80"
         )}
       >
         <div className="flex h-full items-center py-4">
@@ -78,7 +35,12 @@ export const TopNavBar = ({
             <nav className="flex flex-wrap items-center gap-4 lg:flex-nowrap">
               <div className="flex w-full items-center lg:w-auto justify-between">
                 <Link href="/">
-                  <Image alt="Anjo Tadena" src={AnjoInitialLogoSrc} height={35} className="w-auto" />
+                  <Image
+                    alt="Anjo Tadena"
+                    src={AnjoInitialLogoSrc}
+                    height={35}
+                    className="w-auto"
+                  />
                 </Link>
                 <div className="flex items-center gap-2">
                   <button
@@ -134,13 +96,21 @@ export const TopNavBar = ({
                   <li
                     key={idx}
                     className={on(
-                      "text-center rounded text-sm font-medium capitalize text-default-900 transition-all duration-300 hover:bg-default-100 hover:text-primary [&.active]:bg-default-100 [&.active]:text-primary",
-                      activation == `${item}` && "active"
+                      "text-center menu-item mx-2 text-default-800 transition-all duration-300 hover:text-primary [&.active]:text-primary",
+                      pathname.split("/")[1] === item.toLowerCase() && "active"
                     )}
                   >
-                    <a className="block w-full px-4 py-2.5" href={`#${item}`}>
-                      {toSentenceCase(item)}
-                    </a>
+                    <div
+                      data-hs-overlay="#mobile-menu"
+                      className="hs-collapse-toggle"
+                    >
+                      <Link
+                        className="block w-full px-4 py-2.5"
+                        href={`/${item.toLowerCase()}`}
+                      >
+                        {toSentenceCase(item)}
+                      </Link>
+                    </div>
                   </li>
                 );
               })}
