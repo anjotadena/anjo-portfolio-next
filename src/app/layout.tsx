@@ -7,8 +7,8 @@ import { type ReactNode } from "react";
 
 import "@/assets/css/styles.css";
 
-import { TopNavBar } from "@/components/layout";
 import LightLogo from "@/assets/images/logo-light.png";
+import { TopNavBar } from "@/components/layout";
 
 const AppProvidersWrapper = dynamic(() => import("@/AppProviderWrapper"));
 const BackToTop = dynamic(() => import("@/components/ui/BackToTop"));
@@ -27,12 +27,8 @@ export const metadata: Metadata = {
   },
   description: "Anjo Tadena",
   icons: {
-    icon: [
-      { url: '/favicon.ico' }
-    ],
-    apple: [
-      { url: '/apple-icon.png' },
-    ],
+    icon: [{ url: "/favicon.ico" }],
+    apple: [{ url: "/apple-icon.png" }],
   },
 };
 
@@ -94,7 +90,7 @@ export default function RootLayout({
               />
               <main className="container mx-auto">{children}</main>
               <div className="h-20 flex justify-center align-center py-8 border">
-                &copy; Anjo Tadena, {new Date().getFullYear()}. All rights
+                &copy; Anjo Tadena. All rights
                 reserved.
               </div>
             </div>

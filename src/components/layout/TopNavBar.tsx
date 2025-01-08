@@ -10,13 +10,12 @@ import AnjoInitialLogoSrc from "@/assets/images/initial-logo.png";
 import { toSentenceCase } from "@/helpers";
 import { on } from "@/utils";
 
-export const TopNavBar = ({
-  menuItems,
-  position,
-}: {
+type TopNavBarProps = {
   menuItems: string[];
   position: "sticky" | "fixed";
-}) => {
+};
+
+export const TopNavBar = ({ menuItems, position }: TopNavBarProps) => {
   const pathname = usePathname();
   const navbarRef = useRef<HTMLDivElement>(null);
 
