@@ -70,6 +70,10 @@ export default function RootLayout({
     <html lang="en">
       <head>
         <style>{splashScreenStyles}</style>
+        <meta
+          name="google-site-verification"
+          content="TxRcVQOjYeQ8g2iSkEgNpT4EaX6bEsJZzZqLIftNNUU"
+        />
       </head>
       <body className={rem.className}>
         <div id="splash-screen">
@@ -90,8 +94,7 @@ export default function RootLayout({
               />
               <main className="container mx-auto">{children}</main>
               <div className="h-20 flex justify-center align-center py-8 border">
-                &copy; Anjo Tadena. All rights
-                reserved.
+                &copy; Anjo Tadena. All rights reserved.
               </div>
             </div>
             <BackToTop />
