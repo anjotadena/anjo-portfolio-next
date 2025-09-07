@@ -75,33 +75,6 @@ export default function RootLayout({
           name="google-site-verification"
           content="TxRcVQOjYeQ8g2iSkEgNpT4EaX6bEsJZzZqLIftNNUU"
         />
-        {/* Script to handle browser extension attributes before React hydrates */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              // Handle browser extension attributes that cause hydration warnings
-              if (typeof window !== 'undefined') {
-                // Override console.error to suppress specific hydration warnings
-                const originalError = console.error;
-                console.error = function(...args) {
-                  const errorMessage = args[0]?.toString?.() || '';
-                  
-                  // Suppress warnings for known browser extension attributes
-                  if (
-                    errorMessage.includes('data-testim-main-word-scripts-loaded') ||
-                    errorMessage.includes('data-testim') ||
-                    errorMessage.includes('server rendered HTML didn\\'t match the client') ||
-                    (errorMessage.includes('Hydration failed') && errorMessage.includes('data-'))
-                  ) {
-                    return;
-                  }
-                  
-                  originalError.apply(console, args);
-                };
-              }
-            `,
-          }}
-        />
       </head>
       <body className={rem.className} suppressHydrationWarning={true}>
         <div id="splash-screen">
@@ -112,7 +85,7 @@ export default function RootLayout({
             style={{ width: "auto" }}
           />
         </div>
-        <NextTopLoader color="#0e01ff" showSpinner={false} />
+        <NextTopLoader color="#0e01ff" />
         <HydrationProvider>
           <div id="__next_splash">
             <AppProvidersWrapper>
