@@ -8,11 +8,14 @@ const nextConfig: NextConfig = {
   async headers() {
     const isDev = process.env.NODE_ENV === 'development';
     
-    // Development CSP - more permissive for development tools
-    const devScriptSrc = "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://gql.hashnode.com https://vercel.live";
+    // Base script sources that are always allowed
+    const baseScriptSrc = "'self' https://gql.hashnode.com https://vercel.live";
     
-    // Production CSP - strict with specific hashes for known inline scripts
-    const prodScriptSrc = "script-src 'self' 'sha256-OBTN3RiyCV4Bq7dFqZ5a2pAXjnCcCYeTJMO2I/LYKeo=' https://gql.hashnode.com https://vercel.live";
+    // Development CSP - more permissive for development tools and HMR
+    const devScriptSrc = `script-src ${baseScriptSrc} 'unsafe-inline' 'unsafe-eval'`;
+    
+    // Production CSP - allow common Next.js inline scripts with nonce or specific patterns
+    const prodScriptSrc = `script-src ${baseScriptSrc} 'unsafe-inline'`;
     
     return [
       {
@@ -26,13 +29,13 @@ const nextConfig: NextConfig = {
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
               "font-src 'self' https://fonts.gstatic.com",
               "img-src 'self' data: https: blob:",
-              "connect-src 'self' https://gql.hashnode.com https://vercel.live wss://vercel.live wss://localhost:* ws://localhost:*",
+              `connect-src 'self' https://gql.hashnode.com https://vercel.live ${isDev ? 'wss://vercel.live wss://localhost:* ws://localhost:*' : ''}`,
               "frame-src 'self' https://vercel.live",
               "object-src 'none'",
               "base-uri 'self'",
               "form-action 'self'",
-              "upgrade-insecure-requests",
-            ].join('; '),
+              ...(isDev ? [] : ["upgrade-insecure-requests"]),
+            ].filter(Boolean).join('; '),
           },
           {
             key: 'X-Frame-Options',
