@@ -24,33 +24,52 @@ const AppProviderWrapper = ({
   const pathname = usePathname();
 
   useEffect(() => {
-    if (document) {
-      const e = document.querySelector<HTMLDivElement>("#__next_splash");
+    // Ensure DOM manipulation only happens on client side after mount
+    const splashScreen = document.querySelector("#splash-screen");
+    const nextSplash = document.querySelector<HTMLDivElement>("#__next_splash");
 
-      if (e?.hasChildNodes()) {
-        document.querySelector("#splash-screen")?.classList.add("remove");
-      }
-
-      e?.addEventListener("DOMNodeInserted", () => {
-        document.querySelector("#splash-screen")?.classList.add("remove");
-      });
+    if (nextSplash?.hasChildNodes()) {
+      splashScreen?.classList.add("remove");
     }
 
-    import("preline/preline");
+    const handleDOMNodeInserted = () => {
+      splashScreen?.classList.add("remove");
+    };
+
+    // Use modern MutationObserver instead of deprecated DOMNodeInserted
+    if (nextSplash) {
+      const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+          if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+            handleDOMNodeInserted();
+          }
+        });
+      });
+      
+      observer.observe(nextSplash, { childList: true });
+      
+      // Cleanup observer on unmount
+      return () => observer.disconnect();
+    }
+
+    // Dynamic import to avoid SSR issues
+    import("preline/preline").catch(console.error);
 
     document.addEventListener("visibilitychange", handleChangeTitle);
 
     return () => {
       document.removeEventListener("visibilitychange", handleChangeTitle);
     };
-  });
+  }, []); // Empty dependency array to run only once
 
   useEffect(() => {
-    setTimeout(() => {
-      if (window.HSStaticMethods) {
+    const timer = setTimeout(() => {
+      if (typeof window !== 'undefined' && window.HSStaticMethods) {
         window.HSStaticMethods.autoInit();
       }
     }, HTML_STATIC_TIMEOUT);
+
+    return () => clearTimeout(timer);
   }, [pathname]);
 
   return (

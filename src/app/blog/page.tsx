@@ -62,21 +62,19 @@ const Blog = async () => {
         </h1>
         <div className="flex flex-col">
           {articles.map(({ node }, index) => (
-            <>
-              <div key={index} className="bg-white p-4 dark:bg-transparent">
-                <h2 className="text-xl font-semibold mb-2 dark:text-gray-200">{node.title}</h2>
-                <h5 className="text-sm text-gray-500 dark:text-gray-300 mb-2">Published: {node.publishedAt}</h5>
-                <p className="text-gray-600 text-sm mb-4 dark:text-gray-200">{node.brief}</p>
-                <a
-                  href={node.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-gray-500 hover:underline dark:text-gray-500"
-                >
-                  Read More →
-                </a>
-              </div>
-            </>
+            <div key={`article-${index}-${node.url}`} className="bg-white p-4 dark:bg-transparent">
+              <h2 className="text-xl font-semibold mb-2 dark:text-gray-200">{node.title}</h2>
+              <h5 className="text-sm text-gray-500 dark:text-gray-300 mb-2">Published: {node.publishedAt}</h5>
+              <p className="text-gray-600 text-sm mb-4 dark:text-gray-200">{node.brief}</p>
+              <a
+                href={node.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gray-500 hover:underline dark:text-gray-500"
+              >
+                Read More →
+              </a>
+            </div>
           ))}
         </div>
       </div>
