@@ -1,5 +1,7 @@
 "use client";
 
+import { Fragment } from "react";
+
 export default function Projects() {
   const projects = [
     {
@@ -64,7 +66,7 @@ export default function Projects() {
         <div className="space-y-12">
           {projects.map((project, index) => {
             return (
-              <>
+              <Fragment key={index}>
                 {index !== 0 && (
                   <hr className="w-48 h-1 mx-auto my-16 bg-blue-500 border-0 rounded dark:bg-blue-700"></hr>
                 )}
@@ -115,7 +117,7 @@ export default function Projects() {
                     </div>
                   </div>
                 </div>
-              </>
+              </Fragment>
             );
           })}
         </div>

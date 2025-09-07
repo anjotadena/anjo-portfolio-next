@@ -12,6 +12,7 @@ import { TopNavBar } from "@/components/layout";
 
 const AppProvidersWrapper = dynamic(() => import("@/AppProviderWrapper"));
 const BackToTop = dynamic(() => import("@/components/ui/BackToTop"));
+const HydrationProvider = dynamic(() => import("@/components/ui/HydrationProvider"));
 
 const rem = REM({
   weight: ["200", "300", "400", "500", "600", "700"],
@@ -67,7 +68,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: ReactNode }>) {
   return (
-    <html lang="en">
+    <html lang="en" data-scroll-behavior="smooth">
       <head>
         <style>{splashScreenStyles}</style>
         <meta
@@ -75,7 +76,7 @@ export default function RootLayout({
           content="TxRcVQOjYeQ8g2iSkEgNpT4EaX6bEsJZzZqLIftNNUU"
         />
       </head>
-      <body className={rem.className}>
+      <body className={rem.className} suppressHydrationWarning={true}>
         <div id="splash-screen">
           <Image
             alt="Logo"
@@ -84,23 +85,25 @@ export default function RootLayout({
             style={{ width: "auto" }}
           />
         </div>
-        <NextTopLoader color="#0e01ff" showSpinner={false} />
-        <div id="__next_splash">
-          <AppProvidersWrapper>
-            <div className="flex flex-col justify-around item-center min-h-screen">
-              <TopNavBar
-                menuItems={["About", "Resume", "Projects", "Blog", "Contact"]}
-                position="sticky"
-              />
-              <main className="container mx-auto">{children}</main>
-              <div className="h-20 flex justify-center align-center py-8 border">
-                &copy; Anjo Tadena. All rights reserved.
+        <NextTopLoader color="#0e01ff" />
+        <HydrationProvider>
+          <div id="__next_splash">
+            <AppProvidersWrapper>
+              <div className="flex flex-col justify-around item-center min-h-screen">
+                <TopNavBar
+                  menuItems={["About", "Resume", "Projects", "Blog", "Contact"]}
+                  position="sticky"
+                />
+                <main className="container mx-auto">{children}</main>
+                <div className="h-20 flex justify-center align-center py-8 border">
+                  &copy; Anjo Tadena. All rights reserved.
+                </div>
               </div>
-            </div>
-            <BackToTop />
-            {/* create footer */}
-          </AppProvidersWrapper>
-        </div>
+              <BackToTop />
+              {/* create footer */}
+            </AppProvidersWrapper>
+          </div>
+        </HydrationProvider>
       </body>
     </html>
   );

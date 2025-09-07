@@ -2,12 +2,30 @@
 
 import React, { useState, useEffect } from "react";
 
-const TypingEffect = ({ texts, speed = 100, eraseSpeed = 50, delay = 1000 }: { texts: string[]; speed: number; eraseSpeed: number; delay: number }) => {
+const TypingEffect = ({ 
+  texts, 
+  speed = 100, 
+  eraseSpeed = 50, 
+  delay = 1000 
+}: { 
+  texts: string[]; 
+  speed: number; 
+  eraseSpeed: number; 
+  delay: number; 
+}) => {
   const [text, setText] = useState("");
   const [index, setIndex] = useState(0);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+
+  // Prevent hydration mismatch by only starting animation after mount
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   useEffect(() => {
+    if (!isMounted) return;
+
     const handleTyping = () => {
       const currentText = texts[index];
       if (isDeleting) {
@@ -19,8 +37,7 @@ const TypingEffect = ({ texts, speed = 100, eraseSpeed = 50, delay = 1000 }: { t
       } else {
         setText((prev) => currentText.slice(0, prev.length + 1));
         if (text === currentText) {
-          setIsDeleting(true);
-          setTimeout(() => {}, delay);
+          setTimeout(() => setIsDeleting(true), delay);
         }
       }
     };
@@ -29,7 +46,12 @@ const TypingEffect = ({ texts, speed = 100, eraseSpeed = 50, delay = 1000 }: { t
     const timer = setTimeout(handleTyping, typingSpeed);
 
     return () => clearTimeout(timer);
-  }, [text, isDeleting, texts, index, speed, eraseSpeed, delay]);
+  }, [text, isDeleting, texts, index, speed, eraseSpeed, delay, isMounted]);
+
+  // Return empty string during SSR to prevent hydration mismatch
+  if (!isMounted) {
+    return <span>&nbsp;</span>;
+  }
 
   return <span>{text}</span>;
 };
