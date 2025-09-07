@@ -6,6 +6,7 @@ import NextTopLoader from "nextjs-toploader";
 import { type ReactNode } from "react";
 
 import "@/assets/css/styles.css";
+import "@/assets/css/splash-screen.css";
 
 import LightLogo from "@/assets/images/logo-light.png";
 import { TopNavBar } from "@/components/layout";
@@ -33,44 +34,12 @@ export const metadata: Metadata = {
   },
 };
 
-const splashScreenStyles = `
-#splash-screen {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  background: white;
-  display: flex;
-  height: 100%;
-  width: 100%;
-  transform: translate(-50%, -50%);
-  align-items: center;
-  justify-content: center;
-  z-index: 9999;
-  opacity: 1;
-  transition: all 15s linear;
-  overflow: hidden;
-}
-
-#splash-screen.remove {
-  animation: fadeout 0.7s forwards;
-  z-index: 0;
-}
-
-@keyframes fadeout {
-  to {
-    opacity: 0;
-    visibility: hidden;
-  }
-}
-`;
-
 export default function RootLayout({
   children,
 }: Readonly<{ children: ReactNode }>) {
   return (
     <html lang="en" data-scroll-behavior="smooth">
       <head>
-        <style>{splashScreenStyles}</style>
         <meta
           name="google-site-verification"
           content="TxRcVQOjYeQ8g2iSkEgNpT4EaX6bEsJZzZqLIftNNUU"
