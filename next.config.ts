@@ -8,6 +8,12 @@ const nextConfig: NextConfig = {
   async headers() {
     const isDev = process.env.NODE_ENV === 'development';
     
+    // Development CSP - more permissive for development tools
+    const devScriptSrc = "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://gql.hashnode.com https://vercel.live";
+    
+    // Production CSP - strict with specific hashes for known inline scripts
+    const prodScriptSrc = "script-src 'self' 'sha256-OBTN3RiyCV4Bq7dFqZ5a2pAXjnCcCYeTJMO2I/LYKeo=' https://gql.hashnode.com https://vercel.live";
+    
     return [
       {
         source: '/(.*)',
@@ -16,7 +22,7 @@ const nextConfig: NextConfig = {
             key: 'Content-Security-Policy',
             value: [
               "default-src 'self'",
-              `script-src 'self'${isDev ? " 'unsafe-inline' 'unsafe-eval'" : ""} https://gql.hashnode.com https://vercel.live`,
+              isDev ? devScriptSrc : prodScriptSrc,
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
               "font-src 'self' https://fonts.gstatic.com",
               "img-src 'self' data: https: blob:",
