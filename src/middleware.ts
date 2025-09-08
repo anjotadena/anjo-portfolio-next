@@ -1,6 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 
-export function middleware(_request: NextRequest) {
+export function middleware() {
   const response = NextResponse.next();
   
   // Get the current environment
@@ -13,11 +13,11 @@ export function middleware(_request: NextRequest) {
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
     "font-src 'self' https://fonts.gstatic.com",
     "img-src 'self' data: https: blob:",
-    "connect-src 'self' https://gql.hashnode.com https://vercel.live https://vercel.com",
+    "connect-src 'self' https://gql.hashnode.com https://vercel.live https://vercel.com https://formspree.io",
     "frame-src 'self' https://vercel.live https://vercel.com",
     "object-src 'none'",
     "base-uri 'self'",
-    "form-action 'self'",
+    "form-action 'self' https://formspree.io",
   ];
   
   // Add upgrade-insecure-requests only in production
