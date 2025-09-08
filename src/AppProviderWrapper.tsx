@@ -1,6 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
+import NextTopLoader from "nextjs-toploader";
 import { useEffect } from "react";
 
 import { LayoutProvider } from "./context/LayoutContext";
@@ -45,9 +46,9 @@ const AppProviderWrapper = ({
           }
         });
       });
-      
+
       observer.observe(nextSplash, { childList: true });
-      
+
       // Cleanup observer on unmount
       return () => observer.disconnect();
     }
@@ -74,6 +75,7 @@ const AppProviderWrapper = ({
 
   return (
     <>
+      <NextTopLoader color="#0e01ff" />
       <LayoutProvider>{children}</LayoutProvider>
     </>
   );

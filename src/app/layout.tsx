@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import dynamic from "next/dynamic";
 import { REM } from "next/font/google";
 import Image from "next/image";
-import NextTopLoader from "nextjs-toploader";
 import { type ReactNode } from "react";
 
 import "@/assets/css/styles.css";
@@ -54,7 +53,6 @@ export default function RootLayout({
             style={{ width: "auto" }}
           />
         </div>
-        <NextTopLoader color="#0e01ff" />
         <HydrationProvider>
           <div id="__next_splash">
             <AppProvidersWrapper>
