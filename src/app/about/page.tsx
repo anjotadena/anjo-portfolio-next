@@ -107,7 +107,7 @@ const About = () => (
           <h3 className="font-medium text-gray-800 mb-2 dark:text-white">
             {tech.name}
           </h3>
-          <div className="flex justify-center gap-2 items-center align-center">
+          <div className="flex justify-center gap-2 flex-wrap items-center align-center">
             {tech.items.map((item, itemIndex) => (
               <span
                 key={itemIndex}
