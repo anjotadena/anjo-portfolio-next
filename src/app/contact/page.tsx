@@ -146,7 +146,7 @@ export default function Contact() {
         setLastSubmission(now);
         setSubmissionState({
           type: 'success',
-          message: 'Thank you! Your message has been sent successfully. I\'ll get back to you soon.',
+          message: 'Thank you! Your message has been sent successfully. I&apos;ll get back to you soon.',
         });
         reset(); // Reset the form after successful submission
       } else {
@@ -171,7 +171,7 @@ export default function Contact() {
           </h1>
           <p className="text-base sm:text-lg lg:text-xl xl:text-2xl text-gray-700 dark:text-gray-200 max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl xl:max-w-3xl mx-auto leading-relaxed px-4">
             Interested in collaborating or just want to say hello? Complete the
-            form below, and I'll respond promptly—typically within one business
+            form below, and I&apos;ll respond promptly—typically within one business
             day.
           </p>
         </div>
@@ -392,7 +392,7 @@ export default function Contact() {
             </h3>
             <div className="space-y-2 sm:space-y-3">
               <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
-                📧 Email: hello@anjotadena.com
+                📧 Email: tadena.anjo@gmail.com
               </p>
               <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
                 🌐 LinkedIn: /in/anjotadena

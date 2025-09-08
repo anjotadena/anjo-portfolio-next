@@ -1,6 +1,7 @@
 "use client";
 
 import { Fragment } from "react";
+import Image from "next/image";
 
 export default function Projects() {
   const projects = [
@@ -78,11 +79,12 @@ export default function Projects() {
                 >
                   {/* Image Section */}
                   <div className="flex-shrink-0">
-                    <img
+                    <Image
                       src={project.image}
                       alt={`${project.title} dashboard`}
                       className="rounded-lg border-2 border-blue-400"
                       width={400}
+                      height={300}
                     />
                   </div>
                   {/* Content Section */}
@@ -106,11 +108,13 @@ export default function Projects() {
                       <h4 className="text-lg font-bold mb-2 dark:text-gray-200">Technology Used:</h4>
                       <div className="flex space-x-4 mt-6">
                         {project.technologies.map((tech, i) => (
-                          <img
+                          <Image
                             key={i}
                             src={`/assets/tools/${tech}.png`} // Path to tech icons
                             alt={tech}
                             className="h-8"
+                            width={32}
+                            height={32}
                           />
                         ))}
                       </div>
