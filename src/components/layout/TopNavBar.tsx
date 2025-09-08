@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { LuMenu, LuX } from "react-icons/lu";
 
 import AnjoInitialLogoSrc from "@/assets/images/initial-logo.png";
@@ -18,6 +18,29 @@ type TopNavBarProps = {
 export const TopNavBar = ({ menuItems, position }: TopNavBarProps) => {
   const pathname = usePathname();
   const navbarRef = useRef<HTMLDivElement>(null);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
+  const closeMobileMenu = () => {
+    setIsMobileMenuOpen(false);
+  };
+
+  // Prevent body scroll when mobile menu is open
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+
+    // Cleanup on unmount
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isMobileMenuOpen]);
 
   return (
     <>
@@ -43,8 +66,8 @@ export const TopNavBar = ({ menuItems, position }: TopNavBarProps) => {
                 </Link>
                 <div className="flex items-center gap-2">
                   <button
-                    className="hs-collapse-toggle inline-block lg:hidden"
-                    data-hs-overlay="#mobile-menu"
+                    className="inline-block lg:hidden"
+                    onClick={toggleMobileMenu}
                   >
                     <LuMenu className="h-7 w-7 text-default-600 hover:text-default-900" />
                   </button>
@@ -79,16 +102,21 @@ export const TopNavBar = ({ menuItems, position }: TopNavBarProps) => {
       {/* mobile menu */}
       <div
         id="mobile-menu"
-        className="hs-overlay fixed bottom-0 left-0 top-0 z-[61] hidden h-screen w-full -translate-x-full transform border-r border-default-200 bg-white transition-all [--body-scroll:true] [--overlay-backdrop:false] hs-overlay-open:translate-x-0 dark:bg-default-50"
+        className={on(
+          "fixed bottom-0 left-0 top-0 z-[61] h-screen w-full border-r border-default-200 bg-white transition-all duration-300 dark:bg-default-50",
+          isMobileMenuOpen 
+            ? "translate-x-0" 
+            : "-translate-x-full"
+        )}
         tabIndex={-1}
       >
         <div className="flex h-[74px] items-center justify-end border-b border-dashed border-default-200 px-4 transition-all duration-300">
-          <div data-hs-overlay="#mobile-menu" className="hs-collapse-toggle">
+          <button onClick={closeMobileMenu} className="p-2">
             <LuX size={24} />
-          </div>
+          </button>
         </div>
         <div className="h-[calc(100%-4rem)] overflow-y-auto">
-          <nav className="hs-accordion-group flex h-full w-full flex-col flex-wrap p-4 justify-center">
+          <nav className="flex h-full w-full flex-col flex-wrap p-4 justify-center">
             <ul className="space-y-1">
               {menuItems.map((item, idx) => {
                 return (
@@ -99,17 +127,13 @@ export const TopNavBar = ({ menuItems, position }: TopNavBarProps) => {
                       pathname.split("/")[1] === item.toLowerCase() && "active"
                     )}
                   >
-                    <div
-                      data-hs-overlay="#mobile-menu"
-                      className="hs-collapse-toggle"
+                    <Link
+                      className="block w-full px-4 py-2.5"
+                      href={`/${item.toLowerCase()}`}
+                      onClick={closeMobileMenu}
                     >
-                      <Link
-                        className="block w-full px-4 py-2.5"
-                        href={`/${item.toLowerCase()}`}
-                      >
-                        {toSentenceCase(item)}
-                      </Link>
-                    </div>
+                      {toSentenceCase(item)}
+                    </Link>
                   </li>
                 );
               })}
@@ -117,6 +141,14 @@ export const TopNavBar = ({ menuItems, position }: TopNavBarProps) => {
           </nav>
         </div>
       </div>
+      
+      {/* Backdrop */}
+      {isMobileMenuOpen && (
+        <div
+          className="fixed inset-0 z-[60] bg-black/20 backdrop-blur-sm"
+          onClick={closeMobileMenu}
+        />
+      )}
     </>
   );
 };
