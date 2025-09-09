@@ -55,7 +55,7 @@ export default function Page() {
   return (
     <>
       {/* Hero Section */}
-      <section className="h-[84vh] md:flex md:items-center md:justify-center">
+      <section className="min-h-[85vh] md:flex md:items-center md:justify-center">
         <div className="max-w-4xl mx-auto mt-[100px] grid grid-cols-1 md:grid-cols-4 md:gap-6 items-center">
           {/* Headline Section */}
           <div className="col-span-3 order-2 md:order-1">
