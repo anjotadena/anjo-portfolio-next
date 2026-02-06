@@ -1,85 +1,39 @@
-import { GraphQLClient, gql } from "graphql-request";
+import type { Metadata } from "next";
 
-export interface ArticleNode {
-  title: string;
-  brief: string;
-  url: string;
-  publishedAt: string;
-}
+import { Container } from "@/components/site/Container";
+import { posts } from "@/data/posts";
+import { on } from "@/utils";
 
-export interface PostEdge {
-  node: ArticleNode;
-}
-
-export interface Posts {
-  edges: PostEdge[];
-}
-
-export interface Publication {
-  isTeam: boolean;
-  title: string;
-  posts: Posts;
-}
-
-export interface ApiResponse {
-  publication: Publication;
-}
-
-const API_URL = "https://gql.hashnode.com";
-
-const QUERY = gql`
-  query Publication {
-    publication(host: "anjotadena.hashnode.dev") {
-      title
-      posts(first: 10) {
-        edges {
-          node {
-            title
-            brief
-            url
-            publishedAt
-          }
-        }
-      }
-    }
-  }
-`;
-
-async function fetchArticles(): Promise<PostEdge[]> {
-  const client = new GraphQLClient(API_URL);
-  const response = (await client.request(QUERY)) as ApiResponse;
-
-  return response.publication.posts.edges;
-}
-const Blog = async () => {
-  const articles = await fetchArticles();
-  
-  return (
-    <div className="min-h-[85vh]">
-      <div className="max-w-4xl mx-auto py-8">
-        <h1 className="text-4xl font-bold mb-6 text-center dark:text-white">
-          My Articles
-        </h1>
-        <div className="flex flex-col">
-          {articles.map(({ node }, index) => (
-            <div key={`article-${index}-${node.url}`} className="bg-white p-4 dark:bg-transparent">
-              <h2 className="text-xl font-semibold mb-2 dark:text-gray-200">{node.title}</h2>
-              <h5 className="text-sm text-gray-500 dark:text-gray-300 mb-2">Published: {node.publishedAt}</h5>
-              <p className="text-gray-600 text-sm mb-4 dark:text-gray-200">{node.brief}</p>
-              <a
-                href={node.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-gray-500 hover:underline dark:text-gray-500"
-              >
-                Read More →
-              </a>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
+export const metadata: Metadata = {
+  title: "Blog",
+  description: "Short notes on engineering practice, architecture, and leadership.",
 };
 
-export default Blog;
+export default function BlogPage() {
+  return (
+    <Container className="py-12">
+      <header className="max-w-2xl">
+        <h1 className="text-3xl font-semibold tracking-tight">Blog</h1>
+        <p className="mt-3 text-sm leading-relaxed text-zinc-700 dark:text-zinc-200">
+          Mock posts for now. No CMS yet.
+        </p>
+      </header>
+
+      <div className="mt-10 space-y-3">
+        {posts.map((p) => (
+          <article
+            key={p.slug}
+            className={on(
+              "rounded-xl border border-zinc-200 bg-white p-5",
+              "dark:border-zinc-800 dark:bg-zinc-950"
+            )}
+          >
+            <h2 className="text-base font-semibold text-zinc-900 dark:text-zinc-50">{p.title}</h2>
+            <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">{p.date}</p>
+            <p className="mt-3 text-sm leading-relaxed text-zinc-700 dark:text-zinc-200">{p.excerpt}</p>
+          </article>
+        ))}
+      </div>
+    </Container>
+  );
+}
