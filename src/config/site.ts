@@ -8,6 +8,8 @@ export const site = {
     linkedin: "https://www.linkedin.com/in/anjotadena",
     email: "tadena.anjo@gmail.com",
     resumePdf: "/anjo_tadena_software_engineer_resume.pdf",
+    // Update this with your actual Calendly/Cal.com/other scheduling link
+    schedule: "https://calendly.com/tadena-anjo",
   },
 } as const;
 

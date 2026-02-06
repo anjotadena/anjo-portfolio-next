@@ -5,15 +5,28 @@
 @layer base {
   html {
     color-scheme: light dark;
+    scroll-behavior: smooth;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
   }
 
   :focus-visible {
-    outline: 2px solid theme(colors.zinc.900);
+    outline: 2px solid theme(colors.primary.500);
     outline-offset: 2px;
   }
 
   .dark :focus-visible {
-    outline-color: theme(colors.zinc.50);
+    outline-color: theme(colors.primary.400);
+  }
+
+  /* Smooth font rendering */
+  body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 }
 
@@ -184,14 +197,159 @@
     }
   }
 
+  /* Floating button animation */
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-4px);
+    }
+  }
+
+  /* Subtle hover lift */
+  .hover-lift {
+    transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
+  }
+
+  .hover-lift:hover {
+    transform: translateY(-2px);
+  }
+
+  /* Card hover effect */
+  .card-hover {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .card-hover:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.05), 0 8px 10px -6px rgb(0 0 0 / 0.05);
+  }
+
+  /* Scroll reveal animations */
+  .scroll-reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .scroll-reveal.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .scroll-reveal-fade {
+    opacity: 0;
+    transition: opacity 0.5s ease-out;
+  }
+
+  .scroll-reveal-fade.is-visible {
+    opacity: 1;
+  }
+
+  .scroll-reveal-scale {
+    opacity: 0;
+    transform: scale(0.95);
+    transition: opacity 0.5s ease-out, transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .scroll-reveal-scale.is-visible {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  .scroll-reveal-left {
+    opacity: 0;
+    transform: translateX(-24px);
+    transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .scroll-reveal-left.is-visible {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .scroll-reveal-right {
+    opacity: 0;
+    transform: translateX(24px);
+    transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .scroll-reveal-right.is-visible {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  /* Stagger delay utilities for scroll reveal */
+  .scroll-delay-100 { transition-delay: 100ms; }
+  .scroll-delay-200 { transition-delay: 200ms; }
+  .scroll-delay-300 { transition-delay: 300ms; }
+  .scroll-delay-400 { transition-delay: 400ms; }
+  .scroll-delay-500 { transition-delay: 500ms; }
+
   /* Respect reduced motion for error animations */
   @media (prefers-reduced-motion: reduce) {
     .animate-error-fade-in,
-    .animate-error-pulse {
+    .animate-error-pulse,
+    .animate-float,
+    .hover-lift,
+    .card-hover,
+    .scroll-reveal,
+    .scroll-reveal-fade,
+    .scroll-reveal-scale,
+    .scroll-reveal-left,
+    .scroll-reveal-right {
       animation: none;
       opacity: 1;
       transform: none;
+      transition: none;
     }
+
+    .hover-lift:hover,
+    .card-hover:hover {
+      transform: none;
+    }
+  }
+}
+
+@layer components {
+  /* Section spacing utility */
+  .section-padding {
+    @apply py-16 lg:py-20;
+  }
+
+  /* Container with responsive padding */
+  .content-container {
+    @apply container mx-auto px-4;
+  }
+
+  /* Heading styles */
+  .heading-1 {
+    @apply text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl;
+  }
+
+  .heading-2 {
+    @apply text-2xl font-bold tracking-tight sm:text-3xl;
+  }
+
+  .heading-3 {
+    @apply text-xl font-semibold;
+  }
+
+  /* Button base styles */
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg bg-primary-600 px-6 py-3 text-sm font-medium text-white shadow-lg shadow-primary-600/20 transition-all hover:bg-primary-700 hover:shadow-xl hover:shadow-primary-600/30 active:scale-[0.98];
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg border border-zinc-200 bg-white px-6 py-3 text-sm font-medium text-zinc-700 transition-all hover:border-zinc-300 hover:bg-zinc-50 active:scale-[0.98] dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:border-zinc-600 dark:hover:bg-zinc-700;
   }
 }
 

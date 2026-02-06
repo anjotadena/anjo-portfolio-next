@@ -1,31 +1,37 @@
 import type { Metadata } from "next";
-import { REM } from "next/font/google";
+import { Inter } from "next/font/google";
 import type { ReactNode } from "react";
 
 import "./globals.css";
 
 import { CommandPalette } from "@/components/command-palette/CommandPalette";
 import { SiteFooter } from "@/components/site/SiteFooter";
+import { SiteHeader } from "@/components/site/SiteHeader";
+import { site } from "@/config/site";
 import { on } from "@/utils";
 
 import { Providers } from "./providers";
 
-const rem = REM({
-  weight: ["200", "300", "400", "500", "600", "700"],
+const inter = Inter({
+  weight: ["300", "400", "500", "600", "700"],
   display: "swap",
-  adjustFontFallback: false,
   subsets: ["latin"],
+  variable: "--font-inter",
 });
 
 export const metadata: Metadata = {
   title: {
-    default: "Software Engineer",
-    template: "%s | Portfolio",
+    default: `${site.name} | ${site.title}`,
+    template: `%s | ${site.name}`,
   },
-  description:
-    "Minimal portfolio for a Software Engineer: projects, architecture, leadership, and contact.",
+  description: site.tagline,
   icons: {
     icon: [{ url: "/favicon.ico" }],
+  },
+  openGraph: {
+    title: site.name,
+    description: site.tagline,
+    type: "website",
   },
 };
 
@@ -42,14 +48,16 @@ export default function RootLayout({
       </head>
       <body
         className={on(
-          rem.className,
+          inter.className,
+          inter.variable,
           "min-h-dvh bg-white text-zinc-950 antialiased dark:bg-zinc-950 dark:text-zinc-50"
         )}
         suppressHydrationWarning
       >
         <Providers>
           <div className="flex min-h-dvh flex-col">
-            <main id="content" className="flex flex-1 items-center justify-center">
+            <SiteHeader />
+            <main id="content" className="flex-1">
               {children}
             </main>
             <SiteFooter />

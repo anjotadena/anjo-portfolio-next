@@ -5,7 +5,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { LuArrowRight } from "react-icons/lu";
 
 import { suggestedQuestions } from "@/data/ask";
-import type { AskApiResponse } from "@/lib/ask/types";
+import { isAskErrorResponse, isAskSuccessResponse, type AskApiResponse } from "@/lib/ask/types";
 import { on } from "@/utils";
 
 type AskState = "idle" | "loading" | "success" | "error";
@@ -85,20 +85,25 @@ export function AskClient() {
 
         const data: AskApiResponse = await res.json();
 
-        if (!res.ok) {
+        if (!res.ok || isAskErrorResponse(data)) {
           setState("error");
+          const errorMessage = isAskErrorResponse(data) 
+            ? data.message 
+            : "Something went wrong. Please try again.";
           setMessages((prev) => [
             ...prev,
-            { role: "assistant", content: data.answer || "Something went wrong. Please try again.", isNew: true },
+            { role: "assistant", content: errorMessage, isNew: true },
           ]);
           return;
         }
 
-        setState("success");
-        setMessages((prev) => [
-          ...prev,
-          { role: "assistant", content: data.answer, links: data.links, isNew: true },
-        ]);
+        if (isAskSuccessResponse(data)) {
+          setState("success");
+          setMessages((prev) => [
+            ...prev,
+            { role: "assistant", content: data.answer, links: data.links, isNew: true },
+          ]);
+        }
       } catch {
         setState("error");
         setMessages((prev) => [
