@@ -3,7 +3,7 @@
 import * as Dialog from "@radix-ui/react-dialog";
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { LuArrowRight, LuSearch, LuX } from "react-icons/lu";
+import { LuArrowRight, LuSend, LuX } from "react-icons/lu";
 
 import { useCommandPalette } from "@/components/command-palette/useCommandPalette";
 import type { AskApiResponse } from "@/lib/ask/types";
@@ -12,18 +12,20 @@ import { on } from "@/utils";
 type PaletteCta = { label: string; href: string };
 
 type PaletteIntent = {
-  id: "projects" | "architecture" | "leadership" | "resume" | "contact" | "blog" | "skills";
+  id: "projects" | "architecture" | "leadership" | "resume" | "contact" | "blog" | "skills" | "recruiter";
   title: string;
   keywords: string[];
   response: string;
   ctas: PaletteCta[];
 };
 
-type AiResponse = {
-  answer: string;
-  links: PaletteCta[];
-  isLoading: boolean;
-  error: string | null;
+type ChatMessage = {
+  id: string;
+  role: "user" | "assistant";
+  content: string;
+  links?: PaletteCta[];
+  isLoading?: boolean;
+  error?: string;
 };
 
 const intents: PaletteIntent[] = [
@@ -86,26 +88,38 @@ const intents: PaletteIntent[] = [
       { label: "Projects", href: "/projects" },
     ],
   },
+  {
+    id: "recruiter",
+    title: "Recruiter / Investor",
+    keywords: ["recruiter", "recruiting", "hiring", "investor", "investment", "job", "opportunity", "position", "role", "fit", "match", "candidate"],
+    response: "Looking to evaluate fit? Use the Job Match tool to paste a job description or link and get an honest assessment of alignment, plus a tailored resume.",
+    ctas: [
+      { label: "Job Match Tool", href: "/match" },
+      { label: "Download Resume", href: "/anjo_tadena_software_engineer_resume.pdf" },
+      { label: "Contact", href: "/contact" },
+    ],
+  },
 ];
 
-function matchIntents(query: string) {
+function matchIntent(query: string): PaletteIntent | null {
   const q = query.trim().toLowerCase();
-  if (!q) return intents;
+  if (!q) return null;
 
-  return intents
+  const matches = intents
     .map((intent) => {
       const score = intent.keywords.reduce((acc, kw) => (q.includes(kw) ? acc + 2 : acc), 0) +
         (intent.title.toLowerCase().includes(q) ? 1 : 0);
       return { intent, score };
     })
     .filter((x) => x.score > 0)
-    .sort((a, b) => b.score - a.score)
-    .map((x) => x.intent);
+    .sort((a, b) => b.score - a.score);
+
+  return matches[0]?.intent ?? null;
 }
 
 function ThinkingIndicator() {
   return (
-    <div className="flex items-center gap-1.5 py-2" role="status" aria-label="Loading response">
+    <div className="flex items-center gap-1.5" role="status" aria-label="Loading response">
       <span className="sr-only">Thinking</span>
       <span className="thinking-dot h-1.5 w-1.5 rounded-full bg-zinc-400 dark:bg-zinc-500" />
       <span className="thinking-dot h-1.5 w-1.5 rounded-full bg-zinc-400 dark:bg-zinc-500 animation-delay-150" />
@@ -114,34 +128,46 @@ function ThinkingIndicator() {
   );
 }
 
+function QuickActionChip({ intent, onClick }: { intent: PaletteIntent; onClick: () => void }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={on(
+        "rounded-full border border-zinc-200 px-3 py-1.5 text-xs font-medium",
+        "text-zinc-700 transition-colors hover:bg-zinc-100 hover:text-zinc-900",
+        "focus:outline-none focus:ring-2 focus:ring-zinc-950 focus:ring-offset-2",
+        "dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-800 dark:hover:text-zinc-50 dark:focus:ring-zinc-50"
+      )}
+    >
+      {intent.title}
+    </button>
+  );
+}
+
 export function CommandPalette() {
   const { isOpen, setIsOpen, closePalette } = useCommandPalette();
   const [query, setQuery] = useState("");
-  const [selected, setSelected] = useState<PaletteIntent | null>(null);
-  const [aiResponse, setAiResponse] = useState<AiResponse>({
-    answer: "",
-    links: [],
-    isLoading: false,
-    error: null,
-  });
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
   const inputRef = useRef<HTMLInputElement | null>(null);
+  const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
 
-  const results = useMemo(() => matchIntents(query), [query]);
+  const scrollToBottom = useCallback(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, []);
 
-  // Determine if we should use AI for this query (no matching intents or custom question)
-  const shouldUseAi = query.trim().length > 0 && results.length === 0;
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages, scrollToBottom]);
 
-  const askAi = useCallback(async (question: string) => {
-    // Cancel any pending request
+  const askAi = useCallback(async (question: string, messageId: string) => {
     if (abortControllerRef.current) {
       abortControllerRef.current.abort();
     }
 
     const controller = new AbortController();
     abortControllerRef.current = controller;
-
-    setAiResponse({ answer: "", links: [], isLoading: true, error: null });
 
     try {
       const res = await fetch("/api/ask", {
@@ -154,53 +180,96 @@ export function CommandPalette() {
       const data: AskApiResponse = await res.json();
 
       if (!res.ok) {
-        setAiResponse({
-          answer: "",
-          links: [],
-          isLoading: false,
-          error: data.answer || "Something went wrong. Please try again.",
-        });
+        setMessages((prev) =>
+          prev.map((msg) =>
+            msg.id === messageId
+              ? { ...msg, isLoading: false, error: data.answer || "Something went wrong." }
+              : msg
+          )
+        );
         return;
       }
 
-      setAiResponse({
-        answer: data.answer,
-        links: data.links || [],
-        isLoading: false,
-        error: null,
-      });
+      setMessages((prev) =>
+        prev.map((msg) =>
+          msg.id === messageId
+            ? { ...msg, content: data.answer, links: data.links || [], isLoading: false }
+            : msg
+        )
+      );
     } catch (err) {
       if (err instanceof Error && err.name === "AbortError") {
-        return; // Request was cancelled, ignore
+        return;
       }
-      setAiResponse({
-        answer: "",
-        links: [],
-        isLoading: false,
-        error: "Network error. Please check your connection.",
-      });
+      setMessages((prev) =>
+        prev.map((msg) =>
+          msg.id === messageId
+            ? { ...msg, isLoading: false, error: "Network error. Please try again." }
+            : msg
+        )
+      );
     }
   }, []);
 
-  // Debounced AI query when no matching intents
-  useEffect(() => {
-    if (!shouldUseAi) {
-      setAiResponse({ answer: "", links: [], isLoading: false, error: null });
-      return;
-    }
+  const handleSubmit = useCallback(
+    (text: string) => {
+      const trimmed = text.trim();
+      if (!trimmed) return;
 
-    const timer = setTimeout(() => {
-      askAi(query);
-    }, 500); // 500ms debounce
+      const userMessage: ChatMessage = {
+        id: `user-${Date.now()}`,
+        role: "user",
+        content: trimmed,
+      };
 
-    return () => clearTimeout(timer);
-  }, [query, shouldUseAi, askAi]);
+      const matchedIntent = matchIntent(trimmed);
+      const assistantId = `assistant-${Date.now()}`;
+
+      if (matchedIntent) {
+        const assistantMessage: ChatMessage = {
+          id: assistantId,
+          role: "assistant",
+          content: matchedIntent.response,
+          links: matchedIntent.ctas,
+        };
+        setMessages((prev) => [...prev, userMessage, assistantMessage]);
+      } else {
+        const assistantMessage: ChatMessage = {
+          id: assistantId,
+          role: "assistant",
+          content: "",
+          isLoading: true,
+        };
+        setMessages((prev) => [...prev, userMessage, assistantMessage]);
+        askAi(trimmed, assistantId);
+      }
+
+      setQuery("");
+    },
+    [askAi]
+  );
+
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        handleSubmit(query);
+      }
+    },
+    [query, handleSubmit]
+  );
+
+  const handleQuickAction = useCallback(
+    (intent: PaletteIntent) => {
+      handleSubmit(intent.title);
+    },
+    [handleSubmit]
+  );
 
   useEffect(() => {
     if (!isOpen) {
       setQuery("");
-      setSelected(null);
-      setAiResponse({ answer: "", links: [], isLoading: false, error: null });
+      setMessages([]);
       if (abortControllerRef.current) {
         abortControllerRef.current.abort();
       }
@@ -211,7 +280,7 @@ export function CommandPalette() {
     return () => window.clearTimeout(t);
   }, [isOpen]);
 
-  const active = selected ?? results[0] ?? null;
+  const showQuickActions = messages.length === 0;
 
   return (
     <Dialog.Root open={isOpen} onOpenChange={setIsOpen}>
@@ -219,175 +288,129 @@ export function CommandPalette() {
         <Dialog.Overlay className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm" />
         <Dialog.Content
           className={on(
-            "fixed left-1/2 top-20 z-50 w-[calc(100%-2rem)] max-w-2xl -translate-x-1/2",
+            "fixed left-1/2 top-1/2 z-50 flex h-[min(600px,80vh)] w-[calc(100%-2rem)] max-w-2xl -translate-x-1/2 -translate-y-1/2 flex-col",
             "rounded-xl border border-zinc-200 bg-white shadow-xl",
             "dark:border-zinc-800 dark:bg-zinc-950"
           )}
-          aria-label="Command palette"
+          aria-label="Chat with AI"
         >
-          <div className="flex items-center justify-between gap-3 border-b border-zinc-200 p-4 dark:border-zinc-800">
+          {/* Header */}
+          <div className="flex shrink-0 items-center justify-between gap-3 border-b border-zinc-200 px-4 py-3 dark:border-zinc-800">
             <Dialog.Title className="text-sm font-medium text-zinc-900 dark:text-zinc-50">
               Ask me anything
             </Dialog.Title>
             <Dialog.Close
               className={on(
-                "rounded-md p-2 text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900",
+                "rounded-md p-1.5 text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900",
                 "focus:outline-none focus:ring-2 focus:ring-zinc-950 focus:ring-offset-2",
                 "dark:hover:bg-zinc-900 dark:hover:text-zinc-50 dark:focus:ring-zinc-50"
               )}
-              aria-label="Close command palette"
+              aria-label="Close"
               onClick={closePalette}
             >
-              <LuX aria-hidden="true" />
+              <LuX size={16} aria-hidden="true" />
             </Dialog.Close>
           </div>
 
-          <div className="p-4">
-            <div className="flex items-center gap-2 rounded-lg border border-zinc-200 bg-white px-3 py-2 dark:border-zinc-800 dark:bg-zinc-950">
-              <LuSearch className="text-zinc-500" aria-hidden="true" />
+          {/* Messages area */}
+          <div className="flex-1 overflow-y-auto px-4 py-4">
+            {showQuickActions ? (
+              <div className="flex h-full flex-col items-center justify-center gap-4">
+                <p className="text-sm text-zinc-500 dark:text-zinc-400">
+                  Try asking about...
+                </p>
+                <div className="flex flex-wrap justify-center gap-2">
+                  {intents.map((intent) => (
+                    <QuickActionChip
+                      key={intent.id}
+                      intent={intent}
+                      onClick={() => handleQuickAction(intent)}
+                    />
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {messages.map((message) => (
+                  <div
+                    key={message.id}
+                    className={on(
+                      "flex",
+                      message.role === "user" ? "justify-end" : "justify-start"
+                    )}
+                  >
+                    <div
+                      className={on(
+                        "max-w-[85%] rounded-2xl px-4 py-2.5",
+                        message.role === "user"
+                          ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900"
+                          : "bg-zinc-100 text-zinc-900 dark:bg-zinc-800 dark:text-zinc-50"
+                      )}
+                    >
+                      {message.isLoading ? (
+                        <ThinkingIndicator />
+                      ) : message.error ? (
+                        <p className="text-sm text-red-600 dark:text-red-400">{message.error}</p>
+                      ) : (
+                        <>
+                          <p className="text-sm leading-relaxed">{message.content}</p>
+                          {message.links && message.links.length > 0 && (
+                            <div className="mt-3 flex flex-wrap gap-2">
+                              {message.links.map((link) => (
+                                <Link
+                                  key={link.href}
+                                  href={link.href}
+                                  onClick={() => setIsOpen(false)}
+                                  className={on(
+                                    "inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium",
+                                    "bg-white/20 hover:bg-white/30",
+                                    "dark:bg-zinc-700 dark:hover:bg-zinc-600"
+                                  )}
+                                >
+                                  {link.label}
+                                  <LuArrowRight size={12} aria-hidden="true" />
+                                </Link>
+                              ))}
+                            </div>
+                          )}
+                        </>
+                      )}
+                    </div>
+                  </div>
+                ))}
+                <div ref={messagesEndRef} />
+              </div>
+            )}
+          </div>
+
+          {/* Input area */}
+          <div className="shrink-0 border-t border-zinc-200 p-4 dark:border-zinc-800">
+            <div className="flex items-center gap-2 rounded-full border border-zinc-200 bg-zinc-50 px-4 py-2 dark:border-zinc-700 dark:bg-zinc-900">
               <input
                 ref={inputRef}
                 value={query}
-                onChange={(e) => {
-                  setQuery(e.target.value);
-                  setSelected(null);
-                }}
-                placeholder="Try: projects, architecture, leadership, resume…"
+                onChange={(e) => setQuery(e.target.value)}
+                onKeyDown={handleKeyDown}
+                placeholder="Ask about projects, skills, experience..."
                 className={on(
-                  "w-full bg-transparent text-sm text-zinc-900 placeholder:text-zinc-500",
-                  "focus:outline-none dark:text-zinc-50"
+                  "flex-1 bg-transparent text-sm text-zinc-900 placeholder:text-zinc-500",
+                  "focus:outline-none dark:text-zinc-50 dark:placeholder:text-zinc-400"
                 )}
-                aria-label="Search"
+                aria-label="Message"
               />
-            </div>
-
-            <div className="mt-4 grid gap-4 md:grid-cols-2">
-              <div>
-                <p className="text-xs font-medium text-zinc-500">Quick actions</p>
-                <ul className="mt-2 space-y-1">
-                  {results.length === 0 ? (
-                    <li className="rounded-md border border-dashed border-zinc-200 p-3 text-sm text-zinc-600 dark:border-zinc-800 dark:text-zinc-300">
-                      {query.trim()
-                        ? "AI is answering your question..."
-                        : "No matches. Try \"projects\", \"architecture\", or \"resume\"."}
-                    </li>
-                  ) : (
-                    results.map((intent) => {
-                      const isActive = active?.id === intent.id;
-                      return (
-                        <li key={intent.id}>
-                          <button
-                            type="button"
-                            onClick={() => setSelected(intent)}
-                            className={on(
-                              "w-full rounded-md px-3 py-2 text-left text-sm",
-                              "hover:bg-zinc-100 focus:outline-none focus:ring-2 focus:ring-zinc-950 focus:ring-offset-2",
-                              "dark:hover:bg-zinc-900 dark:focus:ring-zinc-50",
-                              isActive
-                                ? "bg-zinc-100 text-zinc-950 dark:bg-zinc-900 dark:text-zinc-50"
-                                : "text-zinc-700 dark:text-zinc-200"
-                            )}
-                          >
-                            {intent.title}
-                          </button>
-                        </li>
-                      );
-                    })
-                  )}
-                </ul>
-              </div>
-
-              <div className="rounded-lg border border-zinc-200 p-4 dark:border-zinc-800">
-                <p className="text-xs font-medium text-zinc-500">Response</p>
-                {shouldUseAi ? (
-                  // AI-powered response for custom questions
-                  <>
-                    {aiResponse.isLoading && (
-                      <>
-                        <h3 className="mt-2 text-sm font-semibold text-zinc-900 dark:text-zinc-50">
-                          Thinking...
-                        </h3>
-                        <ThinkingIndicator />
-                      </>
-                    )}
-                    {aiResponse.error && (
-                      <>
-                        <h3 className="mt-2 text-sm font-semibold text-red-600 dark:text-red-400">
-                          Error
-                        </h3>
-                        <p className="mt-2 text-sm leading-relaxed text-zinc-700 dark:text-zinc-200">
-                          {aiResponse.error}
-                        </p>
-                      </>
-                    )}
-                    {aiResponse.answer && !aiResponse.isLoading && (
-                      <>
-                        <h3 className="mt-2 text-sm font-semibold text-zinc-900 dark:text-zinc-50">
-                          AI Response
-                        </h3>
-                        <p className="mt-2 text-sm leading-relaxed text-zinc-700 dark:text-zinc-200">
-                          {aiResponse.answer}
-                        </p>
-                        {aiResponse.links.length > 0 && (
-                          <div className="mt-4 flex flex-wrap gap-2">
-                            {aiResponse.links.map((link) => (
-                              <Link
-                                key={link.href}
-                                href={link.href}
-                                onClick={() => setIsOpen(false)}
-                                className={on(
-                                  "inline-flex items-center gap-2 rounded-md border border-zinc-200 px-3 py-2 text-sm",
-                                  "hover:bg-zinc-50 focus:outline-none focus:ring-2 focus:ring-zinc-950 focus:ring-offset-2",
-                                  "dark:border-zinc-800 dark:hover:bg-zinc-900 dark:focus:ring-zinc-50"
-                                )}
-                              >
-                                {link.label}
-                                <LuArrowRight aria-hidden="true" />
-                              </Link>
-                            ))}
-                          </div>
-                        )}
-                      </>
-                    )}
-                    {!aiResponse.isLoading && !aiResponse.answer && !aiResponse.error && (
-                      <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-300">
-                        Asking AI...
-                      </p>
-                    )}
-                  </>
-                ) : active ? (
-                  // Static response for matched intents
-                  <>
-                    <h3 className="mt-2 text-sm font-semibold text-zinc-900 dark:text-zinc-50">
-                      {active.title}
-                    </h3>
-                    <p className="mt-2 text-sm leading-relaxed text-zinc-700 dark:text-zinc-200">
-                      {active.response}
-                    </p>
-                    <div className="mt-4 flex flex-wrap gap-2">
-                      {active.ctas.map((cta) => (
-                        <Link
-                          key={cta.href}
-                          href={cta.href}
-                          onClick={() => setIsOpen(false)}
-                          className={on(
-                            "inline-flex items-center gap-2 rounded-md border border-zinc-200 px-3 py-2 text-sm",
-                            "hover:bg-zinc-50 focus:outline-none focus:ring-2 focus:ring-zinc-950 focus:ring-offset-2",
-                            "dark:border-zinc-800 dark:hover:bg-zinc-900 dark:focus:ring-zinc-50"
-                          )}
-                        >
-                          {cta.label}
-                          <LuArrowRight aria-hidden="true" />
-                        </Link>
-                      ))}
-                    </div>
-                  </>
-                ) : (
-                  <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-300">
-                    Start typing to see suggestions.
-                  </p>
+              <button
+                type="button"
+                onClick={() => handleSubmit(query)}
+                disabled={!query.trim()}
+                className={on(
+                  "rounded-full p-2 transition-colors",
+                  "text-zinc-400 hover:text-zinc-600 disabled:opacity-50 disabled:hover:text-zinc-400",
+                  "dark:text-zinc-500 dark:hover:text-zinc-300 dark:disabled:hover:text-zinc-500"
                 )}
-              </div>
+                aria-label="Send message"
+              >
+                <LuSend size={16} aria-hidden="true" />
+              </button>
             </div>
           </div>
         </Dialog.Content>
