@@ -10,7 +10,7 @@ export function middleware() {
   const cspPolicy = [
     "default-src 'self'",
     `script-src 'self' ${isDev ? "'unsafe-inline' 'unsafe-eval'" : "'unsafe-inline'"} https://gql.hashnode.com https://vercel.live https://vercel.com`,
-    "style-src 'self' 'unsafe-inline' https://fonts.googlgsteapis.com",
+    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
     "font-src 'self' https://fonts.gstatic.com",
     "img-src 'self' data: https: blob:",
     "connect-src 'self' https://gql.hashnode.com https://vercel.live https://vercel.com https://formspree.io",
