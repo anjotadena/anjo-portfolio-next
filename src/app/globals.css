@@ -17,3 +17,42 @@
   }
 }
 
+@layer utilities {
+  /* Thinking dots animation */
+  .thinking-dot {
+    animation: thinkingPulse 1.2s ease-in-out infinite;
+  }
+
+  .animation-delay-150 {
+    animation-delay: 0.15s;
+  }
+
+  .animation-delay-300 {
+    animation-delay: 0.3s;
+  }
+
+  /* Respect reduced motion preference */
+  @media (prefers-reduced-motion: reduce) {
+    .thinking-dot {
+      animation: none;
+      opacity: 0.7;
+    }
+
+    .animate-fadeIn {
+      animation: none;
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @keyframes thinkingPulse {
+    0%,
+    100% {
+      opacity: 0.4;
+    }
+    50% {
+      opacity: 1;
+    }
+  }
+}
+

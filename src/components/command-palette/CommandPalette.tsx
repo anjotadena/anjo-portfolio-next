@@ -2,20 +2,28 @@
 
 import * as Dialog from "@radix-ui/react-dialog";
 import Link from "next/link";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { LuArrowRight, LuSearch, LuX } from "react-icons/lu";
 
 import { useCommandPalette } from "@/components/command-palette/useCommandPalette";
+import type { AskApiResponse } from "@/lib/ask/types";
 import { on } from "@/utils";
 
 type PaletteCta = { label: string; href: string };
 
 type PaletteIntent = {
-  id: "projects" | "architecture" | "leadership" | "resume" | "contact" | "blog";
+  id: "projects" | "architecture" | "leadership" | "resume" | "contact" | "blog" | "skills";
   title: string;
   keywords: string[];
   response: string;
   ctas: PaletteCta[];
+};
+
+type AiResponse = {
+  answer: string;
+  links: PaletteCta[];
+  isLoading: boolean;
+  error: string | null;
 };
 
 const intents: PaletteIntent[] = [
@@ -68,6 +76,16 @@ const intents: PaletteIntent[] = [
     response: "Download the latest resume PDF.",
     ctas: [{ label: "Download resume", href: "/anjo_tadena_software_engineer_resume.pdf" }],
   },
+  {
+    id: "skills",
+    title: "Skills",
+    keywords: ["skills", "tech", "technologies", "stack", "experience", "languages"],
+    response: "Full-stack expertise across TypeScript, React, Node.js, cloud infrastructure, and more.",
+    ctas: [
+      { label: "About", href: "/about" },
+      { label: "Projects", href: "/projects" },
+    ],
+  },
 ];
 
 function matchIntents(query: string) {
@@ -85,18 +103,107 @@ function matchIntents(query: string) {
     .map((x) => x.intent);
 }
 
+function ThinkingIndicator() {
+  return (
+    <div className="flex items-center gap-1.5 py-2" role="status" aria-label="Loading response">
+      <span className="sr-only">Thinking</span>
+      <span className="thinking-dot h-1.5 w-1.5 rounded-full bg-zinc-400 dark:bg-zinc-500" />
+      <span className="thinking-dot h-1.5 w-1.5 rounded-full bg-zinc-400 dark:bg-zinc-500 animation-delay-150" />
+      <span className="thinking-dot h-1.5 w-1.5 rounded-full bg-zinc-400 dark:bg-zinc-500 animation-delay-300" />
+    </div>
+  );
+}
+
 export function CommandPalette() {
   const { isOpen, setIsOpen, closePalette } = useCommandPalette();
   const [query, setQuery] = useState("");
   const [selected, setSelected] = useState<PaletteIntent | null>(null);
+  const [aiResponse, setAiResponse] = useState<AiResponse>({
+    answer: "",
+    links: [],
+    isLoading: false,
+    error: null,
+  });
   const inputRef = useRef<HTMLInputElement | null>(null);
+  const abortControllerRef = useRef<AbortController | null>(null);
 
   const results = useMemo(() => matchIntents(query), [query]);
+
+  // Determine if we should use AI for this query (no matching intents or custom question)
+  const shouldUseAi = query.trim().length > 0 && results.length === 0;
+
+  const askAi = useCallback(async (question: string) => {
+    // Cancel any pending request
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+
+    const controller = new AbortController();
+    abortControllerRef.current = controller;
+
+    setAiResponse({ answer: "", links: [], isLoading: true, error: null });
+
+    try {
+      const res = await fetch("/api/ask", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ question }),
+        signal: controller.signal,
+      });
+
+      const data: AskApiResponse = await res.json();
+
+      if (!res.ok) {
+        setAiResponse({
+          answer: "",
+          links: [],
+          isLoading: false,
+          error: data.answer || "Something went wrong. Please try again.",
+        });
+        return;
+      }
+
+      setAiResponse({
+        answer: data.answer,
+        links: data.links || [],
+        isLoading: false,
+        error: null,
+      });
+    } catch (err) {
+      if (err instanceof Error && err.name === "AbortError") {
+        return; // Request was cancelled, ignore
+      }
+      setAiResponse({
+        answer: "",
+        links: [],
+        isLoading: false,
+        error: "Network error. Please check your connection.",
+      });
+    }
+  }, []);
+
+  // Debounced AI query when no matching intents
+  useEffect(() => {
+    if (!shouldUseAi) {
+      setAiResponse({ answer: "", links: [], isLoading: false, error: null });
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      askAi(query);
+    }, 500); // 500ms debounce
+
+    return () => clearTimeout(timer);
+  }, [query, shouldUseAi, askAi]);
 
   useEffect(() => {
     if (!isOpen) {
       setQuery("");
       setSelected(null);
+      setAiResponse({ answer: "", links: [], isLoading: false, error: null });
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
       return;
     }
 
@@ -160,7 +267,9 @@ export function CommandPalette() {
                 <ul className="mt-2 space-y-1">
                   {results.length === 0 ? (
                     <li className="rounded-md border border-dashed border-zinc-200 p-3 text-sm text-zinc-600 dark:border-zinc-800 dark:text-zinc-300">
-                      No matches. Try “projects”, “architecture”, or “resume”.
+                      {query.trim()
+                        ? "AI is answering your question..."
+                        : "No matches. Try \"projects\", \"architecture\", or \"resume\"."}
                     </li>
                   ) : (
                     results.map((intent) => {
@@ -190,7 +299,64 @@ export function CommandPalette() {
 
               <div className="rounded-lg border border-zinc-200 p-4 dark:border-zinc-800">
                 <p className="text-xs font-medium text-zinc-500">Response</p>
-                {active ? (
+                {shouldUseAi ? (
+                  // AI-powered response for custom questions
+                  <>
+                    {aiResponse.isLoading && (
+                      <>
+                        <h3 className="mt-2 text-sm font-semibold text-zinc-900 dark:text-zinc-50">
+                          Thinking...
+                        </h3>
+                        <ThinkingIndicator />
+                      </>
+                    )}
+                    {aiResponse.error && (
+                      <>
+                        <h3 className="mt-2 text-sm font-semibold text-red-600 dark:text-red-400">
+                          Error
+                        </h3>
+                        <p className="mt-2 text-sm leading-relaxed text-zinc-700 dark:text-zinc-200">
+                          {aiResponse.error}
+                        </p>
+                      </>
+                    )}
+                    {aiResponse.answer && !aiResponse.isLoading && (
+                      <>
+                        <h3 className="mt-2 text-sm font-semibold text-zinc-900 dark:text-zinc-50">
+                          AI Response
+                        </h3>
+                        <p className="mt-2 text-sm leading-relaxed text-zinc-700 dark:text-zinc-200">
+                          {aiResponse.answer}
+                        </p>
+                        {aiResponse.links.length > 0 && (
+                          <div className="mt-4 flex flex-wrap gap-2">
+                            {aiResponse.links.map((link) => (
+                              <Link
+                                key={link.href}
+                                href={link.href}
+                                onClick={() => setIsOpen(false)}
+                                className={on(
+                                  "inline-flex items-center gap-2 rounded-md border border-zinc-200 px-3 py-2 text-sm",
+                                  "hover:bg-zinc-50 focus:outline-none focus:ring-2 focus:ring-zinc-950 focus:ring-offset-2",
+                                  "dark:border-zinc-800 dark:hover:bg-zinc-900 dark:focus:ring-zinc-50"
+                                )}
+                              >
+                                {link.label}
+                                <LuArrowRight aria-hidden="true" />
+                              </Link>
+                            ))}
+                          </div>
+                        )}
+                      </>
+                    )}
+                    {!aiResponse.isLoading && !aiResponse.answer && !aiResponse.error && (
+                      <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-300">
+                        Asking AI...
+                      </p>
+                    )}
+                  </>
+                ) : active ? (
+                  // Static response for matched intents
                   <>
                     <h3 className="mt-2 text-sm font-semibold text-zinc-900 dark:text-zinc-50">
                       {active.title}

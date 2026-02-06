@@ -62,6 +62,18 @@ export default {
           "0%": { width: "0%" },
           "100%": { width: "100%" },
         },
+        fadeIn: {
+          "0%": { opacity: "0", transform: "translateY(4px)" },
+          "100%": { opacity: "1", transform: "translateY(0)" },
+        },
+        thinkingPulse: {
+          "0%, 100%": { opacity: "0.4" },
+          "50%": { opacity: "1" },
+        },
+      },
+      animation: {
+        fadeIn: "fadeIn 0.3s ease-out forwards",
+        thinkingPulse: "thinkingPulse 1.2s ease-in-out infinite",
       },
     },
   },

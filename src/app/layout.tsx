@@ -20,11 +20,11 @@ const rem = REM({
 
 export const metadata: Metadata = {
   title: {
-    default: "Senior Software Engineer / Lead Developer",
+    default: "Software Engineer",
     template: "%s | Portfolio",
   },
   description:
-    "Minimal portfolio for a Senior Software Engineer / Lead Developer: projects, architecture, leadership, and contact.",
+    "Minimal portfolio for a Software Engineer: projects, architecture, leadership, and contact.",
   icons: {
     icon: [{ url: "/favicon.ico" }],
   },
@@ -46,6 +46,7 @@ export default function RootLayout({
           rem.className,
           "min-h-dvh bg-white text-zinc-950 antialiased dark:bg-zinc-950 dark:text-zinc-50"
         )}
+        suppressHydrationWarning
       >
         <Providers>
           <a
