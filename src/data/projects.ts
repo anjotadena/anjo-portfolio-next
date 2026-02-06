@@ -9,6 +9,7 @@ export type Project = {
   keyDecisions: string[];
   impactMetrics: string[];
   featured?: boolean;
+  image?: string;
 };
 
 export const projects: Project[] = [
@@ -33,6 +34,7 @@ export const projects: Project[] = [
       "Improved recall/precision through structured filters and tuned relevance",
     ],
     featured: true,
+    image: "/assets/img/uccone.png",
   },
   {
     slug: "health-dashboard-api",
@@ -54,6 +56,7 @@ export const projects: Project[] = [
       "Reduced UI regressions via shared primitives and stricter component contracts",
     ],
     featured: true,
+    image: "/assets/img/xelpha.png",
   },
   {
     slug: "internal-devops-platform",
@@ -91,6 +94,7 @@ export const projects: Project[] = [
       "Report generation optimized for operational visibility and monthly exports.",
     ],
     impactMetrics: ["~50% reduction in ticket resolution time", "Less admin overhead via automated reporting"],
+    image: "/assets/img/tcwd.png",
   },
 ];
 

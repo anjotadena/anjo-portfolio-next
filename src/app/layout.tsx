@@ -6,7 +6,6 @@ import "./globals.css";
 
 import { CommandPalette } from "@/components/command-palette/CommandPalette";
 import { SiteFooter } from "@/components/site/SiteFooter";
-import { SiteHeader } from "@/components/site/SiteHeader";
 import { on } from "@/utils";
 
 import { Providers } from "./providers";
@@ -49,20 +48,8 @@ export default function RootLayout({
         suppressHydrationWarning
       >
         <Providers>
-          <a
-            href="#content"
-            className={on(
-              "sr-only focus:not-sr-only",
-              "fixed left-4 top-4 z-50 rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm shadow-sm",
-              "focus:outline-none focus:ring-2 focus:ring-zinc-950 focus:ring-offset-2",
-              "dark:border-zinc-800 dark:bg-zinc-950 dark:focus:ring-zinc-50"
-            )}
-          >
-            Skip to content
-          </a>
           <div className="flex min-h-dvh flex-col">
-            <SiteHeader />
-            <main id="content" className="flex-1">
+            <main id="content" className="flex flex-1 items-center justify-center">
               {children}
             </main>
             <SiteFooter />

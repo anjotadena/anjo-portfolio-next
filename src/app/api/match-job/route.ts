@@ -6,7 +6,6 @@ import { architectureContent } from "@/contents/architecture";
 import { leadershipContent } from "@/contents/leadership";
 import { projectsContent } from "@/contents/projects";
 import { skillsContent } from "@/contents/skills";
-import { InMemoryRateLimiter } from "@/lib/ask/rateLimit";
 import { buildMatchSystemPrompt, buildMatchUserPrompt } from "@/lib/match-job/buildPrompt";
 import { fetchJobContent } from "@/lib/match-job/fetchJobContent";
 import { createResumeVariant } from "@/lib/match-job/resumeVariant";
@@ -17,11 +16,72 @@ import type {
   MatchJobErrorResponse,
   OpenAIMatchResponse,
 } from "@/lib/match-job/types";
+import {
+  MultiTierRateLimiter,
+  getClientKey,
+  detectInjection,
+  validateInputLength,
+  ResponseCache,
+  generateCacheKey,
+  CACHE_TTL,
+  ViolationTracker,
+  safeLog,
+} from "@/lib/security";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-// Request validation schema
+// ---------------------------------------------------------------------------
+// Configuration
+// ---------------------------------------------------------------------------
+const MAX_JOB_DESC_CHARS = 8000;
+const MAX_TOKENS = 400;
+const TEMPERATURE = 0.2;
+
+// ---------------------------------------------------------------------------
+// Shared Instances (per-instance, resets on redeploy)
+// TODO: Replace with Redis/Upstash for multi-instance deployments
+// ---------------------------------------------------------------------------
+const rateLimiter = new MultiTierRateLimiter({
+  minute: { windowMs: 60_000, maxRequests: 3 },
+  hour: { windowMs: 3_600_000, maxRequests: 15 },
+  day: { windowMs: 86_400_000, maxRequests: 30 },
+});
+
+const responseCache = new ResponseCache<MatchJobResponse>({
+  defaultTtlMs: CACHE_TTL.STABLE_CONTENT,
+  maxEntries: 200,
+});
+
+const violationTracker = new ViolationTracker({
+  windowMs: 3_600_000,
+  cooldownMs: 60_000, // 60 seconds (slightly longer for this endpoint)
+  blockMs: 900_000, // 15 minutes
+});
+
+// ---------------------------------------------------------------------------
+// Error Messages (recruiter-safe)
+// ---------------------------------------------------------------------------
+const ERROR_MESSAGES = {
+  rate_limited: "You're using this feature a bit too quickly. Please try again in a moment.",
+  rate_limited_hour: "You've reached the hourly limit. Please try again in a bit.",
+  rate_limited_day: "You've reached the daily limit. Please come back tomorrow.",
+  temporarily_blocked: "Access temporarily restricted. Please try again later.",
+  validation_error: "Invalid request. Please check your input.",
+  input_too_long: "Job description is too long. Please shorten it.",
+  injection_detected: "Please provide a valid job description.",
+  url_fetch_failed: "Could not fetch the job posting. Please paste the description instead.",
+  job_too_short: "Job description too short. Please provide more details.",
+  openai_unavailable: "Analysis is temporarily unavailable. Please try again later.",
+  openai_error: "Something went wrong. Please try again.",
+  unknown_error: "Something unexpected happened. Please try again.",
+};
+
+type MatchErrorType = keyof typeof ERROR_MESSAGES;
+
+// ---------------------------------------------------------------------------
+// Request Validation
+// ---------------------------------------------------------------------------
 const MatchJobRequestSchema = z
   .object({
     jobDescription: z
@@ -40,7 +100,6 @@ const MatchJobRequestSchema = z
     message: "Either jobDescription or jobUrl is required",
   });
 
-// OpenAI response validation schema
 const OpenAIMatchResponseSchema = z.object({
   matchScore: z.number().int().min(0).max(100),
   verdict: z.enum(["Strong Match", "Partial Match", "Not Ideal"]),
@@ -51,16 +110,15 @@ const OpenAIMatchResponseSchema = z.object({
   highlightedSkills: z.array(z.string()).max(15),
 });
 
-// Rate limiter: 5 requests per minute (more restrictive than ask endpoint)
-const limiter = new InMemoryRateLimiter({ windowMs: 60_000, maxRequests: 5 });
-
-function json(
-  status: number,
-  body: MatchJobResponse | MatchJobErrorResponse,
+// ---------------------------------------------------------------------------
+// Response Helpers
+// ---------------------------------------------------------------------------
+function jsonSuccess(
+  body: MatchJobResponse,
   extraHeaders?: Record<string, string>
 ) {
   return new Response(JSON.stringify(body), {
-    status,
+    status: 200,
     headers: {
       "content-type": "application/json; charset=utf-8",
       "cache-control": "no-store",
@@ -69,25 +127,36 @@ function json(
   });
 }
 
-function getClientKey(req: Request): string {
-  const xf = req.headers.get("x-forwarded-for");
-  const ip =
-    (xf ? xf.split(",")[0]?.trim() : undefined) ||
-    req.headers.get("x-real-ip") ||
-    req.headers.get("cf-connecting-ip") ||
-    undefined;
-  return ip || `ua:${req.headers.get("user-agent") ?? "unknown"}`;
+function jsonError(
+  httpStatus: number,
+  type: MatchErrorType,
+  extraHeaders?: Record<string, string>
+) {
+  safeLog({
+    level: "warn",
+    route: "/api/match-job",
+    event: type,
+    metadata: { httpStatus },
+  });
+
+  const response: MatchJobErrorResponse = {
+    error: ERROR_MESSAGES[type],
+  };
+  return new Response(JSON.stringify(response), {
+    status: httpStatus,
+    headers: {
+      "content-type": "application/json; charset=utf-8",
+      "cache-control": "no-store",
+      ...(extraHeaders ?? {}),
+    },
+  });
 }
 
-/**
- * Build candidate context from data files.
- * This is the ONLY source of truth for the LLM.
- */
+// ---------------------------------------------------------------------------
+// Candidate Context Builder
+// ---------------------------------------------------------------------------
 function buildCandidateContext(): CandidateContext {
-  // Extract unique roles from projects
   const roles = Array.from(new Set(projects.map((p) => p.role)));
-
-  // Extract unique technologies from projects
   const technologies = Array.from(new Set(projects.flatMap((p) => p.stack))).sort();
 
   return {
@@ -100,16 +169,13 @@ function buildCandidateContext(): CandidateContext {
   };
 }
 
-/**
- * Validate that analysis only references real project slugs.
- */
+// ---------------------------------------------------------------------------
+// Analysis Validator
+// ---------------------------------------------------------------------------
 function validateAnalysis(raw: OpenAIMatchResponse): MatchAnalysis {
   const validSlugs = new Set(projects.map((p) => p.slug));
-
-  // Filter to only valid project slugs
   const relevantProjects = raw.relevantProjectSlugs.filter((slug) => validSlugs.has(slug));
 
-  // Filter highlighted skills to only those in our data
   const validTechnologies = new Set(projects.flatMap((p) => p.stack).map((s) => s.toLowerCase()));
   const highlightedSkills = raw.highlightedSkills.filter(
     (skill) => validTechnologies.has(skill.toLowerCase())
@@ -126,63 +192,143 @@ function validateAnalysis(raw: OpenAIMatchResponse): MatchAnalysis {
   };
 }
 
+// ---------------------------------------------------------------------------
+// Main Handler
+// ---------------------------------------------------------------------------
 export async function POST(req: Request) {
-  // Rate limiting
-  const key = getClientKey(req);
-  const rate = limiter.check(key);
-  if (!rate.allowed) {
-    return json(
-      429,
-      { error: "Rate limit exceeded. Please try again shortly." },
-      {
-        "retry-after": String(Math.ceil(rate.resetMs / 1000)),
-        "x-ratelimit-remaining": "0",
-      }
-    );
+  const clientKey = getClientKey(req);
+
+  // =========================================================================
+  // STEP 1: Check if client is temporarily blocked
+  // =========================================================================
+  const violationStatus = violationTracker.checkStatus(clientKey);
+  if (violationStatus.blocked) {
+    return jsonError(429, "temporarily_blocked", {
+      "retry-after": String(Math.ceil((violationStatus.blockedUntilMs! - Date.now()) / 1000)),
+    });
   }
 
-  // Parse request body
+  // =========================================================================
+  // STEP 2: Rate limit check (multi-tier)
+  // =========================================================================
+  const rateResult = rateLimiter.check(clientKey);
+  if (!rateResult.allowed) {
+    violationTracker.recordViolation(clientKey, "rate_limit");
+
+    const errorType: MatchErrorType =
+      rateResult.exceededTier === "day"
+        ? "rate_limited_day"
+        : rateResult.exceededTier === "hour"
+          ? "rate_limited_hour"
+          : "rate_limited";
+
+    return jsonError(429, errorType, {
+      "retry-after": String(Math.ceil(rateResult.resetMs / 1000)),
+      "x-ratelimit-remaining-minute": String(rateResult.remaining.minute),
+    });
+  }
+
+  // =========================================================================
+  // STEP 3: Parse and validate request body
+  // =========================================================================
   let input: unknown;
   try {
     input = await req.json();
   } catch {
-    return json(400, { error: "Invalid request body." });
+    return jsonError(400, "validation_error");
   }
 
-  // Validate input
   const parsed = MatchJobRequestSchema.safeParse(input);
   if (!parsed.success) {
     const errorMessage = parsed.error.errors[0]?.message ?? "Invalid input.";
-    return json(400, { error: errorMessage });
+    safeLog({
+      level: "warn",
+      route: "/api/match-job",
+      event: "validation_failed",
+      metadata: { reason: errorMessage.slice(0, 50) },
+    });
+    return jsonError(400, "validation_error");
   }
 
-  // Get job description (from text or URL)
+  // =========================================================================
+  // STEP 4: Get job description (from text or URL)
+  // =========================================================================
   let jobDescription: string;
   let source = "direct";
 
   if (parsed.data.jobUrl) {
     const fetchResult = await fetchJobContent(parsed.data.jobUrl);
     if (!fetchResult.success) {
-      return json(400, { error: fetchResult.error });
+      return jsonError(400, "url_fetch_failed");
     }
     jobDescription = fetchResult.content;
     source = fetchResult.source;
   } else if (parsed.data.jobDescription) {
     jobDescription = parsed.data.jobDescription;
   } else {
-    return json(400, { error: "Job description or URL is required." });
+    return jsonError(400, "validation_error");
   }
 
-  // Validate job description length
+  // =========================================================================
+  // STEP 5: Input length and structure validation
+  // =========================================================================
+  const lengthCheck = validateInputLength(jobDescription, MAX_JOB_DESC_CHARS);
+  if (!lengthCheck.valid) {
+    if (lengthCheck.reason === "spam_pattern") {
+      violationTracker.recordViolation(clientKey, "spam");
+      return jsonError(400, "validation_error");
+    }
+    return jsonError(400, "input_too_long");
+  }
+
   if (jobDescription.length < 50) {
-    return json(400, { error: "Job description too short. Please provide more details." });
+    return jsonError(400, "job_too_short");
   }
 
-  // Check OpenAI API key
+  // =========================================================================
+  // STEP 6: Injection detection (CRITICAL)
+  // =========================================================================
+  if (detectInjection(jobDescription)) {
+    violationTracker.recordViolation(clientKey, "injection");
+    safeLog({
+      level: "warn",
+      route: "/api/match-job",
+      event: "injection_attempt",
+    });
+    return jsonError(400, "injection_detected");
+  }
+
+  // =========================================================================
+  // STEP 7: Cache lookup
+  // =========================================================================
+  const cacheKey = generateCacheKey(jobDescription.slice(0, 500), "match");
+  const cachedResponse = responseCache.get(cacheKey);
+
+  if (cachedResponse) {
+    safeLog({
+      level: "info",
+      route: "/api/match-job",
+      event: "cache_hit",
+    });
+
+    return jsonSuccess(cachedResponse, {
+      "x-ratelimit-remaining-minute": String(rateResult.remaining.minute),
+      "x-cache": "HIT",
+      "x-match-source": source,
+    });
+  }
+
+  // =========================================================================
+  // STEP 8: OpenAI API call
+  // =========================================================================
   const apiKey = process.env.OPENAI_API_KEY;
   if (!apiKey) {
-    console.error("OPENAI_API_KEY not configured");
-    return json(500, { error: "Service temporarily unavailable." });
+    safeLog({
+      level: "error",
+      route: "/api/match-job",
+      event: "missing_api_key",
+    });
+    return jsonError(503, "openai_unavailable");
   }
 
   const openai = new OpenAI({ apiKey });
@@ -193,8 +339,8 @@ export async function POST(req: Request) {
 
     const completion = await openai.chat.completions.create({
       model,
-      temperature: 0.2, // Low temperature for consistent, factual output
-      max_tokens: 400,
+      temperature: TEMPERATURE,
+      max_tokens: MAX_TOKENS,
       response_format: { type: "json_object" },
       messages: [
         { role: "system", content: buildMatchSystemPrompt() },
@@ -207,28 +353,31 @@ export async function POST(req: Request) {
 
     const content = completion.choices[0]?.message?.content ?? "";
 
-    // Parse and validate OpenAI response
     let rawResponse: unknown;
     try {
       rawResponse = JSON.parse(content);
     } catch {
-      console.error("Failed to parse OpenAI response as JSON");
-      return json(500, { error: "Failed to analyze job match. Please try again." });
+      safeLog({
+        level: "error",
+        route: "/api/match-job",
+        event: "json_parse_failed",
+      });
+      return jsonError(500, "openai_error");
     }
 
     const validatedResponse = OpenAIMatchResponseSchema.safeParse(rawResponse);
     if (!validatedResponse.success) {
-      console.error("OpenAI response validation failed:", validatedResponse.error);
-      return json(500, { error: "Failed to analyze job match. Please try again." });
+      safeLog({
+        level: "error",
+        route: "/api/match-job",
+        event: "response_validation_failed",
+      });
+      return jsonError(500, "openai_error");
     }
 
-    // Validate and sanitize analysis (ensure only real data is referenced)
     const analysis = validateAnalysis(validatedResponse.data);
-
-    // Create resume variant (only reorders existing content)
     const resumeVariantId = createResumeVariant(jobDescription, analysis);
 
-    // Build response
     const response: MatchJobResponse = {
       matchScore: analysis.matchScore,
       verdict: analysis.verdict,
@@ -238,12 +387,40 @@ export async function POST(req: Request) {
       resumeVariantId,
     };
 
-    return json(200, response, {
-      "x-ratelimit-remaining": String(rate.remaining),
+    // =========================================================================
+    // STEP 9: Cache the response
+    // =========================================================================
+    responseCache.set(cacheKey, response, CACHE_TTL.STABLE_CONTENT);
+
+    return jsonSuccess(response, {
+      "x-ratelimit-remaining-minute": String(rateResult.remaining.minute),
+      "x-cache": "MISS",
       "x-match-source": source,
     });
   } catch (err) {
-    console.error("Match job API error:", err);
-    return json(502, { error: "Service temporarily unavailable." });
+    if (err instanceof OpenAI.APIError) {
+      safeLog({
+        level: "error",
+        route: "/api/match-job",
+        event: "openai_api_error",
+        metadata: { status: err.status ?? 0, code: err.code ?? "unknown" },
+      });
+
+      if (err.status === 429) {
+        return jsonError(429, "rate_limited");
+      }
+      if (err.status && err.status >= 500) {
+        return jsonError(502, "openai_unavailable");
+      }
+      return jsonError(502, "openai_error");
+    }
+
+    safeLog({
+      level: "error",
+      route: "/api/match-job",
+      event: "unexpected_error",
+    });
+
+    return jsonError(500, "unknown_error");
   }
 }
