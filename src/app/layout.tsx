@@ -4,6 +4,8 @@ import type { ReactNode } from "react";
 
 import "./globals.css";
 
+import { ChatWidget } from "@/components/chat";
+import { ChatErrorBoundary } from "@/components/ui";
 import { site } from "@/config/site";
 import { on } from "@/utils";
 
@@ -55,6 +57,9 @@ export default function RootLayout({
           <main id="content">
             {children}
           </main>
+          <ChatErrorBoundary>
+            <ChatWidget />
+          </ChatErrorBoundary>
         </Providers>
       </body>
     </html>

@@ -4,4 +4,6 @@ export { ExperiencePreview } from "./ExperiencePreview";
 export { FeaturedProjects } from "./FeaturedProjects";
 export { About } from "./About";
 export { Skills } from "./Skills";
+export { Testimonials } from "./Testimonials";
+export { Contact } from "./Contact";
 export { AskAiButton } from "./AskAiButton";

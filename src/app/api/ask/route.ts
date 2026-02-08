@@ -343,7 +343,7 @@ export async function POST(req: Request) {
   }
 
   const openai = new OpenAI({ apiKey });
-  const model = process.env.OPENAI_MODEL ?? "gpt-4.1-mini";
+  const model = process.env.OPENAI_MODEL ?? "gpt-4o-mini";
 
   try {
     const completion = await openai.chat.completions.create({
