@@ -23,15 +23,32 @@ export function SiteHeader() {
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
+    const handleScroll = (e?: Event) => {
+      // Check for snap-container scroll (home page) or window scroll (other pages)
+      const snapContainer = document.querySelector(".snap-container");
+      const scrollY = snapContainer
+        ? snapContainer.scrollTop
+        : window.scrollY;
+      setIsScrolled(scrollY > 50);
     };
 
+    // Listen to both window and snap-container scroll
+    const snapContainer = document.querySelector(".snap-container");
+    
     window.addEventListener("scroll", handleScroll, { passive: true });
+    if (snapContainer) {
+      snapContainer.addEventListener("scroll", handleScroll, { passive: true });
+    }
+    
     handleScroll(); // Check initial state
 
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      if (snapContainer) {
+        snapContainer.removeEventListener("scroll", handleScroll);
+      }
+    };
+  }, [pathname]);
 
   return (
     <header

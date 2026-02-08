@@ -14,6 +14,80 @@
     }
   }
 
+  /* Scroll snap container for full-page sections */
+  .snap-container {
+    scroll-snap-type: y mandatory;
+    overflow-y: auto;
+    overflow-x: hidden;
+    height: 100dvh;
+    width: 100%;
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+    
+    /* Hide scrollbar but keep scroll functionality */
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+  }
+  
+  .snap-container::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+  }
+
+  /* Scroll snap section - full viewport height */
+  .snap-section {
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  /* Compact section that groups with adjacent section */
+  .snap-section-compact {
+    scroll-snap-align: none;
+    min-height: auto;
+  }
+
+  /* Footer snap section - centers content both horizontally and vertically */
+  .snap-section-footer {
+    scroll-snap-align: center;
+    scroll-snap-stop: always;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  /* Allow natural scroll on mobile for better UX */
+  @media (max-width: 768px) {
+    .snap-container {
+      scroll-snap-type: y proximity;
+    }
+    
+    .snap-section,
+    .snap-section-footer {
+      scroll-snap-stop: normal;
+    }
+  }
+
+  /* Respect reduced motion - disable snap for accessibility */
+  @media (prefers-reduced-motion: reduce) {
+    .snap-container {
+      scroll-snap-type: none;
+      height: auto;
+      overflow: visible;
+    }
+    .snap-section,
+    .snap-section-compact,
+    .snap-section-footer {
+      scroll-snap-align: none;
+      scroll-snap-stop: normal;
+      min-height: auto;
+    }
+  }
+
   :focus-visible {
     outline: 2px solid theme(colors.primary.500);
     outline-offset: 2px;
@@ -31,6 +105,16 @@
 }
 
 @layer utilities {
+  /* Hide scrollbar but keep scroll functionality */
+  .scrollbar-hide {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+  }
+
   /* Thinking dots animation */
   .thinking-dot {
     animation: thinkingPulse 1.4s ease-in-out infinite;

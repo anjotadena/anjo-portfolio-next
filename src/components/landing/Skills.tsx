@@ -17,7 +17,7 @@ const skillIcons = [
 
 export function Skills() {
   return (
-    <section className="w-full border-t border-zinc-100 bg-white py-12 dark:border-zinc-800 dark:bg-zinc-950">
+    <section className="snap-section w-full border-t border-zinc-100 bg-white py-12 dark:border-zinc-800 dark:bg-zinc-950">
       <div className="container mx-auto px-4">
         <div className="flex flex-col items-start justify-between gap-8 lg:flex-row lg:items-center">
           {/* Skills */}
@@ -49,7 +49,7 @@ export function Skills() {
 
           {/* Contact CTA */}
           <ScrollReveal variant="fade-left" duration={600} delay={200}>
-            <div className="w-full rounded-xl border border-zinc-100 bg-slate-50 p-6 lg:w-auto dark:border-zinc-800 dark:bg-zinc-900">
+            <div className="w-full rounded-xl bg-slate-50 p-6 lg:w-auto dark:bg-zinc-900">
               <h3 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
                 Let&apos;s Connect
               </h3>

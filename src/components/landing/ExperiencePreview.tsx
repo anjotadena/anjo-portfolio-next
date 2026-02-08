@@ -11,7 +11,7 @@ export function ExperiencePreview() {
   const previewExperiences = experiences.slice(0, 2);
 
   return (
-    <section className="w-full bg-slate-50 py-16 dark:bg-zinc-900 lg:py-20">
+    <section className="snap-section w-full bg-slate-50 py-16 dark:bg-zinc-900 lg:py-20">
       <div className="container mx-auto px-4">
         {/* Section Header */}
         <ScrollReveal variant="fade-up" duration={600}>

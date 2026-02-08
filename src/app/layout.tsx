@@ -4,9 +4,6 @@ import type { ReactNode } from "react";
 
 import "./globals.css";
 
-import { CommandPalette } from "@/components/command-palette/CommandPalette";
-import { SiteFooter } from "@/components/site/SiteFooter";
-import { SiteHeader } from "@/components/site/SiteHeader";
 import { site } from "@/config/site";
 import { on } from "@/utils";
 
@@ -55,14 +52,9 @@ export default function RootLayout({
         suppressHydrationWarning
       >
         <Providers>
-          <div className="flex min-h-dvh flex-col">
-            <SiteHeader />
-            <main id="content" className="flex-1">
-              {children}
-            </main>
-            <SiteFooter />
-          </div>
-          <CommandPalette />
+          <main id="content">
+            {children}
+          </main>
         </Providers>
       </body>
     </html>

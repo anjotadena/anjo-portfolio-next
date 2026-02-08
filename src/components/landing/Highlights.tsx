@@ -29,7 +29,7 @@ const highlights = [
 
 export function Highlights() {
   return (
-    <section className="w-full bg-white py-6 dark:bg-zinc-950">
+    <section className="snap-section-compact w-full bg-white py-6 dark:bg-zinc-950">
       <div className="container mx-auto px-4">
         <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 lg:gap-8">
           {highlights.map((item, index) => (
