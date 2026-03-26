@@ -3,6 +3,8 @@ import { Link, useLocation } from "react-router";
 import { motion } from "motion/react";
 import { Menu, X } from "lucide-react";
 import { ThemeToggle } from "./ThemeToggle";
+import logoUrl from "../../assets/logo.png";
+import lightLogoUrl from "../../assets/light_logo.png";
 
 const navLinks = [
   { path: "/", label: "Home" },
@@ -46,15 +48,38 @@ export function Navbar() {
             isScrolled ? "h-16" : "h-[4.8rem]"
           }`}
         >
-          <Link to="/" className="group">
-            <motion.span
-              className={`font-semibold text-foreground inline-block origin-left transition-[font-size] duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] ${
-                isScrolled ? "text-xl" : "text-2xl"
-              }`}
-              whileHover={{ scale: 1.05 }}
+          <Link
+            to="/"
+            className="group flex items-center rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+            aria-label="Home"
+          >
+            <motion.div
+              className="relative flex items-center"
+              whileHover={{ scale: 1.04 }}
+              whileTap={{ scale: 0.97 }}
+              transition={{ type: "spring", stiffness: 420, damping: 28 }}
             >
-              Portfolio
-            </motion.span>
+              <img
+                src={logoUrl}
+                alt=""
+                draggable={false}
+                className={`h-auto w-auto object-contain object-left transition-[max-height] duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] dark:hidden ${
+                  isScrolled
+                    ? "max-h-[2.35rem] sm:max-h-[2.55rem]"
+                    : "max-h-[2.95rem] sm:max-h-[3.35rem]"
+                }`}
+              />
+              <img
+                src={lightLogoUrl}
+                alt=""
+                draggable={false}
+                className={`h-auto w-auto object-contain object-left transition-[max-height] duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] hidden dark:block ${
+                  isScrolled
+                    ? "max-h-[2.35rem] sm:max-h-[2.55rem]"
+                    : "max-h-[2.95rem] sm:max-h-[3.35rem]"
+                }`}
+              />
+            </motion.div>
           </Link>
 
           {/* Desktop Navigation */}
