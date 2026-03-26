@@ -1,5 +1,5 @@
+import React, { useState } from "react";
 import { motion } from "motion/react";
-import { useState } from "react";
 import { Mail, MapPin, Send, Building2 } from "lucide-react";
 import { toast } from "sonner";
 

@@ -1,3 +1,4 @@
+import React from "react";
 import { motion } from "motion/react";
 import { services } from "../data/portfolio-data";
 import { ServiceCard } from "../components/ServiceCard";

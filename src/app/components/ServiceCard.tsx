@@ -1,3 +1,4 @@
+import React from "react";
 import { motion } from "motion/react";
 import { Code, Brain, Network, Zap, Users, Server, LucideIcon } from "lucide-react";
 

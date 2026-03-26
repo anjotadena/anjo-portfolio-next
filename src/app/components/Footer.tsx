@@ -1,3 +1,4 @@
+import React from "react";
 import { motion } from "motion/react";
 import { Github, Linkedin, Twitter, Mail } from "lucide-react";
 

@@ -1,3 +1,4 @@
+import React from "react";
 import { useParams, Link } from "react-router";
 import { motion } from "motion/react";
 import { ArrowLeft, Calendar, Clock } from "lucide-react";

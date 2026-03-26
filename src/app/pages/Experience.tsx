@@ -1,3 +1,4 @@
+import React from "react";
 import { motion } from "motion/react";
 import { Download, Briefcase, GraduationCap, Award } from "lucide-react";
 import { experiences, education, certifications } from "../data/experience-data";

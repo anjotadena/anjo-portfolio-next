@@ -1,3 +1,4 @@
+import React from "react";
 import { motion } from "motion/react";
 import { Link } from "react-router";
 import { ArrowRight, Sparkles, TrendingUp } from "lucide-react";

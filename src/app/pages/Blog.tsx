@@ -1,3 +1,4 @@
+import React from "react";
 import { motion } from "motion/react";
 import { blogPosts } from "../data/portfolio-data";
 import { BlogCard } from "../components/BlogCard";
