@@ -1,29 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 import { motion } from "motion/react";
-import { Mail, MapPin, Send, Building2 } from "lucide-react";
-import { toast } from "sonner";
+import { Mail, MapPin, Building2 } from "lucide-react";
 
 export function Contact() {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    message: "",
-  });
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // In a real implementation, this would send to a backend
-    toast.success("Message sent! I'll get back to you soon.");
-    setFormData({ name: "", email: "", message: "" });
-  };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }));
-  };
-
   return (
     <div className="min-h-screen pt-32 pb-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -42,82 +21,12 @@ export function Contact() {
           </p>
         </motion.div>
 
-        <div className="grid lg:grid-cols-2 gap-12 max-w-6xl mx-auto">
-          {/* Contact Form */}
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-          >
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div>
-                <label htmlFor="name" className="block text-sm font-medium text-foreground mb-2">
-                  Name
-                </label>
-                <motion.input
-                  type="text"
-                  id="name"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  required
-                  className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground placeholder-muted-foreground focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
-                  placeholder="Your name"
-                  whileFocus={{ scale: 1.01 }}
-                />
-              </div>
-
-              <div>
-                <label htmlFor="email" className="block text-sm font-medium text-foreground mb-2">
-                  Email
-                </label>
-                <motion.input
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  required
-                  className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground placeholder-muted-foreground focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
-                  placeholder="your.email@example.com"
-                  whileFocus={{ scale: 1.01 }}
-                />
-              </div>
-
-              <div>
-                <label htmlFor="message" className="block text-sm font-medium text-foreground mb-2">
-                  Message
-                </label>
-                <motion.textarea
-                  id="message"
-                  name="message"
-                  value={formData.message}
-                  onChange={handleChange}
-                  required
-                  rows={6}
-                  className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground placeholder-muted-foreground focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all resize-none"
-                  placeholder="Tell me about your project, investment opportunity, or how we can collaborate..."
-                  whileFocus={{ scale: 1.01 }}
-                />
-              </div>
-
-              <motion.button
-                type="submit"
-                className="w-full px-8 py-4 bg-primary text-primary-foreground rounded-lg font-medium hover:opacity-90 transition-opacity flex items-center justify-center gap-2"
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                Send Message
-                <Send size={20} />
-              </motion.button>
-            </form>
-          </motion.div>
-
+        <div className="max-w-3xl mx-auto">
           {/* Contact Info */}
           <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
             className="space-y-8"
           >
             <div className="bg-card border border-border rounded-xl p-8">
@@ -134,10 +43,10 @@ export function Contact() {
                   <div>
                     <h3 className="font-medium text-foreground mb-1">Email</h3>
                     <a
-                      href="mailto:contact@example.com"
+                      href="mailto:tadena.anjo@gmail.com"
                       className="text-muted-foreground hover:text-primary transition-colors"
                     >
-                      contact@example.com
+                      tadena.anjo@gmail.com
                     </a>
                   </div>
                 </motion.div>
