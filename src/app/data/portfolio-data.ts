@@ -136,16 +136,18 @@ export const blogPosts = [
 ];
 
 export const techStack = [
-  { name: "TypeScript", category: "language" },
+  { name: "C#", category: "language" },
+  { name: "ASP.NET", category: "backend" },
+  { name: "Laravel", category: "backend" },
   { name: "Python", category: "language" },
+  { name: "Golang", category: "language" },
   { name: "React", category: "frontend" },
-  { name: "Node.js", category: "backend" },
-  { name: "PostgreSQL", category: "database" },
-  { name: "MongoDB", category: "database" },
-  { name: "Redis", category: "database" },
-  { name: "Docker", category: "devops" },
-  { name: "Kubernetes", category: "devops" },
+  { name: "Angular", category: "frontend" },
   { name: "AWS", category: "cloud" },
-  { name: "TensorFlow", category: "ai" },
+  { name: "Azure", category: "cloud" },
+  { name: "Docker", category: "devops" },
   { name: "OpenAI", category: "ai" },
+  { name: "MySQL", category: "database" },
+  { name: "PostgreSQL", category: "database" },
+  { name: "TypeScript", category: "language" },
 ];
