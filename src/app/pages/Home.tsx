@@ -1,7 +1,7 @@
 import React from "react";
 import { motion } from "motion/react";
 import { Link } from "react-router";
-import { ArrowRight, Sparkles, TrendingUp } from "lucide-react";
+import { ArrowRight, Sparkles, TrendingUp, Github, Linkedin } from "lucide-react";
 import { projects, techStack } from "../data/portfolio-data";
 import { ProjectCard } from "../components/ProjectCard";
 
@@ -106,6 +106,27 @@ export function Home() {
                   Let's Connect
                 </motion.button>
               </Link>
+            </motion.div>
+
+            <motion.div variants={item} className="flex items-center justify-center gap-4 pt-2">
+              <a
+                href="https://www.linkedin.com/in/anjotadena/"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="LinkedIn"
+                className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-border bg-card text-muted-foreground transition-colors hover:text-primary hover:border-primary/50"
+              >
+                <Linkedin size={20} />
+              </a>
+              <a
+                href="https://github.com/anjotadena"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="GitHub"
+                className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-border bg-card text-muted-foreground transition-colors hover:text-primary hover:border-primary/50"
+              >
+                <Github size={20} />
+              </a>
             </motion.div>
           </motion.div>
         </div>
