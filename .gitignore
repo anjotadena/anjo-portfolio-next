@@ -1,14 +1,25 @@
-# ReactJS .gitignore
-node_modules
-.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
-.env.development
-.env.test
-.env.production
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+# Dependencies
+node_modules/
+
+# Next.js
+.next/
+out/
+
+# Build outputs
+dist/
+build/
+
+# Testing
+coverage/
+test-results/
+playwright-report/
+
+# Env files (never commit real secrets; .env.example is tracked)
+.env*
+!.env.example
+
+# TypeScript
+*.tsbuildinfo
+
+# OS
+.DS_Store
