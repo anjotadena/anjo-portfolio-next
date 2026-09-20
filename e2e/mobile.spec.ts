@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "./fixtures";
 
 /**
  * Mobile-only checks. Playwright cannot show a real on-screen keyboard, so

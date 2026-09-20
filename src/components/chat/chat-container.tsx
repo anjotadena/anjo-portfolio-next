@@ -58,6 +58,18 @@ export function ChatContainer({ assistantName, assistantInitials, ownerFirstName
     el.scrollTo({ top: el.scrollHeight });
   }, [messageCount, lastContent, pinned]);
 
+  // Escape stops a streaming answer (mirrors the "esc to stop" hint).
+  const isStreaming = chat.isStreaming;
+  const stop = chat.stop;
+  useEffect(() => {
+    if (!isStreaming) return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") stop();
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [isStreaming, stop]);
+
   const onScroll = useCallback(() => {
     const el = scrollRef.current;
     if (!el) return;

@@ -10,6 +10,10 @@ import { Badge } from "@/components/ui/badge";
 import { getProfile, getProjects, getPublicDocumentBySlug } from "@/lib/knowledge/repository";
 import { initialsFor } from "@/lib/utils/initials";
 
+// Every slug is known at build time (content lives in the repo); unknown
+// slugs must be a real 404, not a streamed soft-404 behind the loading boundary.
+export const dynamicParams = false;
+
 export function generateStaticParams() {
   return getProjects().map((project) => ({ slug: project.slug }));
 }

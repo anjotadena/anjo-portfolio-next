@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "./fixtures";
 
 test.describe("portfolio pages", () => {
   test("project pages are generated from Markdown and link back into chat", async ({ page }) => {
@@ -67,8 +67,12 @@ test.describe("portfolio pages", () => {
 test.describe("search", () => {
   test("Ctrl/Cmd+K opens semantic search with grouped results", async ({ page }) => {
     await page.goto("/");
-    await page.keyboard.press("Control+k");
     const box = page.getByRole("combobox");
+    // The shortcut listener attaches after hydration; retry the keystroke briefly.
+    await expect(async () => {
+      await page.keyboard.press("Control+k");
+      await expect(box).toBeVisible({ timeout: 1_000 });
+    }).toPass({ timeout: 10_000 });
     await expect(box).toBeFocused();
     await box.fill("agentic");
     await expect(page.getByRole("option").first()).toBeVisible();

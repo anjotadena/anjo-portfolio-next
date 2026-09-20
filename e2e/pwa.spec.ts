@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "./fixtures";
 
 test.describe("progressive web app", () => {
   test("serves a manifest, generated icons, a versioned service worker, and the version endpoint", async ({ request }) => {

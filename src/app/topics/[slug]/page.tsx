@@ -13,6 +13,10 @@ function topicDocs() {
   return getPublicDocuments().filter((doc) => TOPIC_TYPES.includes(doc.type));
 }
 
+// Every slug is known at build time (content lives in the repo); unknown
+// slugs must be a real 404, not a streamed soft-404 behind the loading boundary.
+export const dynamicParams = false;
+
 export function generateStaticParams() {
   return topicDocs().map((doc) => ({ slug: doc.slug }));
 }

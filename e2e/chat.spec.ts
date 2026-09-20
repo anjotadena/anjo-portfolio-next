@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "./fixtures";
 
 test.describe("chat experience", () => {
   test("homepage loads as an AI assistant with grounded suggested prompts", async ({ page }) => {

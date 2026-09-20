@@ -95,7 +95,7 @@ export function ChatMessageItem({ message, assistantInitials, isLast, onFollowUp
       <div className="min-w-0 flex-1">
         <div aria-busy={isStreaming} className="rounded-2xl rounded-tl-md border border-border bg-card px-4 py-3 shadow-sm">
           {isEmpty && isStreaming ? (
-            <TypingIndicator />
+            <TypingIndicator startedAt={message.createdAt} />
           ) : (
             <CitationProvider value={{ onCitationClick: (index) => onOpenSource(message, index), labels }}>
               <Prose>

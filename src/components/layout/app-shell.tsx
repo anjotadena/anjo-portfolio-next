@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
-import { getProfile, getPublicDocuments } from "@/lib/knowledge/repository";
+import { getProfile, getPublicChunks, getPublicDocuments } from "@/lib/knowledge/repository";
+import { SplashScreen } from "@/components/pwa/splash-screen";
 import { initialsFor } from "@/lib/utils/initials";
 import { APP_VERSION, BUILD_ID, commitUrl } from "@/lib/version";
 import { PRIMARY_NAV, TOPIC_ICONS, TOPIC_LABELS, TOPIC_TYPES, type NavItem } from "@/components/navigation/nav-config";
@@ -39,9 +40,19 @@ export function getBrand(): ShellBrand {
 
 /** Server component: reads profile + topics from Markdown and renders the client frame. */
 export function AppShell({ children }: { children: ReactNode }) {
+  const brand = getBrand();
   return (
-    <ShellFrame brand={getBrand()} primary={PRIMARY_NAV} topics={getTopicNav()}>
-      {children}
-    </ShellFrame>
+    <>
+      <SplashScreen
+        assistantName="Anjo AI"
+        initials={brand.initials}
+        version={brand.version}
+        documents={getPublicDocuments().length}
+        sections={getPublicChunks().length}
+      />
+      <ShellFrame brand={brand} primary={PRIMARY_NAV} topics={getTopicNav()}>
+        {children}
+      </ShellFrame>
+    </>
   );
 }

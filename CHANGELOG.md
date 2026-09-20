@@ -7,6 +7,21 @@ at `/api/version` and in the sidebar.
 
 ## [Unreleased]
 
+## [2.1.0] - 2026-09-20
+
+### Added
+- Start-up splash screen: a terminal-style boot log with real status (knowledge
+  base size, retrieval mode, assistant status, build), skippable with any key or
+  tap, shown once per session, reduced-motion aware.
+- CLI-style thinking indicator while an answer is prepared (spinner, stage,
+  elapsed time) and Escape to stop a streaming answer.
+- Route-level loading state.
+
+### Fixed
+- Top bar safe-area inset in standalone/notched displays; sidebar brand row now
+  aligns with the top bar.
+- Unknown project/topic slugs return a real 404 instead of a streamed soft 404.
+
 ## [2.0.0] - 2026-09-20
 
 Complete rebuild. v1.0.0 was the previous Vite-based static site; v2 replaces it with the AI-native portfolio below.
@@ -31,6 +46,7 @@ Complete rebuild. v1.0.0 was the previous Vite-based static site; v2 replaces it
 - Docker image, Docker Compose for pgvector, GitHub Actions CI and release
   workflows.
 
-[Unreleased]: https://github.com/anjotadena/anjo-portfolio-next/compare/v2.0.0...HEAD
+[Unreleased]: https://github.com/anjotadena/anjo-portfolio-next/compare/v2.1.0...HEAD
+[2.1.0]: https://github.com/anjotadena/anjo-portfolio-next/compare/v2.0.0...v2.1.0
 [2.0.0]: https://github.com/anjotadena/anjo-portfolio-next/compare/v1.0.0...v2.0.0
 [1.0.0]: https://github.com/anjotadena/anjo-portfolio-next/releases/tag/v1.0.0

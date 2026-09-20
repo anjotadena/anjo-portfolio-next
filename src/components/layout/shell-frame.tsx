@@ -58,23 +58,26 @@ function SocialLinks({ brand, className }: { brand: ShellBrand; className?: stri
 function SidebarContent({ brand, primary, topics, onNavigate }: Omit<ShellFrameProps, "children"> & { onNavigate?: () => void }) {
   return (
     <div className="flex h-full flex-col">
-      <Link
-        href="/"
-        onClick={onNavigate}
-        className="flex items-center gap-3 rounded-lg px-2 py-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-      >
-        <Avatar initials={brand.initials} size="md" />
-        <span className="min-w-0">
-          <span className="block truncate text-sm font-semibold text-foreground">{brand.name}</span>
-          <span className="block truncate text-[11px] text-muted-foreground">{brand.headline}</span>
-        </span>
-      </Link>
+      {/* Brand row is exactly as tall as the top bar so the two borders line up. */}
+      <div className="pt-safe shrink-0 border-b border-border">
+        <Link
+          href="/"
+          onClick={onNavigate}
+          className="mx-2 flex h-14 items-center gap-3 rounded-lg px-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        >
+          <Avatar initials={brand.initials} size="md" />
+          <span className="min-w-0">
+            <span className="block truncate text-sm font-semibold text-foreground">{brand.name}</span>
+            <span className="block truncate text-[11px] text-muted-foreground">{brand.headline}</span>
+          </span>
+        </Link>
+      </div>
 
-      <div className="mt-6 flex-1">
+      <div className="min-h-0 flex-1 overflow-y-auto px-4 pt-4">
         <SidebarNav primary={primary} topics={topics} onNavigate={onNavigate} />
       </div>
 
-      <div className="mt-6 flex flex-col gap-4 border-t border-border pt-4">
+      <div className="pb-safe flex shrink-0 flex-col gap-4 border-t border-border p-4">
         {brand.tagline && <p className="px-2 text-xs italic leading-relaxed text-muted-foreground">“{brand.tagline}”</p>}
         <div className="flex items-center justify-between gap-2 px-1">
           <SocialLinks brand={brand} className="flex items-center gap-1" />
@@ -120,12 +123,15 @@ export function ShellFrame({ brand, primary, topics, children }: ShellFrameProps
         Skip to content
       </a>
 
-      <aside className="hidden w-64 shrink-0 border-r border-border bg-surface p-4 lg:flex lg:flex-col" aria-label="Sidebar">
+      <aside className="pl-safe hidden w-64 shrink-0 border-r border-border bg-surface lg:flex lg:flex-col" aria-label="Sidebar">
         <SidebarContent brand={brand} primary={primary} topics={topics} />
       </aside>
 
       <div className="flex min-h-0 min-w-0 flex-1 flex-col">
-        <header className="pt-safe flex h-14 shrink-0 items-center justify-between gap-3 border-b border-border bg-background/95 px-3 backdrop-blur sm:px-4">
+        {/* Safe-area padding lives on the wrapper; the row keeps a fixed height so the
+            status bar (PWA standalone / notch) never squeezes the controls. */}
+        <header className="pt-safe pr-safe shrink-0 border-b border-border bg-background/95 backdrop-blur">
+          <div className="flex h-14 items-center justify-between gap-3 px-3 sm:px-4">
           <div className="flex min-w-0 items-center gap-2">
             <button type="button" onClick={() => setMenuOpen(true)} aria-label="Open menu" className={`${iconButtonClassName} lg:hidden`}>
               <Menu className="h-5 w-5" aria-hidden="true" />
@@ -171,6 +177,7 @@ export function ShellFrame({ brand, primary, topics, children }: ShellFrameProps
               Get in touch
             </Link>
           </div>
+          </div>
         </header>
 
         <main id="main" className="flex min-h-0 flex-1 flex-col">
@@ -179,7 +186,7 @@ export function ShellFrame({ brand, primary, topics, children }: ShellFrameProps
       </div>
 
       <Dialog open={menuOpen} onClose={closeMenu} title="Menu" hideTitle placement="side" className="max-w-xs">
-        <div className="p-4">
+        <div className="h-full">
           <SidebarContent brand={brand} primary={primary} topics={topics} onNavigate={closeMenu} />
         </div>
       </Dialog>
