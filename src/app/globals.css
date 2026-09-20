@@ -5,89 +5,81 @@
 /*
  * Design tokens.
  *
- * Accent color: emerald. Values below were chosen and verified against
- * WCAG 2.2 AA contrast requirements (4.5:1 for normal text, 3:1 for UI
- * components/large text) for every text/background pairing that uses them.
- * See the implementation report for the full contrast-ratio table.
+ * Accent: blue. Every text/background pairing below was checked against
+ * WCAG 2.2 AA (4.5:1 normal text, 3:1 UI components):
+ *   light  primary #2563eb on #ffffff        5.17:1
+ *          muted-foreground #64748b on #fff  4.76:1
+ *          accent-foreground #1d4ed8 on #eff6ff 7.3:1
+ *   dark   primary #60a5fa on #0b1220        8.2:1
+ *          muted-foreground #94a3b8 on #0b1220 7.5:1
+ *          accent-foreground #93c5fd on #172554 8.0:1
  */
 :root {
-  --font-size: 16px;
   --background: #ffffff;
-  --foreground: #0a0a0a;
+  --foreground: #0f172a;
   --card: #ffffff;
-  --card-foreground: #0a0a0a;
+  --card-foreground: #0f172a;
   --popover: #ffffff;
-  --popover-foreground: #0a0a0a;
+  --popover-foreground: #0f172a;
+  --surface: #f8fafc;
+  --surface-foreground: #0f172a;
 
-  /* Emerald-700. On white background: 5.48:1 (passes AA normal text). */
-  --primary: #047857;
+  --primary: #2563eb;
   --primary-foreground: #ffffff;
 
-  --secondary: #f3f4f6;
-  --secondary-foreground: #0a0a0a;
-  --muted: #f3f4f6;
-  --muted-foreground: #6b7280;
+  --secondary: #f1f5f9;
+  --secondary-foreground: #0f172a;
+  --muted: #f1f5f9;
+  --muted-foreground: #64748b;
 
-  /* Emerald-50 surface with emerald-700 text: 5.20:1 (passes AA). */
-  --accent: #ecfdf5;
-  --accent-foreground: #047857;
+  --accent: #eff6ff;
+  --accent-foreground: #1d4ed8;
 
+  --success: #15803d;
   --destructive: #dc2626;
   --destructive-foreground: #ffffff;
-  --border: rgba(0, 0, 0, 0.1);
-  --input: rgba(0, 0, 0, 0.1);
-  --input-background: #f9fafb;
-  --switch-background: #cbced4;
-  --font-weight-medium: 500;
-  --font-weight-normal: 400;
+  --border: #e2e8f0;
+  --input: #e2e8f0;
+  --input-background: #ffffff;
+  --ring: #2563eb;
 
-  /* Ring reuses primary: 5.48:1 against background, well above the 3:1
-     minimum for focus indicators / non-text UI components. */
-  --ring: #047857;
-
-  --radius: 0.625rem;
-  --scrollbar-track: var(--muted);
-  --scrollbar-thumb: color-mix(in srgb, var(--primary) 38%, var(--muted));
-  --scrollbar-thumb-hover: color-mix(in srgb, var(--primary) 72%, var(--foreground));
-  --scrollbar-thumb-active: var(--primary);
+  --radius: 0.75rem;
+  --scrollbar-track: transparent;
+  --scrollbar-thumb: #cbd5e1;
+  --scrollbar-thumb-hover: #94a3b8;
 }
 
 .dark {
-  --background: #0a0a0a;
-  --foreground: #ffffff;
-  --card: #0a0a0a;
-  --card-foreground: #ffffff;
-  --popover: #0a0a0a;
-  --popover-foreground: #ffffff;
+  --background: #0b1220;
+  --foreground: #e2e8f0;
+  --card: #111a2e;
+  --card-foreground: #e2e8f0;
+  --popover: #111a2e;
+  --popover-foreground: #e2e8f0;
+  --surface: #0e1627;
+  --surface-foreground: #e2e8f0;
 
-  /* Emerald-500. On #0a0a0a background: 7.80:1 (passes AAA). */
-  --primary: #10b981;
-  /* Near-black foreground on the emerald-500 primary surface: 7.80:1. */
-  --primary-foreground: #0a0a0a;
+  --primary: #60a5fa;
+  --primary-foreground: #0b1220;
 
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
+  --secondary: #1a2440;
+  --secondary-foreground: #e2e8f0;
+  --muted: #1a2440;
+  --muted-foreground: #94a3b8;
 
-  /* Emerald-950 surface with emerald-400 text: 7.88:1 (passes AAA). */
-  --accent: #022c22;
-  --accent-foreground: #34d399;
+  --accent: #172554;
+  --accent-foreground: #93c5fd;
 
-  --destructive: #dc2626;
-  --destructive-foreground: #ffffff;
-  --border: rgba(255, 255, 255, 0.1);
-  --input: rgba(255, 255, 255, 0.1);
+  --success: #4ade80;
+  --destructive: #f87171;
+  --destructive-foreground: #0b1220;
+  --border: rgba(148, 163, 184, 0.18);
+  --input: rgba(148, 163, 184, 0.22);
+  --input-background: #0e1627;
+  --ring: #60a5fa;
 
-  /* Ring reuses primary: 7.80:1 against background. */
-  --ring: #10b981;
-
-  --font-weight-medium: 500;
-  --font-weight-normal: 400;
-  --scrollbar-track: color-mix(in srgb, var(--muted) 85%, var(--background));
-  --scrollbar-thumb: color-mix(in srgb, var(--primary) 42%, var(--muted-foreground));
-  --scrollbar-thumb-hover: color-mix(in srgb, var(--primary) 78%, var(--foreground));
-  --scrollbar-thumb-active: var(--primary);
+  --scrollbar-thumb: #334155;
+  --scrollbar-thumb-hover: #475569;
 }
 
 @theme inline {
@@ -97,6 +89,8 @@
   --color-card-foreground: var(--card-foreground);
   --color-popover: var(--popover);
   --color-popover-foreground: var(--popover-foreground);
+  --color-surface: var(--surface);
+  --color-surface-foreground: var(--surface-foreground);
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
   --color-secondary: var(--secondary);
@@ -105,17 +99,18 @@
   --color-muted-foreground: var(--muted-foreground);
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
+  --color-success: var(--success);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
   --color-border: var(--border);
   --color-input: var(--input);
   --color-input-background: var(--input-background);
-  --color-switch-background: var(--switch-background);
   --color-ring: var(--ring);
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 6px);
+  --radius-md: calc(var(--radius) - 3px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 10px);
   --font-sans: var(--font-inter), -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --font-mono: var(--font-jetbrains-mono), ui-monospace, SFMono-Regular, monospace;
 }
@@ -126,61 +121,14 @@
   }
 
   html {
-    font-size: var(--font-size);
-    scroll-behavior: smooth;
     scrollbar-gutter: stable;
+    -webkit-text-size-adjust: 100%;
   }
 
   body {
     @apply bg-background text-foreground;
     font-family: var(--font-sans);
-  }
-
-  /**
-   * Default typography styles for HTML elements (h1-h4, p, label, button, input).
-   * These are in @layer base, so Tailwind utility classes (like text-sm, text-lg)
-   * automatically override them.
-   */
-  h1 {
-    font-size: var(--text-2xl);
-    font-weight: var(--font-weight-medium);
-    line-height: 1.5;
-  }
-
-  h2 {
-    font-size: var(--text-xl);
-    font-weight: var(--font-weight-medium);
-    line-height: 1.5;
-  }
-
-  h3 {
-    font-size: var(--text-lg);
-    font-weight: var(--font-weight-medium);
-    line-height: 1.5;
-  }
-
-  h4 {
-    font-size: var(--text-base);
-    font-weight: var(--font-weight-medium);
-    line-height: 1.5;
-  }
-
-  label {
-    font-size: var(--text-base);
-    font-weight: var(--font-weight-medium);
-    line-height: 1.5;
-  }
-
-  button {
-    font-size: var(--text-base);
-    font-weight: var(--font-weight-medium);
-    line-height: 1.5;
-  }
-
-  input {
-    font-size: var(--text-base);
-    font-weight: var(--font-weight-normal);
-    line-height: 1.5;
+    font-feature-settings: "cv11", "ss01";
   }
 
   code,
@@ -189,48 +137,126 @@
   samp {
     font-family: var(--font-mono);
   }
+
+  ::selection {
+    background: color-mix(in srgb, var(--primary) 25%, transparent);
+  }
 }
 
-/* Scrollbars: Firefox + WebKit, uses theme tokens above. */
+/* Layout helpers ---------------------------------------------------------- */
+
+/* Full viewport height that follows the mobile keyboard / dynamic toolbars. */
+.h-app {
+  height: 100vh;
+  height: 100dvh;
+}
+
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+.pt-safe {
+  padding-top: env(safe-area-inset-top, 0px);
+}
+
+/* Scrollbars ------------------------------------------------------------- */
 * {
   scrollbar-width: thin;
   scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
 }
 
 *::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
-}
-
-*::-webkit-scrollbar-track {
-  background: var(--scrollbar-track);
-  border-radius: var(--radius);
+  width: 8px;
+  height: 8px;
 }
 
 *::-webkit-scrollbar-thumb {
   background: var(--scrollbar-thumb);
-  border-radius: var(--radius);
-  border: 2px solid var(--scrollbar-track);
-  background-clip: padding-box;
+  border-radius: 8px;
 }
 
 *::-webkit-scrollbar-thumb:hover {
   background: var(--scrollbar-thumb-hover);
-  border-color: var(--scrollbar-track);
-  background-clip: padding-box;
 }
 
-*::-webkit-scrollbar-thumb:active {
-  background: var(--scrollbar-thumb-active);
-  border-color: var(--scrollbar-track);
-  background-clip: padding-box;
+/* Native dialog ---------------------------------------------------------- */
+dialog::backdrop {
+  background: rgba(2, 6, 23, 0.55);
+  backdrop-filter: blur(2px);
 }
 
-*::-webkit-scrollbar-corner {
-  background: var(--scrollbar-track);
+/* Code highlighting (highlight.js classes from rehype-highlight), themed with tokens. */
+.hljs {
+  color: var(--foreground);
+}
+.hljs-comment,
+.hljs-quote {
+  color: var(--muted-foreground);
+  font-style: italic;
+}
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-built_in,
+.hljs-name,
+.hljs-tag {
+  color: var(--primary);
+}
+.hljs-string,
+.hljs-attr,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition,
+.hljs-template-tag,
+.hljs-template-variable {
+  color: var(--success);
+}
+.hljs-number,
+.hljs-literal,
+.hljs-variable,
+.hljs-regexp,
+.hljs-link {
+  color: #c2410c;
+}
+.dark .hljs-number,
+.dark .hljs-literal,
+.dark .hljs-variable,
+.dark .hljs-regexp,
+.dark .hljs-link {
+  color: #fdba74;
+}
+.hljs-title,
+.hljs-section,
+.hljs-type,
+.hljs-class .hljs-title {
+  color: var(--accent-foreground);
+  font-weight: 600;
+}
+.hljs-emphasis {
+  font-style: italic;
+}
+.hljs-strong {
+  font-weight: 600;
+}
+.hljs-deletion {
+  color: var(--destructive);
 }
 
-/* Reduced motion support for accessibility (WCAG 2.2 / Section 21). */
+/* Motion ------------------------------------------------------------------ */
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-up {
+  animation: fade-up 180ms ease-out both;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -239,9 +265,5 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
-  }
-
-  html {
-    scroll-behavior: auto;
   }
 }

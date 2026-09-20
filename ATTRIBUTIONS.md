@@ -1,3 +1,6 @@
-This Figma Make file includes components from [shadcn/ui](https://ui.shadcn.com/) used under [MIT license](https://github.com/shadcn-ui/ui/blob/main/LICENSE.md).
+# Attributions
 
-This Figma Make file includes photos from [Unsplash](https://unsplash.com) used under [license](https://unsplash.com/license).
+- UI primitives follow the conventions of [shadcn/ui](https://ui.shadcn.com/) (MIT) but are implemented in-repo without the package.
+- Icons: [Lucide](https://lucide.dev/) (ISC).
+- Fonts: Inter and JetBrains Mono via `next/font` (SIL Open Font License), self-hosted at build time.
+- Syntax highlighting: [highlight.js](https://highlightjs.org/) via `rehype-highlight` (BSD-3-Clause).

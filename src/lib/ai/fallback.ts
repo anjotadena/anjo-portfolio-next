@@ -1,16 +1,12 @@
 /**
- * Exact, verbatim fallback strings. These are asserted on by tests and
- * referenced directly in the system prompt, so they live in one place.
+ * Exact, verbatim fallback strings. Tests assert on these and the system
+ * prompt references them, so they live in one place.
  */
 
-/** Used when retrieval found nothing grounded to answer from. */
-export const UNGROUNDED_FALLBACK = "I don't have that information in Anjo's portfolio yet.";
+/** Returned when retrieval finds nothing relevant. The model is never called on this path. */
+export const UNGROUNDED_FALLBACK =
+  "I couldn't find enough information in Anjo's portfolio to answer that confidently.\n\n" +
+  "You can ask me about his projects, software engineering experience, AI work, cloud architecture, or technical skills.";
 
-/**
- * Used by `NullProvider` when a question WAS grounded in the portfolio
- * content, but no live model is configured to synthesize an answer from
- * it yet.
- */
-export const UNCONFIGURED_FALLBACK =
-  "I don't have that information in Anjo's portfolio yet. The AI assistant isn't connected to a language model yet, so I can only point you to the site itself: " +
-  "check the Projects and Skills sections, or reach out directly through the Contact page.";
+/** The phrase the model must use when the retrieved context does not cover the question. */
+export const NOT_ENOUGH_INFO_PHRASE = "Anjo's portfolio doesn't currently include enough information";

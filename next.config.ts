@@ -56,6 +56,16 @@ const securityHeaders = [
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
+  // Standalone output is only for the Docker image (set by the Dockerfile).
+  // Vercel and `next start` use the default output.
+  ...(process.env.DOCKER_BUILD === "1" ? { output: "standalone" as const } : {}),
+  // `pg` is loaded at runtime (native/optional deps); keep it out of the server bundle.
+  serverExternalPackages: ["pg"],
+  // The knowledge base and the vector index are read from disk at request
+  // time by the API routes; make sure serverless bundles include them.
+  outputFileTracingIncludes: {
+    "/*": ["./content/**/*", "./data/**/*"],
+  },
   async headers() {
     return [
       {
@@ -64,9 +74,8 @@ const nextConfig: NextConfig = {
       },
     ];
   },
-  // The previous Vite site served /services and /blog routes. That content
-  // is being retired for the Next rebuild; redirect permanently to the home
-  // page so existing inbound links and search indexes don't 404.
+  // The previous site served /services and /blog routes. That content was
+  // retired; redirect permanently so inbound links and search indexes don't 404.
   async redirects() {
     return [
       { source: "/services", destination: "/", permanent: true },

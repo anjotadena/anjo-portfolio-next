@@ -1,0 +1,41 @@
+# Local development stack: PostgreSQL 16 with pgvector.
+#   docker compose up -d
+#   DATABASE_URL=postgres://portfolio:portfolio@localhost:5432/portfolio
+#
+# The web service is optional (uncomment to run the production image
+# locally); `npm run dev` on the host is the usual workflow.
+services:
+  db:
+    image: pgvector/pgvector:pg16
+    container_name: anjo-portfolio-db
+    environment:
+      POSTGRES_USER: portfolio
+      POSTGRES_PASSWORD: portfolio
+      POSTGRES_DB: portfolio
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U portfolio -d portfolio"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # web:
+  #   build:
+  #     context: .
+  #     args:
+  #       NEXT_PUBLIC_SITE_URL: http://localhost:3000
+  #   depends_on:
+  #     db:
+  #       condition: service_healthy
+  #   environment:
+  #     NEXT_PUBLIC_SITE_URL: http://localhost:3000
+  #     DATABASE_URL: postgres://portfolio:portfolio@db:5432/portfolio
+  #     OPENAI_API_KEY: ${OPENAI_API_KEY}
+  #   ports:
+  #     - "3000:3000"
+
+volumes:
+  pgdata:

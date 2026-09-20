@@ -1,61 +1,46 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import { ThemeProvider } from "@/components/theme/theme-provider";
-import { SiteHeader } from "@/components/layout/site-header";
-import { SiteFooter } from "@/components/layout/site-footer";
+import { AppShell } from "@/components/layout/app-shell";
+import { getProfile } from "@/lib/knowledge/repository";
+import { getSiteUrl } from "@/lib/seo/site";
 import "./globals.css";
 
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
-  display: "swap",
-});
+const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
+const jetbrainsMono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-jetbrains-mono", display: "swap" });
 
-const jetbrainsMono = JetBrains_Mono({
-  subsets: ["latin"],
-  variable: "--font-jetbrains-mono",
-  display: "swap",
-});
+export function generateMetadata(): Metadata {
+  const { profile, summary } = getProfile();
+  const siteUrl = getSiteUrl();
+  const title = `${profile.name} | ${profile.headline}`;
+  return {
+    metadataBase: new URL(siteUrl),
+    title: { default: title, template: `%s | ${profile.name}` },
+    description: summary,
+    applicationName: "Anjo AI",
+    alternates: { canonical: "/" },
+    openGraph: { title, description: summary, url: siteUrl, siteName: `${profile.name} — Anjo AI`, type: "website", locale: "en_US" },
+    twitter: { card: "summary", title, description: summary },
+    robots: { index: true, follow: true },
+  };
+}
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
-
-export const metadata: Metadata = {
-  metadataBase: new URL(siteUrl),
-  title: {
-    default: "Anjo Tadena | Software & AI Engineer",
-    template: "%s | Anjo Tadena",
-  },
-  description:
-    "Portfolio of Anjo Tadena, a software engineer based in Cebu, Philippines, focused on AI engineering and product-minded software development.",
-  openGraph: {
-    title: "Anjo Tadena",
-    description:
-      "Portfolio of Anjo Tadena, a software engineer based in Cebu, Philippines, focused on AI engineering and product-minded software development.",
-    url: siteUrl,
-    siteName: "Anjo Tadena",
-    type: "website",
-  },
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
+    { media: "(prefers-color-scheme: dark)", color: "#0b1220" },
+  ],
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html
-      lang="en"
-      suppressHydrationWarning
-      className={`${inter.variable} ${jetbrainsMono.variable}`}
-    >
-      <body
-        suppressHydrationWarning
-        className="flex min-h-screen flex-col antialiased"
-      >
+    <html lang="en" suppressHydrationWarning className={`${inter.variable} ${jetbrainsMono.variable}`}>
+      <body suppressHydrationWarning className="antialiased">
         <ThemeProvider>
-          <SiteHeader />
-          <main className="flex-1">{children}</main>
-          <SiteFooter />
+          <AppShell>{children}</AppShell>
         </ThemeProvider>
       </body>
     </html>

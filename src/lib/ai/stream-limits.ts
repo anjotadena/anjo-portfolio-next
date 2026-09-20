@@ -11,6 +11,8 @@ export interface StreamLimitOptions {
   idleTimeoutMs: number;
   /** Optional hard cap on total stream duration, distinct from idle time. */
   totalTimeoutMs?: number;
+  /** Called once if a limit ends the stream early. */
+  onLimit?: (reason: "maxChars" | "idleTimeout" | "totalTimeout") => void;
 }
 
 export const DEFAULT_MAX_STREAM_CHARS = 4000;
@@ -42,7 +44,7 @@ export async function* capStream(
   source: AsyncIterable<string>,
   options: StreamLimitOptions,
 ): AsyncIterable<string> {
-  const { maxChars, idleTimeoutMs, totalTimeoutMs } = options;
+  const { maxChars, idleTimeoutMs, totalTimeoutMs, onLimit } = options;
   const startedAt = Date.now();
   const iterator = source[Symbol.asyncIterator]();
   let emitted = 0;
@@ -50,24 +52,28 @@ export async function* capStream(
   try {
     for (;;) {
       if (totalTimeoutMs !== undefined && Date.now() - startedAt >= totalTimeoutMs) {
+        onLimit?.("totalTimeout");
         return;
       }
 
       const next = await raceWithIdleTimeout(iterator.next(), idleTimeoutMs);
       if (next === IDLE_TIMEOUT_SENTINEL) {
+        onLimit?.("idleTimeout");
         return;
       }
 
       const { done, value } = next;
       if (done) return;
-      if (emitted >= maxChars) return;
 
       const remaining = maxChars - emitted;
       const piece = value.length > remaining ? value.slice(0, remaining) : value;
       emitted += piece.length;
       if (piece.length > 0) yield piece;
 
-      if (emitted >= maxChars) return;
+      if (emitted >= maxChars) {
+        onLimit?.("maxChars");
+        return;
+      }
     }
   } finally {
     if (typeof iterator.return === "function") {

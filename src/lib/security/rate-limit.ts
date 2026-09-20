@@ -108,3 +108,46 @@ export class TokenBucketRateLimiter {
     return this.buckets.size;
   }
 }
+
+/** The contract route handlers depend on; swap in a Redis/Upstash implementation without touching routes. */
+export interface RateLimiter {
+  consume(key: string): RateLimitResult;
+}
+
+export interface MultiWindowOptions {
+  perMinute: number;
+  perHour: number;
+}
+
+/**
+ * Enforces both a per-minute and a per-hour budget. The stricter of the
+ * two decides; `retryAfterSeconds` reflects whichever window rejected.
+ * Values come from `RATE_LIMIT_PER_MINUTE` / `RATE_LIMIT_PER_HOUR`.
+ */
+export class MultiWindowRateLimiter implements RateLimiter {
+  private readonly minute: TokenBucketRateLimiter;
+  private readonly hour: TokenBucketRateLimiter;
+
+  constructor(options: MultiWindowOptions) {
+    this.minute = new TokenBucketRateLimiter({ capacity: options.perMinute, refillPerSecond: options.perMinute / 60 });
+    this.hour = new TokenBucketRateLimiter({
+      capacity: options.perHour,
+      refillPerSecond: options.perHour / 3600,
+      staleAfterMs: 2 * 60 * 60 * 1000,
+    });
+  }
+
+  consume(key: string): RateLimitResult {
+    // Check the hour bucket without spending unless the minute bucket also allows.
+    const hourPeek = this.hour.consume(key, 0);
+    if (hourPeek.remaining < 1) {
+      const denied = this.hour.consume(key, 1);
+      return { allowed: false, remaining: 0, retryAfterSeconds: denied.retryAfterSeconds };
+    }
+    const minute = this.minute.consume(key, 1);
+    if (!minute.allowed) return minute;
+    const hour = this.hour.consume(key, 1);
+    if (!hour.allowed) return hour;
+    return { allowed: true, remaining: Math.min(minute.remaining, hour.remaining), retryAfterSeconds: 0 };
+  }
+}

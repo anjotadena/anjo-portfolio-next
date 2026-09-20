@@ -23,3 +23,6 @@ playwright-report/
 
 # OS
 .DS_Store
+
+# Generated E2E vector index (built against the mock OpenAI server)
+data/*.e2e.json

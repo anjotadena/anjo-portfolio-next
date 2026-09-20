@@ -5,25 +5,32 @@
   "type": "module",
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "npm run content:validate && next build",
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:e2e": "playwright test"
+    "test:coverage": "vitest run --coverage",
+    "test:e2e": "playwright test",
+    "content:validate": "tsx --conditions=react-server scripts/validate-content.ts",
+    "content:index": "tsx --conditions=react-server scripts/index-content.ts",
+    "db:migrate": "tsx --conditions=react-server scripts/db-migrate.ts",
+    "eval": "tsx --conditions=react-server scripts/eval.ts",
+    "audit": "npm audit --audit-level=high",
+    "dev:mock-openai": "node scripts/mock-openai.mjs"
   },
   "dependencies": {
     "gray-matter": "4.0.3",
     "lucide-react": "0.487.0",
-    "motion": "12.23.24",
-    "next": "16.3.1",
+    "next": "^16.3.5",
     "next-themes": "0.4.6",
+    "pg": "^8.23.0",
     "react": "19.2.8",
     "react-dom": "19.2.8",
     "react-markdown": "10.1.0",
     "remark-gfm": "4.0.1",
-    "sonner": "2.0.3",
+    "server-only": "^0.0.1",
     "zod": "4.4.3"
   },
   "devDependencies": {
@@ -33,14 +40,21 @@
     "@testing-library/jest-dom": "7.0.1",
     "@testing-library/react": "16.3.2",
     "@types/node": "26.2.0",
+    "@types/pg": "^8.23.1",
     "@types/react": "19.2.18",
     "@types/react-dom": "19.2.4",
     "@vitejs/plugin-react": "4.7.0",
+    "@vitest/coverage-v8": "^5.0.1",
     "eslint": "10.8.1",
-    "eslint-config-next": "16.3.1",
+    "eslint-config-next": "^16.3.5",
     "jsdom": "30.0.1",
+    "rehype-highlight": "^7.0.2",
     "tailwindcss": "4.3.3",
+    "tsx": "^4.23.15",
     "typescript": "5.9.3",
-    "vitest": "3.2.7"
+    "vitest": "^5.0.1"
+  },
+  "engines": {
+    "node": ">=22.12.0"
   }
 }

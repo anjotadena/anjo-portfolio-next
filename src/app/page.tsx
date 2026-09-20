@@ -1,11 +1,24 @@
-// Minimal placeholder. Wave 3 replaces this with the chat hero experience.
+import { Suspense } from "react";
+import { ChatContainer } from "@/components/chat/chat-container";
+import { HomeRail } from "@/components/portfolio/home-rail";
+import { PersonJsonLd } from "@/components/seo/json-ld";
+import { buildSuggestedPrompts } from "@/lib/ai/follow-ups";
+import { getFeaturedProjects, getProfile, getPublicDocuments } from "@/lib/knowledge/repository";
+import { initialsFor } from "@/lib/utils/initials";
+
 export default function HomePage() {
+  const { profile } = getProfile();
+  const prompts = buildSuggestedPrompts(getPublicDocuments(), 8);
+  const initials = initialsFor(profile.name);
+  const firstName = profile.name.split(" ")[0] ?? profile.name;
+
   return (
-    <div className="mx-auto flex max-w-6xl flex-col gap-3 px-4 py-24 sm:px-6 lg:px-8">
-      <h1>Anjo Tadena</h1>
-      <p className="text-muted-foreground">
-        Software & AI engineer based in Cebu, Philippines. Site under construction.
-      </p>
+    <div className="flex min-h-0 flex-1">
+      <PersonJsonLd />
+      <Suspense fallback={null}>
+        <ChatContainer assistantName="Anjo AI" assistantInitials={initials} ownerFirstName={firstName} suggestedPrompts={prompts} />
+      </Suspense>
+      <HomeRail profile={profile} tagline={profile.tagline} projects={getFeaturedProjects(3)} />
     </div>
   );
 }

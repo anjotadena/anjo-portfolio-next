@@ -1,119 +1,164 @@
-import type { ChatProvider, StreamCompletionInput } from "./types";
+import type { ChatProvider, ProviderEvent, StreamCompletionInput } from "./types";
 
-export interface OpenAiCompatibleProviderOptions {
-  apiKey?: string;
+export interface OpenAIProviderOptions {
+  apiKey: string;
+  model: string;
   baseUrl?: string;
-  model?: string;
+  /** Wall-clock timeout for the whole request, including streaming. */
+  timeoutMs?: number;
+  fetchImpl?: typeof fetch;
 }
-
-const DEFAULT_BASE_URL = "https://api.openai.com/v1";
-const DEFAULT_MODEL = "gpt-4o-mini";
 
 /**
- * A provider for OpenAI's Chat Completions API, or any API-compatible
- * endpoint (reachable via `OPENAI_BASE_URL`). Fully wired but inert
- * without an API key — `isConfigured` is false and `getChatProvider()`
- * (see `provider.ts`) will not select it. Dropping `OPENAI_API_KEY` into
- * the environment is the only change needed to go live; no code changes
- * are required.
+ * OpenAI Responses API (`POST /v1/responses`, `stream: true`) through
+ * plain `fetch` + SSE parsing. Chosen over the SDK because we use exactly
+ * one endpoint, want zero extra dependencies in the serverless bundle,
+ * and need full control over timeouts and abort propagation.
+ *
+ * Emits `text` deltas as they arrive, then `usage` and `finish` from the
+ * terminal `response.completed` event. Never surfaces upstream error
+ * bodies (they can echo prompt content) — only the HTTP status.
  */
-export class OpenAiCompatibleProvider implements ChatProvider {
-  readonly name = "openai-compatible";
-
-  private readonly apiKey: string | undefined;
-  private readonly baseUrl: string;
+export class OpenAIResponsesProvider implements ChatProvider {
+  readonly name = "openai-responses";
+  readonly isModelBacked = true;
+  private readonly apiKey: string;
   private readonly model: string;
+  private readonly baseUrl: string;
+  private readonly timeoutMs: number;
+  private readonly fetchImpl: typeof fetch;
 
-  constructor(options: OpenAiCompatibleProviderOptions = {}) {
-    this.apiKey = options.apiKey ?? process.env.OPENAI_API_KEY;
-    this.baseUrl = options.baseUrl ?? process.env.OPENAI_BASE_URL ?? DEFAULT_BASE_URL;
-    this.model = options.model ?? process.env.OPENAI_MODEL ?? DEFAULT_MODEL;
+  constructor(options: OpenAIProviderOptions) {
+    this.apiKey = options.apiKey;
+    this.model = options.model;
+    this.baseUrl = (options.baseUrl ?? "https://api.openai.com/v1").replace(/\/+$/, "");
+    this.timeoutMs = options.timeoutMs ?? 30_000;
+    this.fetchImpl = options.fetchImpl ?? fetch;
   }
 
-  get isConfigured(): boolean {
-    return Boolean(this.apiKey && this.apiKey.trim().length > 0);
-  }
+  async *stream(input: StreamCompletionInput): AsyncIterable<ProviderEvent> {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), this.timeoutMs);
+    const onAbort = () => controller.abort();
+    input.signal?.addEventListener("abort", onAbort, { once: true });
 
-  async *streamCompletion(input: StreamCompletionInput): AsyncIterable<string> {
-    if (!this.apiKey) {
-      throw new Error("OpenAiCompatibleProvider is not configured with an API key");
+    try {
+      const response = await this.fetchImpl(`${this.baseUrl}/responses`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${this.apiKey}` },
+        body: JSON.stringify({
+          model: this.model,
+          stream: true,
+          store: false,
+          max_output_tokens: input.maxOutputTokens,
+          instructions: input.system,
+          input: input.messages.map((message) => ({ role: message.role, content: message.content })),
+        }),
+        signal: controller.signal,
+      });
+
+      if (!response.ok || !response.body) {
+        throw new Error(`OpenAI request failed with status ${response.status}`);
+      }
+
+      let finished = false;
+      for await (const event of parseSse(response.body)) {
+        const parsed = parseResponsesEvent(event);
+        if (!parsed) continue;
+        if (parsed.type === "text") yield parsed;
+        else if (parsed.type === "completed") {
+          finished = true;
+          if (parsed.usage) yield { type: "usage", usage: parsed.usage };
+          yield { type: "finish", reason: parsed.incomplete ? "length" : "stop" };
+          return;
+        } else if (parsed.type === "failed") {
+          throw new Error("OpenAI response failed");
+        }
+      }
+      if (!finished) yield { type: "finish", reason: "stop" };
+    } finally {
+      clearTimeout(timer);
+      input.signal?.removeEventListener("abort", onAbort);
     }
-
-    const response = await fetch(`${this.baseUrl}/chat/completions`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${this.apiKey}`,
-      },
-      body: JSON.stringify({
-        model: this.model,
-        stream: true,
-        messages: [
-          { role: "system", content: input.system },
-          ...input.messages.map((message) => ({ role: message.role, content: message.content })),
-        ],
-      }),
-      signal: input.signal,
-    });
-
-    if (!response.ok || !response.body) {
-      throw new Error(`OpenAI-compatible provider request failed with status ${response.status}`);
-    }
-
-    yield* parseSseStream(response.body);
   }
 }
 
-async function* parseSseStream(body: ReadableStream<Uint8Array>): AsyncIterable<string> {
+interface SseEvent {
+  event: string | null;
+  data: string;
+}
+
+/** Minimal SSE parser: yields one `{event, data}` per blank-line-terminated block. */
+export async function* parseSse(body: ReadableStream<Uint8Array>): AsyncIterable<SseEvent> {
   const reader = body.getReader();
   const decoder = new TextDecoder();
   let buffer = "";
-
   try {
     for (;;) {
       const { done, value } = await reader.read();
-      if (value) {
-        buffer += decoder.decode(value, { stream: true });
-        const lines = buffer.split("\n");
-        buffer = lines.pop() ?? "";
-        for (const line of lines) {
-          const text = parseSseLine(line);
-          if (text === "done") return;
-          if (text) yield text;
-        }
+      if (value) buffer += decoder.decode(value, { stream: true });
+      // Normalize CRLF; a lone trailing "\r" waits for the next chunk's "\n".
+      buffer = buffer.replace(/\r\n/g, "\n");
+      let boundary = buffer.indexOf("\n\n");
+      while (boundary !== -1) {
+        const block = buffer.slice(0, boundary);
+        buffer = buffer.slice(boundary + 2);
+        const parsed = parseSseBlock(block);
+        if (parsed) yield parsed;
+        boundary = buffer.indexOf("\n\n");
       }
-      if (done) return;
+      if (done) {
+        const tail = parseSseBlock(buffer);
+        if (tail) yield tail;
+        return;
+      }
     }
   } finally {
     reader.releaseLock();
   }
 }
 
-function parseSseLine(line: string): string | null | "done" {
-  const trimmed = line.trim();
-  if (!trimmed.startsWith("data:")) return null;
-  const payload = trimmed.slice("data:".length).trim();
-  if (payload === "[DONE]") return "done";
-  return extractDeltaText(payload);
+function parseSseBlock(block: string): SseEvent | null {
+  let event: string | null = null;
+  const data: string[] = [];
+  for (const rawLine of block.split("\n")) {
+    const line = rawLine.replace(/\r$/, "");
+    if (line.startsWith("event:")) event = line.slice(6).trim();
+    else if (line.startsWith("data:")) data.push(line.slice(5).trimStart());
+  }
+  if (data.length === 0) return null;
+  return { event, data: data.join("\n") };
 }
 
-function extractDeltaText(payload: string): string | null {
+type ParsedResponsesEvent =
+  | { type: "text"; text: string }
+  | { type: "completed"; usage: { inputTokens: number; outputTokens: number } | null; incomplete: boolean }
+  | { type: "failed" };
+
+function parseResponsesEvent(event: SseEvent): ParsedResponsesEvent | null {
+  if (event.data === "[DONE]") return null;
+  let payload: unknown;
   try {
-    const parsed: unknown = JSON.parse(payload);
-    if (typeof parsed !== "object" || parsed === null || !("choices" in parsed)) return null;
-
-    const choices = (parsed as { choices: unknown }).choices;
-    if (!Array.isArray(choices)) return null;
-
-    const first: unknown = choices[0];
-    if (typeof first !== "object" || first === null || !("delta" in first)) return null;
-
-    const delta = (first as { delta: unknown }).delta;
-    if (typeof delta !== "object" || delta === null || !("content" in delta)) return null;
-
-    const content = (delta as { content: unknown }).content;
-    return typeof content === "string" ? content : null;
+    payload = JSON.parse(event.data);
   } catch {
     return null;
   }
+  if (typeof payload !== "object" || payload === null) return null;
+  const record = payload as Record<string, unknown>;
+  const type = typeof record.type === "string" ? record.type : event.event;
+
+  if (type === "response.output_text.delta" && typeof record.delta === "string") {
+    return { type: "text", text: record.delta };
+  }
+  if (type === "response.completed" || type === "response.incomplete") {
+    const response = (record.response ?? {}) as Record<string, unknown>;
+    const usage = (response.usage ?? null) as { input_tokens?: number; output_tokens?: number } | null;
+    return {
+      type: "completed",
+      usage: usage ? { inputTokens: Number(usage.input_tokens ?? 0), outputTokens: Number(usage.output_tokens ?? 0) } : null,
+      incomplete: type === "response.incomplete",
+    };
+  }
+  if (type === "response.failed" || type === "error") return { type: "failed" };
+  return null;
 }
