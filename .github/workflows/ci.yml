@@ -55,6 +55,7 @@ jobs:
           path: |
             .next
             !.next/cache
+          include-hidden-files: true
           retention-days: 1
 
   e2e:

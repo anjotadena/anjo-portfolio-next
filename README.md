@@ -267,7 +267,7 @@ Multi-stage build → Next standalone output → `node:22-alpine`, non-root `nex
 The site deploys as static pages plus two Node serverless functions (`/api/chat`, `/api/search`). No database, no cron, no external services beyond OpenAI.
 
 1. Locally: `npm run content:index` with your `OPENAI_API_KEY`, then commit `data/knowledge-index.json`.
-2. Import the repository in Vercel (framework preset: Next.js; Node 22).
+2. Import the repository in Vercel. `vercel.json` pins the Next.js preset and build/install commands, and `engines.node` pins Node 22.x — if the project previously hosted the old Vite site, clear any **Output Directory** override in Settings → Build & Deployment.
 3. Environment variables: `NEXT_PUBLIC_SITE_URL=https://your-domain` (mandatory — the app refuses to start without it) and `OPENAI_API_KEY`. Everything else has defaults.
 4. Deploy. Check `https://your-domain/api/health` — it should report `"retriever":"hybrid"`, `"backend":"file"`, and `"modelBacked":true`. If it says `lexical`, the index file was not committed.
 
