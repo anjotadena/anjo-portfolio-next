@@ -5,6 +5,7 @@ import ReactMarkdown, { type Components } from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeHighlight from "rehype-highlight";
 import { cn } from "@/components/ui/utils";
+import { slugifyHeading } from "@/lib/utils/slug";
 import { CodeBlock } from "./code-block";
 
 /**
@@ -77,7 +78,21 @@ function CitationChip({ index }: { index: number }) {
   );
 }
 
+function textOf(node: ReactNode): string {
+  if (typeof node === "string" || typeof node === "number") return String(node);
+  if (Array.isArray(node)) return node.map(textOf).join("");
+  if (node && typeof node === "object" && "props" in node) return textOf((node as { props: { children?: ReactNode } }).props.children);
+  return "";
+}
+
 const components: Components = {
+  // Anchor ids on section headings so tables of contents and citations can deep-link.
+  h2({ children }) {
+    return <h2 id={slugifyHeading(textOf(children))}>{children}</h2>;
+  },
+  h3({ children }) {
+    return <h3 id={slugifyHeading(textOf(children))}>{children}</h3>;
+  },
   a({ href, children }) {
     if (!href) return <>{children}</>;
     if (href.startsWith("cite:")) return <CitationChip index={Number(href.slice(5))} />;

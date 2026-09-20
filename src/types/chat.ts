@@ -56,6 +56,30 @@ export interface ProjectCardData {
   featured: boolean;
 }
 
+export interface CaseStudyCardData {
+  kind: "case-study";
+  slug: string;
+  title: string;
+  outcome: string;
+  role: string;
+  period: string | null;
+  highlights: string[];
+  readingMinutes: number;
+  href: string;
+  projectHref: string | null;
+}
+
+export interface PostCardData {
+  kind: "post";
+  slug: string;
+  title: string;
+  summary: string;
+  date: string;
+  readingMinutes: number;
+  tags: string[];
+  href: string;
+}
+
 export interface SkillCardData {
   kind: "skills";
   groups: SkillGroup[];
@@ -86,7 +110,7 @@ export interface CertificationCardData {
   href: string;
 }
 
-export type ChatCard = ProjectCardData | SkillCardData | ContactCardData | ExperienceCardData | CertificationCardData;
+export type ChatCard = ProjectCardData | CaseStudyCardData | PostCardData | SkillCardData | ContactCardData | ExperienceCardData | CertificationCardData;
 
 export interface ChatStreamMeta {
   requestId: string;

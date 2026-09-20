@@ -1,5 +1,6 @@
 "use client";
 
+import { vercelEvent } from "@/components/analytics/vercel-analytics";
 import type { AnalyticsEvent, AnalyticsProps } from "./events";
 
 /**
@@ -9,6 +10,7 @@ import type { AnalyticsEvent, AnalyticsProps } from "./events";
  */
 export function track(event: AnalyticsEvent, props?: AnalyticsProps): void {
   if (typeof window === "undefined") return;
+  vercelEvent(event, props);
   const payload = JSON.stringify({ event, props });
   try {
     if (typeof navigator.sendBeacon === "function") {

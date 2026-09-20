@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight, Award, Briefcase, Download, ExternalLink, Github, Linkedin, Mail, MapPin } from "lucide-react";
-import type { CertificationCardData, ChatCard, ContactCardData, ExperienceCardData, ProjectCardData, SkillCardData } from "@/types/chat";
+import { ArrowRight, Award, BookOpenText, Briefcase, CalendarDays, Clock, Download, ExternalLink, Github, Linkedin, Mail, MapPin } from "lucide-react";
+import type { CaseStudyCardData, CertificationCardData, ChatCard, ContactCardData, ExperienceCardData, PostCardData, ProjectCardData, SkillCardData } from "@/types/chat";
 import { Badge } from "@/components/ui/badge";
 import { track } from "@/lib/analytics/track";
 
@@ -45,6 +45,77 @@ export function ProjectCard({ card }: { card: ProjectCardData }) {
           </a>
         )}
       </div>
+    </article>
+  );
+}
+
+export function CaseStudyCard({ card }: { card: CaseStudyCardData }) {
+  return (
+    <article className={cardClassName} aria-label={`Case study: ${card.title}`}>
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <p className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-primary">
+            <BookOpenText className="h-3.5 w-3.5" aria-hidden="true" /> Case study
+          </p>
+          <h3 className="mt-0.5 text-base font-semibold text-foreground">{card.title}</h3>
+          <p className="text-xs text-muted-foreground">
+            {card.role}
+            {card.period ? ` · ${card.period}` : ""}
+          </p>
+        </div>
+        <span className="inline-flex shrink-0 items-center gap-1 text-[11px] text-muted-foreground">
+          <Clock className="h-3 w-3" aria-hidden="true" /> {card.readingMinutes} min
+        </span>
+      </div>
+      <p className="mt-2 font-medium text-foreground">{card.outcome}</p>
+      <ul className="mt-2 flex flex-col gap-1 text-muted-foreground">
+        {card.highlights.map((highlight) => (
+          <li key={highlight} className="flex gap-2">
+            <span aria-hidden="true" className="mt-2 h-1 w-1 shrink-0 rounded-full bg-primary" />
+            <span>{highlight}</span>
+          </li>
+        ))}
+      </ul>
+      <div className="mt-3 flex flex-wrap items-center gap-4">
+        <Link href={card.href} className={linkClassName} onClick={() => track("project_opened", { slug: card.slug, from: "chat-case-study" })}>
+          Read the case study <ArrowRight className="h-4 w-4" aria-hidden="true" />
+        </Link>
+        {card.projectHref && (
+          <Link href={card.projectHref} className={`${linkClassName} text-muted-foreground`}>
+            Project page
+          </Link>
+        )}
+      </div>
+    </article>
+  );
+}
+
+export function PostCard({ card }: { card: PostCardData }) {
+  return (
+    <article className={cardClassName} aria-label={`Blog post: ${card.title}`}>
+      <p className="flex items-center gap-2 text-[11px] text-muted-foreground">
+        <span className="font-semibold uppercase tracking-wider text-primary">Blog</span>
+        <span className="inline-flex items-center gap-1">
+          <CalendarDays className="h-3 w-3" aria-hidden="true" /> {card.date}
+        </span>
+        <span className="inline-flex items-center gap-1">
+          <Clock className="h-3 w-3" aria-hidden="true" /> {card.readingMinutes} min
+        </span>
+      </p>
+      <h3 className="mt-1 text-base font-semibold text-foreground">{card.title}</h3>
+      <p className="mt-1 line-clamp-3 text-muted-foreground">{card.summary}</p>
+      {card.tags.length > 0 && (
+        <ul className="mt-2 flex flex-wrap gap-1.5" aria-label="Tags">
+          {card.tags.map((tag) => (
+            <li key={tag}>
+              <Badge variant="outline">{tag}</Badge>
+            </li>
+          ))}
+        </ul>
+      )}
+      <Link href={card.href} className={`${linkClassName} mt-3`} onClick={() => track("project_opened", { slug: card.slug, from: "chat-post" })}>
+        Read the post <ArrowRight className="h-4 w-4" aria-hidden="true" />
+      </Link>
     </article>
   );
 }
@@ -171,6 +242,10 @@ export function ChatCards({ cards }: { cards: ChatCard[] }) {
       )}
       {others.map((card) => {
         switch (card.kind) {
+          case "case-study":
+            return <CaseStudyCard key={card.slug} card={card} />;
+          case "post":
+            return <PostCard key={card.slug} card={card} />;
           case "contact":
             return <ContactCard key="contact" card={card} />;
           case "skills":

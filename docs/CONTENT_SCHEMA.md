@@ -8,7 +8,7 @@ Every Markdown file under `content/` is parsed with `gray-matter` and validated 
 | --- | --- | --- | --- |
 | `title` | string | yes | Document title (also a citation label and a lexical boost) |
 | `slug` | kebab-case string | no | Defaults to the filename; must be unique across the corpus |
-| `type` | enum | yes | `profile`, `experience`, `skills`, `education`, `certifications`, `architecture`, `ai-engineering`, `cloud`, `devops`, `philosophy`, `contact`, `project` |
+| `type` | enum | yes | `profile`, `experience`, `skills`, `education`, `certifications`, `architecture`, `ai-engineering`, `cloud`, `devops`, `philosophy`, `contact`, `project`, `case-study`, `post` |
 | `summary` | string (20–500) | yes | Shown on cards/pages and used for SEO descriptions |
 | `tags` | string[] | no | Lower-cased and de-duplicated; scored as metadata |
 | `technologies` | string[] | projects: yes | Scored as metadata; rendered as badges |
@@ -64,6 +64,32 @@ project:
 ```
 
 Recommended body sections (each becomes a chunk and a citation target): `## Overview`, `## Problem`, `## Solution`, `## Architecture`, `## Technologies`, `## My Role`, `## Key Challenges`, `## Results`.
+
+### `caseStudy` (type `case-study`, required)
+
+```yaml
+caseStudy:
+  outcome: "One-sentence result headline (10–160 chars)"
+  role: Creator and maintainer
+  period: 2026 – present        # optional
+  client: Acme                  # optional; use `industry` when the client cannot be named
+  industry: Localization        # optional
+  highlights: ["…", "…"]        # 2–6 key results or decisions
+  projectSlug: asterweave       # optional; must be a project document
+```
+
+Reading time is derived from the body. Recommended sections: `## Context`, `## Problem`, `## Constraints`, `## Approach`, `## Architecture`, `## Key Decisions`, `## Results`, `## Lessons Learned`. Pages: `/case-studies/[slug]`; the related project page links to it.
+
+### `post` (type `post`, optional block; `date` required)
+
+```yaml
+date: 2026-09-20
+post:
+  series: Building Anjo AI      # optional
+  author: Anjo Tadena           # optional; defaults to the profile name
+```
+
+Pages: `/blog/[slug]`, listed at `/blog` newest first, included in `/feed.xml` (RSS) and BlogPosting JSON-LD.
 
 ### `experience` (type `experience`)
 

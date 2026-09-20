@@ -3,7 +3,7 @@ import type { ContentType } from "@/types/content";
 import { substantiveTerms } from "@/lib/retrieval/lexical";
 import { isGreetingQuery } from "@/lib/retrieval/greeting";
 
-export type QueryIntent = "greeting" | "profile" | "contact" | "projects" | "skills" | "experience" | "certifications" | "general";
+export type QueryIntent = "greeting" | "profile" | "contact" | "projects" | "blog" | "skills" | "experience" | "certifications" | "general";
 
 export interface UnderstoodQuery {
   /** The text sent to retrieval (may be augmented with conversation context). */
@@ -18,7 +18,9 @@ export interface UnderstoodQuery {
 const PROFILE_PATTERN =
   /^(who is|who's|whos|about|tell me about|introduce|describe) (anjo|him|anjo tadena|yourself)\b|\bwho (is|are) (you|anjo)\b|\bbackground\b|\bbio\b/i;
 const CONTACT_PATTERN = /\b(contact|reach|email|e-mail|hire|hiring|get in touch|linkedin|resume|résumé|cv|available|availability|open to)\b/i;
-const PROJECTS_PATTERN = /\b(projects?|portfolio pieces?|what (has|did) he (build|built|made|make)|things he('s| has) built|case stud(y|ies))\b/i;
+const PROJECTS_PATTERN =
+  /\b(projects?|portfolio pieces?|what (has|did) he (build|built|made|make)|things he('s| has) built|case stud(y|ies)|walk me through|how (did|was) .+ (built|designed|made))\b/i;
+const BLOG_PATTERN = /\b(blog|posts?|articles?|written|writes?|writing|wrote)\b/i;
 const SKILLS_PATTERN = /\b(skills?|tech(nolog(y|ies))?|stack|strongest|languages?|frameworks?|tools?|proficien|expertise|good at)\b/i;
 const EXPERIENCE_PATTERN = /\b(experience|work history|career|employ(er|ment)|jobs?|roles?|companies|worked at|years)\b/i;
 const CERTIFICATIONS_PATTERN = /\b(certif(ication|ied|icate)s?|credentials?|certs?)\b/i;
@@ -59,6 +61,7 @@ export function understandQuery(message: string, history: readonly ChatMessage[]
   else if (CONTACT_PATTERN.test(trimmed)) intent = "contact";
   else if (CERTIFICATIONS_PATTERN.test(trimmed)) intent = "certifications";
   else if (PROJECTS_PATTERN.test(trimmed)) intent = "projects";
+  else if (BLOG_PATTERN.test(trimmed)) intent = "blog";
   else if (SKILLS_PATTERN.test(trimmed)) intent = "skills";
   else if (EXPERIENCE_PATTERN.test(trimmed)) intent = "experience";
 
@@ -85,6 +88,8 @@ export function understandQuery(message: string, history: readonly ChatMessage[]
           ? ["skills"]
           : intent === "projects"
             ? ["project"]
+            : intent === "blog"
+              ? ["post"]
             : intent === "certifications"
               ? ["certifications"]
               : intent === "experience"

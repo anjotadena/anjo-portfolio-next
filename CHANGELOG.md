@@ -7,6 +7,26 @@ at `/api/version` and in the sidebar.
 
 ## [Unreleased]
 
+## [2.2.0] - 2026-09-20
+
+### Added
+- Case studies: `case-study` content type with structured facts, `/case-studies`
+  and `/case-studies/[slug]` pages (facts sidebar, table of contents, related
+  project, embedded "Ask AI"), a chat CaseStudyCard, and links from project
+  pages. Two case studies written from verifiable sources (this portfolio and
+  Asterweave) plus a private template for client work.
+- Blog: `post` content type, `/blog` and `/blog/[slug]` pages, RSS feed at
+  `/feed.xml`, BlogPosting JSON-LD, chat PostCard, an introductory post, and
+  "How I built Asterweave". Two further technical posts ship as private drafts.
+- Visitor analytics via Vercel Web Analytics (first-party script, no cookies,
+  no dependency) with page views on route change and product events forwarded
+  as custom events; first-party `page_view` events in the structured logs.
+- Heading anchors in rendered Markdown; `-ed` stemming and domain synonyms in
+  lexical retrieval.
+
+### Changed
+- `/blog` is a real route again (the old redirect to `/` was removed).
+
 ## [2.1.0] - 2026-09-20
 
 ### Added
@@ -46,7 +66,8 @@ Complete rebuild. v1.0.0 was the previous Vite-based static site; v2 replaces it
 - Docker image, Docker Compose for pgvector, GitHub Actions CI and release
   workflows.
 
-[Unreleased]: https://github.com/anjotadena/anjo-portfolio-next/compare/v2.1.0...HEAD
+[Unreleased]: https://github.com/anjotadena/anjo-portfolio-next/compare/v2.2.0...HEAD
+[2.2.0]: https://github.com/anjotadena/anjo-portfolio-next/compare/v2.1.0...v2.2.0
 [2.1.0]: https://github.com/anjotadena/anjo-portfolio-next/compare/v2.0.0...v2.1.0
 [2.0.0]: https://github.com/anjotadena/anjo-portfolio-next/compare/v1.0.0...v2.0.0
 [1.0.0]: https://github.com/anjotadena/anjo-portfolio-next/releases/tag/v1.0.0

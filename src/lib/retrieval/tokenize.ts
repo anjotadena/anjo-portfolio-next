@@ -15,6 +15,13 @@ export function stem(token: string): string {
   if (token.endsWith("sses")) return token.slice(0, -2);
   if (token.endsWith("ss") || token.endsWith("us") || token.endsWith("is")) return token;
   if (token.endsWith("s")) return token.slice(0, -1);
+  // Past tense: "learned" -> "learn", "applied" -> "apply", "planned" -> "plan".
+  if (token.endsWith("ed") && token.length > 5) {
+    let stemmed = token.slice(0, -2);
+    if (stemmed.endsWith("i")) stemmed = `${stemmed.slice(0, -1)}y`;
+    else if (stemmed.length > 3 && stemmed[stemmed.length - 1] === stemmed[stemmed.length - 2] && !/[aeiou]/.test(stemmed[stemmed.length - 1]!)) stemmed = stemmed.slice(0, -1);
+    return stemmed;
+  }
   return token;
 }
 

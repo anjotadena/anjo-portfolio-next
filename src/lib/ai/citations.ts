@@ -9,6 +9,10 @@ export function hrefForDocument(type: ContentType, slug: string): string | null 
   switch (type) {
     case "project":
       return `/projects/${slug}`;
+    case "case-study":
+      return `/case-studies/${slug}`;
+    case "post":
+      return `/blog/${slug}`;
     case "profile":
       return "/about";
     case "skills":

@@ -70,12 +70,16 @@ export function loadAllDocuments(root: string = CONTENT_ROOT): LoadResult {
     }
   }
 
-  // Cross-document checks: `related` must point at real slugs.
+  // Cross-document checks: `related` and `caseStudy.projectSlug` must point at real documents.
   const slugs = new Set(documents.map((doc) => doc.slug));
+  const projectSlugs = new Set(documents.filter((doc) => doc.type === "project").map((doc) => doc.slug));
   for (const doc of documents) {
     const missing = doc.related.filter((slug) => !slugs.has(slug));
     if (missing.length > 0) {
       errors.push(new ContentValidationError(doc.sourcePath, `  - related: unknown slug(s) ${missing.join(", ")}`));
+    }
+    if (doc.caseStudy?.projectSlug && !projectSlugs.has(doc.caseStudy.projectSlug)) {
+      errors.push(new ContentValidationError(doc.sourcePath, `  - caseStudy.projectSlug: "${doc.caseStudy.projectSlug}" is not a project document`));
     }
   }
 
@@ -140,6 +144,23 @@ export function getProjects(): ContentDocument[] {
     if (a.featured !== b.featured) return a.featured ? -1 : 1;
     return (b.date ?? "").localeCompare(a.date ?? "") || a.title.localeCompare(b.title);
   });
+}
+
+export function getCaseStudies(): ContentDocument[] {
+  return getPublicDocumentsByType("case-study").sort((a, b) => {
+    if (a.featured !== b.featured) return a.featured ? -1 : 1;
+    return (b.date ?? "").localeCompare(a.date ?? "") || a.title.localeCompare(b.title);
+  });
+}
+
+/** The public case study that references `projectSlug`, if any. */
+export function getCaseStudyForProject(projectSlug: string): ContentDocument | null {
+  return getCaseStudies().find((doc) => doc.caseStudy?.projectSlug === projectSlug) ?? null;
+}
+
+/** Public posts, newest first. */
+export function getPosts(): ContentDocument[] {
+  return getPublicDocumentsByType("post").sort((a, b) => (b.date ?? "").localeCompare(a.date ?? "") || a.title.localeCompare(b.title));
 }
 
 export function getFeaturedProjects(limit = 4): ContentDocument[] {

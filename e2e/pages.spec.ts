@@ -79,6 +79,50 @@ test.describe("search", () => {
     await expect(page.getByRole("listbox", { name: "Search results" })).toContainText("Asterweave");
     await page.keyboard.press("ArrowDown");
     await page.keyboard.press("Enter");
-    await expect(page).toHaveURL(/\/(projects\/|topics\/|\?ask=)/);
+    await expect(page).toHaveURL(/\/(projects\/|case-studies\/|blog\/|topics\/|\?ask=)/);
+  });
+});
+
+test.describe("case studies", () => {
+  test("lists case studies and renders one with facts, table of contents, project link, and embedded chat", async ({ page }) => {
+    await page.goto("/case-studies");
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText("Case Studies");
+    await page.getByRole("link", { name: /Making agentic delivery deterministic/ }).first().click();
+    await expect(page).toHaveURL(/\/case-studies\/asterweave-deterministic-delivery$/);
+    await expect(page.getByRole("heading", { level: 1 })).toContainText("Asterweave");
+    await expect(page.getByRole("complementary", { name: "Case study facts" })).toContainText("Creator and maintainer");
+    await expect(page.getByRole("heading", { name: "Key Decisions" })).toHaveAttribute("id", "key-decisions");
+    await expect(page.getByRole("link", { name: /Asterweave/ }).filter({ hasText: "Project" })).toHaveAttribute("href", "/projects/asterweave");
+    await expect(page.getByRole("heading", { name: /Ask AI about this case study/ })).toBeVisible();
+  });
+
+  test("project pages link to their case study and the assistant attaches a case-study card", async ({ page }) => {
+    await page.goto("/projects/asterweave");
+    await expect(page.getByRole("link", { name: /Case study/ })).toHaveAttribute("href", "/case-studies/asterweave-deterministic-delivery");
+    await page.goto("/?ask=Walk%20me%20through%20one%20of%20his%20case%20studies");
+    await expect(page.getByRole("article", { name: /Case study:/ }).first()).toBeVisible({ timeout: 20_000 });
+  });
+});
+
+test.describe("blog", () => {
+  test("lists posts, renders a post with metadata and JSON-LD, and serves an RSS feed", async ({ page, request }) => {
+    await page.goto("/blog");
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText("Blog");
+    await page.getByRole("link", { name: /Introducing Anjo AI/ }).first().click();
+    await expect(page).toHaveURL(/\/blog\/introducing-anjo-ai$/);
+    await expect(page.getByRole("heading", { level: 1 })).toContainText("Introducing Anjo AI");
+    await expect(page.getByText(/min read/)).toBeVisible();
+    const jsonLd = await page.locator('script[type="application/ld+json"]').allTextContents();
+    expect(jsonLd.some((text) => text.includes('"BlogPosting"'))).toBe(true);
+
+    const feed = await request.get("/feed.xml");
+    expect(feed.status()).toBe(200);
+    expect(feed.headers()["content-type"]).toContain("rss+xml");
+    const xml = await feed.text();
+    expect(xml).toContain("<rss");
+    expect(xml).toContain("/blog/introducing-anjo-ai");
+    // Draft posts never appear.
+    expect(xml).not.toContain("what-made-retrieval-work");
+    expect((await request.get("/blog/what-made-retrieval-work")).status()).toBe(404);
   });
 });

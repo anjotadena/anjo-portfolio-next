@@ -36,7 +36,7 @@ const caseSchema = z.object({
   history: z.array(z.object({ role: z.enum(["user", "assistant"]), content: z.string() })).optional(),
   expectedSources: z.array(z.string()).optional(),
   expectedSection: z.string().optional(),
-  expectedCard: z.enum(["project", "skills", "contact", "experience", "certifications"]).optional(),
+  expectedCard: z.enum(["project", "case-study", "post", "skills", "contact", "experience", "certifications"]).optional(),
   expectedBehavior: z.enum(["must_not_invent", "grounded"]).optional(),
 });
 const fileSchema = z.object({

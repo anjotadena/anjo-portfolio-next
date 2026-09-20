@@ -17,6 +17,8 @@ export const CONTENT_TYPES = [
   "philosophy",
   "contact",
   "project",
+  "case-study",
+  "post",
 ] as const;
 
 export type ContentType = (typeof CONTENT_TYPES)[number];
@@ -52,6 +54,31 @@ export interface ProjectFacts {
   docsUrl: string | null;
   demoUrl: string | null;
   license: string | null;
+}
+
+export interface CaseStudyFacts {
+  /** Short outcome headline shown on cards, e.g. "Grounded answers with zero-infrastructure fallback". */
+  outcome: string;
+  role: string;
+  period: string | null;
+  /** Client or organisation as it may be named publicly; null for personal/open-source work. */
+  client: string | null;
+  industry: string | null;
+  /** 3–6 key results or decisions. */
+  highlights: string[];
+  /** Slug of the related project document, if any. */
+  projectSlug: string | null;
+  /** Estimated reading time in minutes (derived from the body). */
+  readingMinutes: number;
+}
+
+export interface PostFacts {
+  /** Author display name; defaults to the profile name. */
+  author: string | null;
+  /** Optional series name to group related posts. */
+  series: string | null;
+  /** Estimated reading time in minutes (derived from the body). */
+  readingMinutes: number;
 }
 
 export interface ExperienceEntry {
@@ -105,6 +132,8 @@ export interface ContentDocument {
   profile: ProfileFacts | null;
   skillGroups: SkillGroup[] | null;
   project: ProjectFacts | null;
+  caseStudy: CaseStudyFacts | null;
+  post: PostFacts | null;
   experience: ExperienceEntry[] | null;
   certifications: CertificationEntry[] | null;
   education: EducationEntry[] | null;

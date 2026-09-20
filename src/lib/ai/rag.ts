@@ -13,6 +13,7 @@ const INTENT_ANCHORS: Partial<Record<QueryIntent, string>> = {
   profile: "profile overview senior software engineer",
   skills: "skills capability technical stack",
   projects: "project overview",
+  blog: "blog post article",
   contact: "contact email linkedin reach",
   experience: "professional experience role company",
   certifications: "certification credential issuer",

@@ -70,6 +70,21 @@ export const projectFactsSchema = z.object({
   license: nonEmptyString.optional(),
 });
 
+export const caseStudyFactsSchema = z.object({
+  outcome: z.string().trim().min(10).max(160),
+  role: nonEmptyString,
+  period: nonEmptyString.optional(),
+  client: nonEmptyString.optional(),
+  industry: nonEmptyString.optional(),
+  highlights: z.array(nonEmptyString.max(200)).min(2).max(6),
+  projectSlug: slugSchema.optional(),
+});
+
+export const postFactsSchema = z.object({
+  author: nonEmptyString.optional(),
+  series: nonEmptyString.optional(),
+});
+
 export const experienceEntrySchema = z.object({
   id: slugSchema,
   title: nonEmptyString,
@@ -116,6 +131,8 @@ export const frontmatterSchema = z
     profile: profileFactsSchema.optional(),
     skillGroups: z.array(skillGroupSchema).optional(),
     project: projectFactsSchema.optional(),
+    caseStudy: caseStudyFactsSchema.optional(),
+    post: postFactsSchema.optional(),
     experience: z.array(experienceEntrySchema).optional(),
     certifications: z.array(certificationEntrySchema).optional(),
     education: z.array(educationEntrySchema).optional(),
@@ -131,11 +148,18 @@ export const frontmatterSchema = z
       }
     };
     requireBlock("profile", "profile");
+    requireBlock("caseStudy", "case-study");
     requireBlock("skillGroups", "skills");
     requireBlock("experience", "experience");
     requireBlock("certifications", "certifications");
     requireBlock("education", "education");
 
+    if (data.type !== "post" && data.post !== undefined) {
+      ctx.addIssue({ code: "custom", path: ["post"], message: "`post` is only allowed on post documents" });
+    }
+    if (data.type === "post" && !data.date) {
+      ctx.addIssue({ code: "custom", path: ["date"], message: "posts require a publication `date`" });
+    }
     if (data.type !== "project" && data.project !== undefined) {
       ctx.addIssue({ code: "custom", path: ["project"], message: "`project` is only allowed on project documents" });
     }

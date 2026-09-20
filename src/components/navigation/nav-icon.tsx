@@ -9,6 +9,7 @@ import {
   Layers,
   Mail,
   MessageSquare,
+  PenLine,
   Sparkles,
   User,
 } from "lucide-react";
@@ -26,6 +27,7 @@ const ICONS = {
   award: Award,
   mail: Mail,
   book: BookOpen,
+  pen: PenLine,
   compass: Compass,
 } as const;
 

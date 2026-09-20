@@ -1,5 +1,6 @@
 /** Closed list of product analytics events. Shared by the client tracker and the API validator. */
 export const ANALYTICS_EVENTS = [
+  "page_view",
   "chat_started",
   "question_submitted",
   "suggested_prompt_clicked",

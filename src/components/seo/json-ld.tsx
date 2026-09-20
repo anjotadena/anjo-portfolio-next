@@ -82,3 +82,24 @@ export function ProjectJsonLd({ project }: { project: ContentDocument }) {
     />
   );
 }
+
+export function ArticleJsonLd({ post }: { post: ContentDocument }) {
+  const { profile } = getProfile();
+  return (
+    <JsonLd
+      data={{
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        headline: post.title,
+        description: post.summary,
+        url: absoluteUrl(`/blog/${post.slug}`),
+        mainEntityOfPage: absoluteUrl(`/blog/${post.slug}`),
+        ...(post.date ? { datePublished: post.date } : {}),
+        ...(post.updated ? { dateModified: post.updated } : {}),
+        keywords: post.tags.join(", "),
+        author: { "@type": "Person", name: post.post?.author ?? profile.name, url: absoluteUrl("/") },
+        publisher: { "@type": "Person", name: profile.name },
+      }}
+    />
+  );
+}

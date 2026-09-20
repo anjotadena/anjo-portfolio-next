@@ -110,14 +110,11 @@ const nextConfig: NextConfig = {
       },
     ];
   },
-  // The previous site served /services and /blog routes. That content was
-  // retired; redirect permanently so inbound links and search indexes don't 404.
+  // The previous site served a /services route that was retired; redirect
+  // permanently so inbound links and search indexes don't 404. (/blog is a
+  // real route again.)
   async redirects() {
-    return [
-      { source: "/services", destination: "/", permanent: true },
-      { source: "/blog", destination: "/", permanent: true },
-      { source: "/blog/:id", destination: "/", permanent: true },
-    ];
+    return [{ source: "/services", destination: "/", permanent: true }];
   },
 };
 

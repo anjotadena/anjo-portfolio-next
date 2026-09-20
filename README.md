@@ -33,6 +33,7 @@ There is no database in the default setup: the Markdown lives in the repo, `npm 
 - [Deployment](#deployment)
 - [Environment variables](#environment-variables)
 - [PWA & versioning](#pwa--versioning)
+- [Analytics](#analytics)
 - [Adding new portfolio content](#adding-new-portfolio-content)
 - [Troubleshooting](#troubleshooting)
 
@@ -99,7 +100,7 @@ flowchart TD
 content/                 Markdown knowledge base (source of truth)
   profile.md skills.md contact.md ai-engineering.md cloud.md devops.md architecture.md philosophy.md
   experience.md education.md certifications.md   (private templates until filled in)
-  projects/*.md
+  projects/*.md  case-studies/*.md  blog/*.md
 data/knowledge-index.json  Committed vector index built by `npm run content:index` (no database)
 db/migrations/           Reference SQL for the pgvector schema
 docs/                    ARCHITECTURE, CONTENT_SCHEMA, SECURITY, DECISIONS
@@ -107,8 +108,9 @@ evals/cases.json         RAG evaluation cases + thresholds
 e2e/                     Playwright specs (run against a production build)
 scripts/                 validate-content, index-content, db-migrate, eval
 src/
-  app/                   routes: / (chat), /about, /experience, /projects, /projects/[slug], /skills,
-                         /contact, /topics/[slug], /chat, api/{chat,search,health,analytics}, sitemap, robots
+  app/                   routes: / (chat), /about, /experience, /projects, /projects/[slug], /case-studies,
+                         /case-studies/[slug], /blog, /blog/[slug], /skills, /contact, /topics/[slug], /chat,
+                         /offline, feed.xml, sw.js, manifest, icons/[name], api/{chat,search,health,analytics,version}
   components/
     chat/                chat-container, chat-input, chat-message, source-citations, cards/, use-chat
     layout/              app-shell (server), shell-frame (client), page-layout
@@ -313,6 +315,14 @@ The site is an installable progressive web app that updates itself.
 - **Version identity**: `package.json` version + git SHA (`VERCEL_GIT_COMMIT_SHA` on Vercel) + build time, inlined at build (`src/lib/version.ts`), exposed at `/api/version`, shown in the sidebar (linked to the commit), and used as the cache name.
 - **Releasing**: `npm run release:patch` (or `minor` / `major`) bumps `package.json`, commits `chore(release): vX.Y.Z`, tags, and pushes; the `Release` workflow verifies the tag, runs the quality gate, and publishes a GitHub Release with generated notes. Vercel deploys the tagged commit. Keep [CHANGELOG.md](CHANGELOG.md) current under *Unreleased* as you go.
 
+## Analytics
+
+Visitor analytics are **Vercel Web Analytics**, integrated without the SDK: the loader is served from the site's own origin (`/_vercel/insights/script.js`), sets no cookies, stores no personal data, and needs no CSP changes. A page view is sent on every route change; product events (`chat_started`, `question_submitted`, `citation_opened`, `project_opened`, `search_used`, `answer_feedback`, …) are forwarded as custom events. The component renders only on Vercel builds (`VERCEL=1`).
+
+**Enable it once**: Vercel → your project → *Analytics* → *Enable*. Visitors, page views, referrers, countries, devices, and top pages then appear in that tab (the free tier includes a monthly event allowance; custom events need Pro).
+
+Every deployment (Docker included) also records the same events, plus `page_view`, as structured log lines through `POST /api/analytics` — path only, never query strings, message text, or identifiers.
+
 ## Adding new portfolio content
 
 1. Create `content/<slug>.md` or `content/projects/<slug>.md` with valid frontmatter (see [docs/CONTENT_SCHEMA.md](docs/CONTENT_SCHEMA.md)). Use `## Heading` sections — each becomes a retrievable chunk and a citation target.
@@ -322,6 +332,10 @@ The site is an installable progressive web app that updates itself.
 5. Optionally add an eval case in `evals/cases.json` and run `npm run eval`.
 
 To publish experience, education, or certifications, fill in the structured entries in the private template files and flip `visibility` to `public`; the Experience page, topic pages, chat cards, and retrieval pick them up automatically.
+
+**Case studies** live in `content/case-studies/` (`type: case-study` with a `caseStudy` block: outcome, role, highlights, optional `projectSlug`); they get `/case-studies/[slug]` pages with a table of contents, a link from the related project page, a chat card, and an embedded "Ask AI about this case study". `professional-case-study-template.md` is a private template for client work.
+
+**Blog posts** live in `content/blog/` (`type: post`, `date` required, optional `post.series`/`post.author`); they get `/blog/[slug]` pages, the RSS feed at `/feed.xml`, BlogPosting JSON-LD, and a chat card. Two draft posts ship as `visibility: private` — review and flip them to publish.
 
 ## Troubleshooting
 

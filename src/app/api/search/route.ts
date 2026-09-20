@@ -23,7 +23,7 @@ function getLimiter(): MultiWindowRateLimiter {
   return limiter;
 }
 
-const GROUP_ORDER: SearchGroup[] = ["projects", "skills", "experience", "knowledge"];
+const GROUP_ORDER: SearchGroup[] = ["projects", "case-studies", "blog", "skills", "experience", "knowledge"];
 
 /**
  * GET /api/search?q=...&limit=10 — semantic search over public content,

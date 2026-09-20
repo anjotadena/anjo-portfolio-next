@@ -8,6 +8,10 @@ function questionFor(doc: ContentDocument): string {
   switch (doc.type) {
     case "project":
       return `Tell me more about ${doc.title}`;
+    case "case-study":
+      return `Walk me through the ${doc.title} case study`;
+    case "post":
+      return `What does his post "${doc.title}" cover?`;
     case "skills":
       return "What are his strongest technical skills?";
     case "ai-engineering":
@@ -112,6 +116,8 @@ export function buildSuggestedPrompts(documents: readonly ContentDocument[], lim
   const profile = publicDocs.find((doc) => doc.type === "profile");
   if (profile) add("Tell me about Anjo");
   for (const doc of publicDocs.filter((doc) => doc.type === "project" && doc.featured).slice(0, 2)) add(`What is ${doc.title}?`);
+  const caseStudy = publicDocs.find((doc) => doc.type === "case-study" && doc.featured) ?? publicDocs.find((doc) => doc.type === "case-study");
+  if (caseStudy) add(`How did he build ${caseStudy.title.replace(/^(Building|Designing|Making)\s+/i, "")}?`);
   for (const type of ["skills", "ai-engineering", "cloud", "architecture", "contact", "devops"] as const) {
     const doc = publicDocs.find((entry) => entry.type === type);
     if (doc) add(questionFor(doc));

@@ -1,6 +1,6 @@
 import type { ContentType } from "./content";
 
-export type SearchGroup = "projects" | "skills" | "experience" | "knowledge";
+export type SearchGroup = "projects" | "case-studies" | "blog" | "skills" | "experience" | "knowledge";
 
 export interface SearchHit {
   documentSlug: string;
@@ -24,6 +24,10 @@ export function groupForType(type: ContentType): SearchGroup {
   switch (type) {
     case "project":
       return "projects";
+    case "case-study":
+      return "case-studies";
+    case "post":
+      return "blog";
     case "skills":
       return "skills";
     case "experience":
@@ -35,6 +39,8 @@ export function groupForType(type: ContentType): SearchGroup {
 
 export const SEARCH_GROUP_LABELS: Record<SearchGroup, string> = {
   projects: "Projects",
+  "case-studies": "Case studies",
+  blog: "Blog",
   skills: "Skills",
   experience: "Experience",
   knowledge: "Knowledge",

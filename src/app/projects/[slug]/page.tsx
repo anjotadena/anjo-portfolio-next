@@ -1,13 +1,14 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
-import { BookOpen, ExternalLink, Github } from "lucide-react";
+import { ArrowRight, BookOpen, BookOpenText, ExternalLink, Github } from "lucide-react";
 import { PageLayout } from "@/components/layout/page-layout";
 import { ChatContainer } from "@/components/chat/chat-container";
 import { DocumentBody } from "@/components/portfolio/document-body";
 import { BreadcrumbJsonLd, ProjectJsonLd } from "@/components/seo/json-ld";
 import { Badge } from "@/components/ui/badge";
-import { getProfile, getProjects, getPublicDocumentBySlug } from "@/lib/knowledge/repository";
+import { getCaseStudyForProject, getProfile, getProjects, getPublicDocumentBySlug } from "@/lib/knowledge/repository";
 import { initialsFor } from "@/lib/utils/initials";
 
 // Every slug is known at build time (content lives in the repo); unknown
@@ -43,6 +44,7 @@ export default async function ProjectPage({ params }: PageProps<"/projects/[slug
 
   const { profile } = getProfile();
   const facts = project.project;
+  const caseStudy = getCaseStudyForProject(project.slug);
   const crumbs = [
     { name: "Home", path: "/" },
     { name: "Projects", path: "/projects" },
@@ -78,6 +80,23 @@ export default async function ProjectPage({ params }: PageProps<"/projects/[slug
     >
       <ProjectJsonLd project={project} />
       <BreadcrumbJsonLd items={crumbs} />
+
+      {caseStudy?.caseStudy && (
+        <Link
+          href={`/case-studies/${caseStudy.slug}`}
+          className="mb-8 flex items-center gap-4 rounded-xl border border-primary/30 bg-accent/40 p-4 transition-colors hover:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        >
+          <BookOpenText className="h-6 w-6 shrink-0 text-primary" aria-hidden="true" />
+          <span className="min-w-0 flex-1">
+            <span className="block text-[11px] font-semibold uppercase tracking-wider text-primary">Case study</span>
+            <span className="block text-sm font-semibold text-foreground">{caseStudy.title}</span>
+            <span className="block text-xs text-muted-foreground">
+              {caseStudy.caseStudy.outcome} · {caseStudy.caseStudy.readingMinutes} min read
+            </span>
+          </span>
+          <ArrowRight className="h-4 w-4 shrink-0 text-muted-foreground" aria-hidden="true" />
+        </Link>
+      )}
 
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_16rem]">
         <DocumentBody body={project.body} className="min-w-0" />

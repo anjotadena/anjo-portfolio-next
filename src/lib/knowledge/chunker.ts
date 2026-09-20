@@ -1,5 +1,6 @@
 import { createHash } from "node:crypto";
 import type { ContentChunk, ContentDocument } from "@/types/content";
+import { slugifyHeading } from "@/lib/utils/slug";
 
 export interface ChunkOptions {
   /** Sections shorter than this are merged into the preceding chunk. */
@@ -20,13 +21,7 @@ interface Section {
   lines: string[];
 }
 
-export function slugifyHeading(value: string): string {
-  return value
-    .toLowerCase()
-    .replace(/&/g, " and ")
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "") || "section";
-}
+export { slugifyHeading };
 
 /** SHA-256 over the parts that matter for embedding; any change re-embeds the chunk. */
 export function hashChunkPayload(documentTitle: string, headingPath: readonly string[], text: string): string {

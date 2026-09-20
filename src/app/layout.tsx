@@ -3,6 +3,7 @@ import { Inter, JetBrains_Mono } from "next/font/google";
 import { ThemeProvider } from "@/components/theme/theme-provider";
 import { AppShell } from "@/components/layout/app-shell";
 import { ServiceWorkerManager } from "@/components/pwa/service-worker-manager";
+import { PageViewTracker, VercelAnalytics } from "@/components/analytics/vercel-analytics";
 import { getProfile } from "@/lib/knowledge/repository";
 import { getSiteUrl } from "@/lib/seo/site";
 import "./globals.css";
@@ -45,6 +46,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <ThemeProvider>
           <AppShell>{children}</AppShell>
           <ServiceWorkerManager />
+          <PageViewTracker />
+          {process.env.VERCEL === "1" && <VercelAnalytics />}
         </ThemeProvider>
       </body>
     </html>

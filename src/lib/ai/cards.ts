@@ -1,4 +1,4 @@
-import type { ChatCard, ProjectCardData } from "@/types/chat";
+import type { CaseStudyCardData, ChatCard, PostCardData, ProjectCardData } from "@/types/chat";
 import type { ContentDocument } from "@/types/content";
 import type { KnowledgeResult } from "@/lib/retrieval/types";
 import type { QueryIntent } from "./query";
@@ -19,6 +19,36 @@ export function toProjectCard(doc: ContentDocument): ProjectCardData {
     repoUrl: doc.project?.repoUrl ?? null,
     demoUrl: doc.project?.demoUrl ?? doc.project?.docsUrl ?? null,
     featured: doc.featured,
+  };
+}
+
+export function toCaseStudyCard(doc: ContentDocument): CaseStudyCardData | null {
+  if (!doc.caseStudy) return null;
+  return {
+    kind: "case-study",
+    slug: doc.slug,
+    title: doc.title,
+    outcome: doc.caseStudy.outcome,
+    role: doc.caseStudy.role,
+    period: doc.caseStudy.period,
+    highlights: doc.caseStudy.highlights.slice(0, 3),
+    readingMinutes: doc.caseStudy.readingMinutes,
+    href: `/case-studies/${doc.slug}`,
+    projectHref: doc.caseStudy.projectSlug ? `/projects/${doc.caseStudy.projectSlug}` : null,
+  };
+}
+
+export function toPostCard(doc: ContentDocument): PostCardData | null {
+  if (!doc.post || !doc.date) return null;
+  return {
+    kind: "post",
+    slug: doc.slug,
+    title: doc.title,
+    summary: doc.summary,
+    date: doc.date,
+    readingMinutes: doc.post.readingMinutes,
+    tags: doc.tags.slice(0, 4),
+    href: `/blog/${doc.slug}`,
   };
 }
 
@@ -75,6 +105,40 @@ export function buildCards(input: {
     projectDocs.push(...input.documents.filter((doc) => doc.type === "project" && doc.featured && doc.visibility === "public").slice(0, MAX_PROJECT_CARDS));
   }
   for (const doc of projectDocs) cards.push(toProjectCard(doc));
+
+  // A case study card when one was retrieved near the top, or when the
+  // question is about projects/case studies and a case study covers a
+  // retrieved project.
+  const topIsCaseStudy = input.results[0]?.chunk.type === "case-study";
+  const caseStudyDocs = retrievedSlugs
+    .map((slug) => bySlug.get(slug))
+    .filter((doc): doc is ContentDocument => doc !== undefined && doc.type === "case-study");
+  const linkedCaseStudies = input.documents.filter(
+    (doc) => doc.type === "case-study" && doc.visibility === "public" && doc.caseStudy?.projectSlug && projectDocs.some((project) => project.slug === doc.caseStudy?.projectSlug),
+  );
+  const chosen = topIsCaseStudy || input.intent === "projects" ? [...caseStudyDocs, ...linkedCaseStudies] : caseStudyDocs.slice(0, topIsCaseStudy ? 1 : 0);
+  const seenCaseStudies = new Set<string>();
+  for (const doc of chosen) {
+    if (seenCaseStudies.has(doc.slug) || seenCaseStudies.size >= 2) continue;
+    const card = toCaseStudyCard(doc);
+    if (card) {
+      seenCaseStudies.add(doc.slug);
+      cards.push(card);
+    }
+  }
+
+  // A blog post card when a post is the best match or the visitor asked about writing.
+  const topIsPost = input.results[0]?.chunk.type === "post";
+  if (topIsPost || input.intent === "blog") {
+    const postDocs = retrievedSlugs
+      .map((slug) => bySlug.get(slug))
+      .filter((doc): doc is ContentDocument => doc !== undefined && doc.type === "post")
+      .slice(0, 2);
+    for (const doc of postDocs) {
+      const card = toPostCard(doc);
+      if (card) cards.push(card);
+    }
+  }
 
   const skillsDoc = input.documents.find((doc) => doc.type === "skills" && doc.visibility === "public");
   const topType = input.results[0]?.chunk.type;

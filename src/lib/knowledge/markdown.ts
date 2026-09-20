@@ -89,6 +89,26 @@ export function parseMarkdownDocument(raw: string, sourcePath: string): ContentD
           license: fm.project.license ?? null,
         }
       : null,
+    caseStudy: fm.caseStudy
+      ? {
+          outcome: fm.caseStudy.outcome,
+          role: fm.caseStudy.role,
+          period: fm.caseStudy.period ?? null,
+          client: fm.caseStudy.client ?? null,
+          industry: fm.caseStudy.industry ?? null,
+          highlights: fm.caseStudy.highlights,
+          projectSlug: fm.caseStudy.projectSlug ?? null,
+          readingMinutes: Math.max(1, Math.round(body.split(/\s+/).length / 220)),
+        }
+      : null,
+    post:
+      fm.type === "post"
+        ? {
+            author: fm.post?.author ?? null,
+            series: fm.post?.series ?? null,
+            readingMinutes: Math.max(1, Math.round(body.split(/\s+/).length / 220)),
+          }
+        : null,
     experience: fm.experience
       ? fm.experience.map((entry) => ({
           id: entry.id,

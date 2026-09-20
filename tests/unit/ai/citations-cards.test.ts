@@ -5,7 +5,7 @@ import { buildCards } from "@/lib/ai/cards";
 import { buildFollowUps, buildSuggestedPrompts } from "@/lib/ai/follow-ups";
 import { understandQuery } from "@/lib/ai/query";
 import type { KnowledgeResult } from "@/lib/retrieval/types";
-import { fixtureCorpus } from "../../fixtures/docs";
+import { doc, fixtureCorpus } from "../../fixtures/docs";
 
 const docs = fixtureCorpus();
 function results(...slugs: string[]): KnowledgeResult[] {
@@ -121,5 +121,79 @@ describe("follow-ups", () => {
     expect(prompts).toContain("What is Starweave?");
     expect(prompts).toContain("How can I contact him?");
     expect(prompts.some((p) => /Secret/.test(p))).toBe(false);
+  });
+});
+
+describe("case studies", () => {
+  const caseStudy = doc({
+    title: "Making Starweave deterministic",
+    slug: "starweave-case-study",
+    type: "case-study",
+    summary: "How Starweave turned a free-form agent into a gated delivery workflow.",
+    technologies: ["Node.js"],
+    featured: true,
+    caseStudy: { outcome: "A gated, resumable delivery workflow.", role: "Creator", highlights: ["Typed graph edges", "Evidence contract"], projectSlug: "starweave" },
+    body: "## Problem\n\nAutonomous coding is unreliable when requirements are ambiguous and tests are not gates.\n\n## Results\n\nPublished under MIT with documentation and a marketplace listing for the plugin.",
+    path: "content/case-studies/starweave.md",
+  });
+  const corpus = [...docs, caseStudy];
+  const caseStudyResults = () => chunkDocument(caseStudy).slice(0, 1).map((chunk) => ({ chunk, score: 0.9, matchedBy: "lexical" as const }));
+
+  it("validates the caseStudy block and derives reading time", () => {
+    expect(caseStudy.caseStudy?.readingMinutes).toBeGreaterThanOrEqual(1);
+    expect(() => doc({ type: "case-study", body: "## A\n\nB" })).toThrow(/caseStudy/);
+    expect(() => doc({ type: "project", technologies: ["x"], caseStudy: { outcome: "Long enough outcome", role: "r", highlights: ["a", "b"] } })).toThrow(/only allowed on case-study/);
+  });
+
+  it("maps case studies to their page and search group", () => {
+    expect(hrefForDocument("case-study", "starweave-case-study")).toBe("/case-studies/starweave-case-study");
+  });
+
+  it("attaches a CaseStudyCard when a case study is the top match, and links it to the project", () => {
+    const cards = buildCards({ intent: "general", results: caseStudyResults(), documents: corpus });
+    expect(cards[0]).toMatchObject({ kind: "case-study", slug: "starweave-case-study", projectHref: "/projects/starweave", highlights: ["Typed graph edges", "Evidence contract"] });
+  });
+
+  it("adds the linked case study when the visitor asks about the project", () => {
+    const cards = buildCards({ intent: "projects", results: results("starweave"), documents: corpus });
+    expect(cards.map((card) => card.kind)).toEqual(["project", "case-study"]);
+  });
+
+  it("suggests the case study as a follow-up", () => {
+    const prompts = buildSuggestedPrompts(corpus);
+    expect(prompts.some((prompt) => /Starweave deterministic/.test(prompt))).toBe(true);
+  });
+});
+
+describe("blog posts", () => {
+  const post = doc({
+    title: "Grounding a RAG assistant",
+    slug: "grounding-rag",
+    type: "post",
+    summary: "What made retrieval work on a small, terminology-heavy corpus.",
+    tags: ["rag", "retrieval"],
+    date: "2026-09-21",
+    post: { series: "Building" },
+    body: "## The setup\n\nThe assistant answers from about eighty Markdown sections; retrieval is hybrid — cosine plus BM25 fused with reciprocal rank fusion.",
+    path: "content/blog/grounding-rag.md",
+  });
+  const corpus = [...docs, post];
+
+  it("requires a date on posts and derives reading time", () => {
+    expect(post.post?.readingMinutes).toBe(1);
+    expect(post.post?.series).toBe("Building");
+    expect(() => doc({ type: "post", body: "## A\n\nB" })).toThrow(/date/);
+    expect(() => doc({ type: "project", technologies: ["x"], post: { series: "s" } })).toThrow(/only allowed on post/);
+  });
+
+  it("maps posts to /blog and classifies blog questions", () => {
+    expect(hrefForDocument("post", "grounding-rag")).toBe("/blog/grounding-rag");
+    expect(understandQuery("What has he written about retrieval?", []).intent).toBe("blog");
+  });
+
+  it("attaches a PostCard when a post is the top match", () => {
+    const results = chunkDocument(post).slice(0, 1).map((chunk) => ({ chunk, score: 0.9, matchedBy: "lexical" as const }));
+    const cards = buildCards({ intent: "general", results, documents: corpus });
+    expect(cards[0]).toMatchObject({ kind: "post", slug: "grounding-rag", href: "/blog/grounding-rag", date: "2026-09-21", readingMinutes: 1 });
   });
 });

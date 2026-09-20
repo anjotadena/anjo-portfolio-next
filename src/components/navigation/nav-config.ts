@@ -21,6 +21,7 @@ export type NavIcon =
   | "award"
   | "mail"
   | "book"
+  | "pen"
   | "compass";
 
 export const PRIMARY_NAV: NavItem[] = [
@@ -28,6 +29,8 @@ export const PRIMARY_NAV: NavItem[] = [
   { href: "/about", label: "About", icon: "user" },
   { href: "/experience", label: "Experience", icon: "briefcase" },
   { href: "/projects", label: "Projects", icon: "folder" },
+  { href: "/case-studies", label: "Case Studies", icon: "book" },
+  { href: "/blog", label: "Blog", icon: "pen" },
   { href: "/skills", label: "Skills", icon: "layers" },
   { href: "/contact", label: "Contact", icon: "mail" },
 ];
