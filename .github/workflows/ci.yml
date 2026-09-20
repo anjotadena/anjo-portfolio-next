@@ -30,6 +30,8 @@ jobs:
           cache: npm
       - name: Install
         run: npm ci
+      - name: Secrets scan
+        run: npm run check:secrets
       - name: Type check
         run: npm run typecheck
       - name: Lint

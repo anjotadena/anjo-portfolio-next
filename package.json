@@ -8,7 +8,7 @@
     "build": "npm run content:validate && next build",
     "start": "next start",
     "lint": "eslint .",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "next typegen && tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
@@ -18,7 +18,9 @@
     "db:migrate": "tsx --conditions=react-server scripts/db-migrate.ts",
     "eval": "tsx --conditions=react-server scripts/eval.ts",
     "audit": "npm audit --audit-level=high",
-    "dev:mock-openai": "node scripts/mock-openai.mjs"
+    "dev:mock-openai": "node scripts/mock-openai.mjs",
+    "check:secrets": "node scripts/check-secrets.mjs",
+    "hooks:install": "node scripts/install-hooks.mjs"
   },
   "dependencies": {
     "gray-matter": "4.0.3",
@@ -55,6 +57,6 @@
     "vitest": "^5.0.1"
   },
   "engines": {
-    "node": ">=22.12.0"
+    "node": "22.x"
   }
 }

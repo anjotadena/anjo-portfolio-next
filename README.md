@@ -226,8 +226,9 @@ Workflow: edit Markdown → `npm run content:index` → commit both the `.md` ch
 ## Testing
 
 ```bash
-npm run typecheck
-npm run lint
+npm run check:secrets    # scans tracked files for credential patterns (first step in CI)
+npm run hooks:install    # local pre-push hook that runs the same scan
+npm run typecheck        # next typegen + tsc
 npm test                 # Vitest: unit (knowledge, retrieval, AI, security), integration (RAG pipeline), components (RTL)
 npm run test:coverage
 npm run test:e2e         # Playwright against a production build (run `npx next build` first); desktop + mobile.
