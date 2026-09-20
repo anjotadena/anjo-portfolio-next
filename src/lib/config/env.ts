@@ -44,6 +44,8 @@ const optionalString = z
 const rawSchema = z.object({
   NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
   NEXT_PUBLIC_SITE_URL: optionalString,
+  /** Injected by Vercel (System Environment Variables); used when NEXT_PUBLIC_SITE_URL is not set. */
+  VERCEL_PROJECT_PRODUCTION_URL: optionalString,
 
   OPENAI_API_KEY: optionalString,
   OPENAI_BASE_URL: optionalString,
@@ -121,7 +123,8 @@ export function parseEnv(source: NodeJS.ProcessEnv): AppEnv {
   const problems: string[] = [];
   const isProduction = raw.NODE_ENV === "production";
 
-  if (isProduction && !raw.NEXT_PUBLIC_SITE_URL) {
+  const siteUrlSource = raw.NEXT_PUBLIC_SITE_URL ?? (raw.VERCEL_PROJECT_PRODUCTION_URL ? `https://${raw.VERCEL_PROJECT_PRODUCTION_URL}` : undefined);
+  if (isProduction && !siteUrlSource) {
     problems.push("NEXT_PUBLIC_SITE_URL is required in production (used for canonical URLs, sitemap, and Open Graph)");
   }
 
@@ -153,9 +156,9 @@ export function parseEnv(source: NodeJS.ProcessEnv): AppEnv {
     backend = hasDb && hasKey ? "pgvector" : hasKey ? "file" : "lexical";
   }
 
-  if (raw.NEXT_PUBLIC_SITE_URL) {
+  if (siteUrlSource) {
     try {
-      new URL(raw.NEXT_PUBLIC_SITE_URL);
+      new URL(siteUrlSource);
     } catch {
       problems.push("NEXT_PUBLIC_SITE_URL must be an absolute URL");
     }
@@ -166,7 +169,7 @@ export function parseEnv(source: NodeJS.ProcessEnv): AppEnv {
   return {
     nodeEnv: raw.NODE_ENV,
     isProduction,
-    siteUrl: (raw.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000").replace(/\/+$/, ""),
+    siteUrl: (siteUrlSource ?? "http://localhost:3000").replace(/\/+$/, ""),
     ai: {
       mode: aiMode,
       apiKey: raw.OPENAI_API_KEY,

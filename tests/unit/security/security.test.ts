@@ -130,3 +130,11 @@ describe("logging hygiene", () => {
     expect(estimateCost({ inputTokens: 1_000_000, outputTokens: 500_000 }, { inputCostPer1M: 0.4, outputCostPer1M: 1.6 })).toBe(1.2);
   });
 });
+
+describe("Vercel zero-config site URL", () => {
+  it("accepts VERCEL_PROJECT_PRODUCTION_URL in production when NEXT_PUBLIC_SITE_URL is unset", () => {
+    const env = parseEnv({ NODE_ENV: "production", VERCEL_PROJECT_PRODUCTION_URL: "anjotadena.vercel.app" });
+    expect(env.siteUrl).toBe("https://anjotadena.vercel.app");
+    expect(parseEnv({ NODE_ENV: "production", NEXT_PUBLIC_SITE_URL: "https://anjotadena.dev", VERCEL_PROJECT_PRODUCTION_URL: "x.vercel.app" }).siteUrl).toBe("https://anjotadena.dev");
+  });
+});

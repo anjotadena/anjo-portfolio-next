@@ -4,8 +4,12 @@
  * `next build` prerendering without pulling in the full env validation.
  */
 export function getSiteUrl(): string {
-  const raw = process.env.NEXT_PUBLIC_SITE_URL?.trim();
-  return (raw && raw.length > 0 ? raw : "http://localhost:3000").replace(/\/+$/, "");
+  const explicit = process.env.NEXT_PUBLIC_SITE_URL?.trim();
+  if (explicit) return explicit.replace(/\/+$/, "");
+  // Vercel injects the production hostname; use it so a zero-config deploy has correct absolute URLs.
+  const vercel = process.env.VERCEL_PROJECT_PRODUCTION_URL?.trim();
+  if (vercel) return `https://${vercel}`;
+  return "http://localhost:3000";
 }
 
 export function absoluteUrl(path: string): string {
