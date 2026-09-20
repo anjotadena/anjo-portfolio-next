@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { getProfile, getPublicDocuments } from "@/lib/knowledge/repository";
 import { initialsFor } from "@/lib/utils/initials";
+import { APP_VERSION, BUILD_ID, commitUrl } from "@/lib/version";
 import { PRIMARY_NAV, TOPIC_ICONS, TOPIC_LABELS, TOPIC_TYPES, type NavItem } from "@/components/navigation/nav-config";
 import { ShellFrame, type ShellBrand } from "./shell-frame";
 
@@ -20,7 +21,11 @@ export function getTopicNav(): NavItem[] {
 
 export function getBrand(): ShellBrand {
   const { profile } = getProfile();
+  const portfolioRepo = getPublicDocuments().find((doc) => doc.slug === "anjo-ai-portfolio")?.project?.repoUrl ?? null;
   return {
+    version: APP_VERSION,
+    buildId: BUILD_ID,
+    buildUrl: portfolioRepo ? commitUrl(portfolioRepo) : null,
     name: profile.name,
     initials: initialsFor(profile.name),
     headline: profile.headline,

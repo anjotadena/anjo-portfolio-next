@@ -1,7 +1,7 @@
 {
   "name": "anjo-portfolio",
   "private": true,
-  "version": "0.1.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "next dev",
@@ -20,7 +20,10 @@
     "audit": "npm audit --audit-level=high",
     "dev:mock-openai": "node scripts/mock-openai.mjs",
     "check:secrets": "node scripts/check-secrets.mjs",
-    "hooks:install": "node scripts/install-hooks.mjs"
+    "hooks:install": "node scripts/install-hooks.mjs",
+    "release:patch": "npm version patch -m \"chore(release): v%s\" && git push --follow-tags",
+    "release:minor": "npm version minor -m \"chore(release): v%s\" && git push --follow-tags",
+    "release:major": "npm version major -m \"chore(release): v%s\" && git push --follow-tags"
   },
   "dependencies": {
     "gray-matter": "4.0.3",

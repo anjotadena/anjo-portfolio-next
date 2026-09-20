@@ -1,6 +1,23 @@
+import { execSync } from "node:child_process";
+import { readFileSync } from "node:fs";
 import type { NextConfig } from "next";
 
 const isProduction = process.env.NODE_ENV === "production";
+
+// Build identity, inlined into both bundles and the service worker so every
+// deploy is distinguishable (see src/lib/version.ts).
+const packageVersion = (JSON.parse(readFileSync(new URL("./package.json", import.meta.url), "utf8")) as { version: string }).version;
+function resolveBuildId(): string {
+  const fromVercel = process.env.VERCEL_GIT_COMMIT_SHA ?? process.env.GITHUB_SHA;
+  if (fromVercel) return fromVercel.slice(0, 7);
+  try {
+    return execSync("git rev-parse --short HEAD", { stdio: ["ignore", "pipe", "ignore"] }).toString().trim() || "dev";
+  } catch {
+    return "dev";
+  }
+}
+const buildId = resolveBuildId();
+const buildTime = new Date().toISOString();
 
 // Static (non-nonce) Content-Security-Policy, applied via next.config's
 // headers() rather than per-request middleware.
@@ -56,6 +73,12 @@ const securityHeaders = [
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
+  env: {
+    NEXT_PUBLIC_APP_VERSION: packageVersion,
+    NEXT_PUBLIC_BUILD_ID: buildId,
+    NEXT_PUBLIC_BUILD_TIME: buildTime,
+  },
+  generateBuildId: () => `${packageVersion}-${buildId}`,
   // Standalone output is only for the Docker image (set by the Dockerfile).
   // Vercel and `next start` use the default output.
   ...(process.env.DOCKER_BUILD === "1" ? { output: "standalone" as const } : {}),
@@ -71,6 +94,19 @@ const nextConfig: NextConfig = {
       {
         source: "/:path*",
         headers: securityHeaders,
+      },
+      {
+        // The service worker must always be revalidated so a new deploy is
+        // picked up on the next visit, and may control the whole origin.
+        source: "/sw.js",
+        headers: [
+          { key: "Cache-Control", value: "no-cache, max-age=0, must-revalidate" },
+          { key: "Service-Worker-Allowed", value: "/" },
+        ],
+      },
+      {
+        source: "/api/version",
+        headers: [{ key: "Cache-Control", value: "no-cache, max-age=0, must-revalidate" }],
       },
     ];
   },

@@ -32,6 +32,7 @@ There is no database in the default setup: the Markdown lives in the repo, `npm 
 - [Docker](#docker)
 - [Deployment](#deployment)
 - [Environment variables](#environment-variables)
+- [PWA & versioning](#pwa--versioning)
 - [Adding new portfolio content](#adding-new-portfolio-content)
 - [Troubleshooting](#troubleshooting)
 
@@ -302,6 +303,15 @@ See [Docker](#docker). Production deploys should run only from the `master` bran
 | `LOG_LEVEL` | no | `info` | `debug` / `info` / `warn` / `error` |
 
 Validation happens once at startup (`src/lib/config/env.ts`); misconfiguration fails fast with a readable message and `/api/health` reports 503.
+
+## PWA & versioning
+
+The site is an installable progressive web app that updates itself.
+
+- **Manifest** (`src/app/manifest.ts`) with icons rendered at build time from the profile monogram (`/icons/icon-192`, `/icons/icon-512`, maskable and Apple variants) — no binary assets in the repo.
+- **Versioned service worker** served from `/sw.js` (`src/app/sw.js/route.ts`) with the build label baked in. Every deploy produces a byte-different worker, so browsers install it on the next visit; it activates immediately (`skipWaiting` + `clients.claim`), deletes old caches, and the page reloads as soon as no answer is streaming. The conversation is kept in `sessionStorage`, so nothing is lost. Strategy: API never cached, `/_next/static` cache-first, navigations network-first with an `/offline` fallback, icons/fonts stale-while-revalidate. Registration is skipped in development.
+- **Version identity**: `package.json` version + git SHA (`VERCEL_GIT_COMMIT_SHA` on Vercel) + build time, inlined at build (`src/lib/version.ts`), exposed at `/api/version`, shown in the sidebar (linked to the commit), and used as the cache name.
+- **Releasing**: `npm run release:patch` (or `minor` / `major`) bumps `package.json`, commits `chore(release): vX.Y.Z`, tags, and pushes; the `Release` workflow verifies the tag, runs the quality gate, and publishes a GitHub Release with generated notes. Vercel deploys the tagged commit. Keep [CHANGELOG.md](CHANGELOG.md) current under *Unreleased* as you go.
 
 ## Adding new portfolio content
 

@@ -1,0 +1,41 @@
+name: Release
+
+# Publishes a GitHub Release with generated notes whenever a version tag is
+# pushed (`npm run release:patch|minor|major` bumps package.json, commits,
+# tags, and pushes). Vercel deploys the tagged commit through its Git
+# integration; the app reports the version at /api/version and in the sidebar.
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - name: Verify tag matches package.json
+        run: |
+          PKG="v$(node -p "require('./package.json').version")"
+          if [ "$PKG" != "${GITHUB_REF_NAME}" ]; then echo "Tag ${GITHUB_REF_NAME} does not match package.json ${PKG}"; exit 1; fi
+      - name: Quality gate
+        run: |
+          npm run check:secrets
+          npm run typecheck
+          npm run lint
+          npm run content:validate
+          npm test
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
+          body: |
+            Deployed automatically by Vercel from this tag. Verify with `/api/version`.

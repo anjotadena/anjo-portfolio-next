@@ -13,6 +13,12 @@ import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { track } from "@/lib/analytics/track";
 
 export interface ShellBrand {
+  /** e.g. "1.0.0" */
+  version: string;
+  /** Short commit SHA or "dev". */
+  buildId: string;
+  /** Link to the commit, when known. */
+  buildUrl: string | null;
   name: string;
   initials: string;
   headline: string;
@@ -70,7 +76,25 @@ function SidebarContent({ brand, primary, topics, onNavigate }: Omit<ShellFrameP
 
       <div className="mt-6 flex flex-col gap-4 border-t border-border pt-4">
         {brand.tagline && <p className="px-2 text-xs italic leading-relaxed text-muted-foreground">“{brand.tagline}”</p>}
-        <SocialLinks brand={brand} className="flex items-center gap-1 px-1" />
+        <div className="flex items-center justify-between gap-2 px-1">
+          <SocialLinks brand={brand} className="flex items-center gap-1" />
+          {brand.buildUrl ? (
+            <a
+              href={brand.buildUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              title={`Build ${brand.buildId}`}
+              data-testid="app-version"
+              className="rounded font-mono text-[10px] text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            >
+              v{brand.version}<span className="sr-only"> (build {brand.buildId}, opens in a new tab)</span>
+            </a>
+          ) : (
+            <span className="font-mono text-[10px] text-muted-foreground" title={`Build ${brand.buildId}`} data-testid="app-version">
+              v{brand.version}
+            </span>
+          )}
+        </div>
       </div>
     </div>
   );

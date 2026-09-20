@@ -4,12 +4,38 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import type { ApiErrorBody, ChatMessage, ChatRequestBody } from "@/types/chat";
 import { CHAT_HISTORY_MAX_TURNS } from "@/types/chat";
 import { track } from "@/lib/analytics/track";
+import { setAppBusy } from "@/lib/pwa/activity";
 import { readNdjsonStream } from "./ndjson-stream";
 import type { ChatError, ChatUiMessage } from "./chat-types";
 
 function createId(): string {
   if (typeof crypto !== "undefined" && "randomUUID" in crypto) return crypto.randomUUID();
   return `msg-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+}
+
+/** Per-tab persistence so a reload (e.g. an automatic app update) keeps the conversation. */
+const STORAGE_KEY = "anjo-ai:conversation";
+const STORAGE_MAX_MESSAGES = 40;
+
+function readStoredConversation(): ChatUiMessage[] {
+  try {
+    const raw = sessionStorage.getItem(STORAGE_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw) as ChatUiMessage[];
+    return Array.isArray(parsed) ? parsed.filter((m) => m && (m.role === "user" || m.role === "assistant") && typeof m.content === "string") : [];
+  } catch {
+    return [];
+  }
+}
+
+function writeStoredConversation(messages: ChatUiMessage[]): void {
+  try {
+    const settled = messages.filter((m) => m.status !== "streaming").slice(-STORAGE_MAX_MESSAGES);
+    if (settled.length === 0) sessionStorage.removeItem(STORAGE_KEY);
+    else sessionStorage.setItem(STORAGE_KEY, JSON.stringify(settled));
+  } catch {
+    // Storage can be unavailable (private mode, quota); persistence is best-effort.
+  }
 }
 
 const FRIENDLY_ERRORS: Record<string, string> = {
@@ -48,11 +74,29 @@ export function useChat(options: UseChatOptions = {}): UseChatResult {
   const abortRef = useRef<AbortController | null>(null);
   // Latest messages for event handlers without re-creating callbacks per render.
   const messagesRef = useRef<ChatUiMessage[]>([]);
+  // Persist only after the restore below has run, otherwise the initial
+  // empty state would wipe the stored conversation before it is read.
+  const restoredRef = useRef(false);
   useEffect(() => {
     messagesRef.current = messages;
+    if (restoredRef.current) writeStoredConversation(messages);
   }, [messages]);
 
+  // Restore the previous conversation after hydration (a synchronous
+  // setState here would be a hydration mismatch, so it is deferred).
+  useEffect(() => {
+    const stored = readStoredConversation();
+    queueMicrotask(() => {
+      if (stored.length > 0) setMessages((current) => (current.length === 0 ? stored : current));
+      restoredRef.current = true;
+    });
+  }, []);
+
   const isStreaming = messages.some((message) => message.status === "streaming");
+  useEffect(() => {
+    setAppBusy(isStreaming);
+    return () => setAppBusy(false);
+  }, [isStreaming]);
 
   const update = useCallback((id: string, fn: (message: ChatUiMessage) => ChatUiMessage) => {
     setMessages((prev) => prev.map((message) => (message.id === id ? fn(message) : message)));

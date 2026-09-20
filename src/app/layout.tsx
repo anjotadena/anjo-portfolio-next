@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import { ThemeProvider } from "@/components/theme/theme-provider";
 import { AppShell } from "@/components/layout/app-shell";
+import { ServiceWorkerManager } from "@/components/pwa/service-worker-manager";
 import { getProfile } from "@/lib/knowledge/repository";
 import { getSiteUrl } from "@/lib/seo/site";
 import "./globals.css";
@@ -22,6 +23,8 @@ export function generateMetadata(): Metadata {
     openGraph: { title, description: summary, url: siteUrl, siteName: `${profile.name} — Anjo AI`, type: "website", locale: "en_US" },
     twitter: { card: "summary", title, description: summary },
     robots: { index: true, follow: true },
+    appleWebApp: { capable: true, title: "Anjo AI", statusBarStyle: "black-translucent" },
+    icons: { icon: "/favicon.ico", apple: "/icons/apple-180" },
   };
 }
 
@@ -41,6 +44,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body suppressHydrationWarning className="antialiased">
         <ThemeProvider>
           <AppShell>{children}</AppShell>
+          <ServiceWorkerManager />
         </ThemeProvider>
       </body>
     </html>
