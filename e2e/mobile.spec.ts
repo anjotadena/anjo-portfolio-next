@@ -31,6 +31,11 @@ test.describe("mobile layout", () => {
     await page.getByRole("button", { name: "Open menu" }).click();
     const dialog = page.getByRole("dialog");
     await expect(dialog).toBeVisible();
+    // Full width on phones, with a visible close control.
+    const viewport = page.viewportSize()!;
+    const box = await dialog.locator("div").first().boundingBox();
+    expect(Math.round(box!.width)).toBe(viewport.width);
+    await expect(dialog.getByRole("button", { name: "Close" })).toBeVisible();
     await dialog.getByRole("link", { name: "Projects" }).click();
     await expect(page).toHaveURL(/\/projects$/);
     await expect(page.getByRole("dialog")).toBeHidden();

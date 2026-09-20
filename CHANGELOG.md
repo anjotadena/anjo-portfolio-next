@@ -7,6 +7,11 @@ at `/api/version` and in the sidebar.
 
 ## [Unreleased]
 
+## [2.2.1] - 2026-09-20
+
+### Fixed
+- Mobile navigation drawer is full width on phones (drawer width from `sm` up) with an always-visible close button.
+
 ## [2.2.0] - 2026-09-20
 
 ### Added
@@ -66,7 +71,8 @@ Complete rebuild. v1.0.0 was the previous Vite-based static site; v2 replaces it
 - Docker image, Docker Compose for pgvector, GitHub Actions CI and release
   workflows.
 
-[Unreleased]: https://github.com/anjotadena/anjo-portfolio-next/compare/v2.2.0...HEAD
+[Unreleased]: https://github.com/anjotadena/anjo-portfolio-next/compare/v2.2.1...HEAD
+[2.2.1]: https://github.com/anjotadena/anjo-portfolio-next/compare/v2.2.0...v2.2.1
 [2.2.0]: https://github.com/anjotadena/anjo-portfolio-next/compare/v2.1.0...v2.2.0
 [2.1.0]: https://github.com/anjotadena/anjo-portfolio-next/compare/v2.0.0...v2.1.0
 [2.0.0]: https://github.com/anjotadena/anjo-portfolio-next/compare/v1.0.0...v2.0.0

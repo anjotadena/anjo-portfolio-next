@@ -63,7 +63,7 @@ function SidebarContent({ brand, primary, topics, onNavigate }: Omit<ShellFrameP
         <Link
           href="/"
           onClick={onNavigate}
-          className="mx-2 flex h-14 items-center gap-3 rounded-lg px-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="mx-2 mr-12 flex h-14 items-center gap-3 rounded-lg px-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring lg:mr-2"
         >
           <Avatar initials={brand.initials} size="md" />
           <span className="min-w-0">
@@ -185,7 +185,7 @@ export function ShellFrame({ brand, primary, topics, children }: ShellFrameProps
         </main>
       </div>
 
-      <Dialog open={menuOpen} onClose={closeMenu} title="Menu" hideTitle placement="side" className="max-w-xs">
+      <Dialog open={menuOpen} onClose={closeMenu} title="Menu" hideTitle placement="side" className="sm:max-w-xs">
         <div className="h-full">
           <SidebarContent brand={brand} primary={primary} topics={topics} onNavigate={closeMenu} />
         </div>

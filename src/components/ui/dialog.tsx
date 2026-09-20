@@ -20,6 +20,9 @@ export interface DialogProps {
   hideCloseButton?: boolean;
 }
 
+const closeButtonClassName =
+  "-mr-1 -mt-1 inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring";
+
 /**
  * Accessible modal built on the native `<dialog>` element: `showModal()`
  * gives us focus trapping, Escape handling, inert background, and
@@ -85,9 +88,10 @@ export function Dialog({
     >
       <div
         className={cn(
-          "flex max-h-full flex-col overflow-hidden border border-border bg-popover text-popover-foreground shadow-xl animate-fade-up",
+          "relative flex max-h-full flex-col overflow-hidden border border-border bg-popover text-popover-foreground shadow-xl animate-fade-up",
           placement === "center" && "w-full max-w-lg rounded-2xl",
-          placement === "side" && "h-full w-full max-w-md border-y-0 border-r-0 sm:rounded-l-2xl",
+          // Side panels take the full width on phones and become a drawer from `sm` up.
+          placement === "side" && "h-full w-full border-y-0 border-r-0 sm:max-w-md sm:rounded-l-2xl",
           placement === "top" && "w-full max-w-xl rounded-2xl",
           className,
         )}
@@ -103,17 +107,24 @@ export function Dialog({
               </p>
             )}
           </div>
-          {!hideCloseButton && (
-            <button
-              type="button"
-              onClick={() => ref.current?.close()}
-              aria-label="Close"
-              className="-mr-1 -mt-1 inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-            >
+          {!hideCloseButton && !hideTitle && (
+            <button type="button" onClick={() => ref.current?.close()} aria-label="Close" className={closeButtonClassName}>
               <X className="h-4 w-4" aria-hidden="true" />
             </button>
           )}
         </div>
+        {/* With a hidden title the close control still has to be visible — a
+            full-width sheet on a phone has no backdrop to tap. */}
+        {!hideCloseButton && hideTitle && (
+          <button
+            type="button"
+            onClick={() => ref.current?.close()}
+            aria-label="Close"
+            className={cn(closeButtonClassName, "pt-safe absolute right-3 top-3 z-10 box-content")}
+          >
+            <X className="h-4 w-4" aria-hidden="true" />
+          </button>
+        )}
         <div className="min-h-0 flex-1 overflow-y-auto">{children}</div>
       </div>
     </dialog>
