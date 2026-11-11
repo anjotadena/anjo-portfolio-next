@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { ArrowRight, BookOpenText, Briefcase, CodeXml, Download, Github, Layers, Linkedin, Mail, MapPin, Sparkles, Sprout, Store } from "lucide-react";
+import { ArrowDown, ArrowRight, BookOpenText, Briefcase, CodeXml, Download, Github, Layers, Linkedin, Mail, MapPin, Sparkles, Sprout, Store } from "lucide-react";
 import type { ContentDocument, SkillGroup } from "@/types/content";
 import { AskAiLink } from "@/components/portfolio/ask-ai-link";
 import { cn } from "@/components/ui/utils";
@@ -33,7 +33,7 @@ function SectionHeading({ id, index, title, intro }: { id: string; index: string
 
 function Section({ id, labelledBy, children, className }: { id: string; labelledBy: string; children: ReactNode; className?: string }) {
   return (
-    <section id={id} aria-labelledby={labelledBy} className={cn("mx-auto w-full max-w-6xl scroll-mt-20 px-4 py-14 sm:px-6 sm:py-20", className)}>
+    <section id={id} aria-labelledby={labelledBy} className={cn("mx-auto w-full max-w-6xl px-4 py-14 sm:px-6 sm:py-20", className)}>
       {children}
     </section>
   );
@@ -80,32 +80,45 @@ function TerminalIllustration() {
 
 export function Hero() {
   return (
-    <section aria-labelledby="hero-heading" className="mx-auto grid w-full max-w-6xl items-center gap-12 px-4 pb-10 pt-12 sm:px-6 sm:pt-20 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,0.9fr)] lg:pb-16">
-      <div>
-        <p className="inline-flex flex-wrap items-center gap-x-2 rounded-md border border-border bg-card px-3 py-1.5 font-mono text-xs text-primary">
-          <span>Senior Software Engineer</span>
-          <span aria-hidden="true" className="text-muted-foreground">·</span>
-          <span>AI Integration</span>
-          <span aria-hidden="true" className="text-muted-foreground">·</span>
-          <span>Cebu, Philippines</span>
-        </p>
-        <h1 id="hero-heading" className="mt-6 text-4xl font-extrabold leading-[1.05] tracking-tight text-foreground sm:text-5xl lg:text-6xl">
-          I build software that makes work <span className="text-primary">easier</span>.
-        </h1>
-        <p className="mt-6 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">
-          I build tools for everyday business operations and help engineering teams ship reliable products. I also integrate AI where it can help people find
-          information and complete useful work.
-        </p>
-        <div className="mt-8 flex flex-wrap gap-3">
-          <Link href="#work" className={primaryButton}>
-            See what I&apos;ve built <ArrowRight className="h-4 w-4" aria-hidden="true" />
-          </Link>
-          <Link href="#contact" className={secondaryButton}>
-            Let&apos;s talk
-          </Link>
+    // Fills the first screen below the sticky header (64px + top safe area);
+    // `svh` keeps it stable while mobile browser toolbars show and hide.
+    <section aria-labelledby="hero-heading" className="relative flex min-h-[calc(100svh-4rem-env(safe-area-inset-top,0px))] flex-col">
+      <div className="mx-auto grid w-full max-w-6xl flex-1 items-center gap-12 px-4 py-12 sm:px-6 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,0.9fr)]">
+        <div>
+          <p className="inline-flex flex-wrap items-center gap-x-2 rounded-md border border-border bg-card px-3 py-1.5 font-mono text-xs text-primary">
+            <span>Senior Software Engineer</span>
+            <span aria-hidden="true" className="text-muted-foreground">·</span>
+            <span>AI Integration</span>
+            <span aria-hidden="true" className="text-muted-foreground">·</span>
+            <span>Cebu, Philippines</span>
+          </p>
+          <h1 id="hero-heading" className="mt-6 text-4xl font-extrabold leading-[1.05] tracking-tight text-foreground sm:text-5xl lg:text-6xl">
+            I build software that makes work <span className="text-primary">easier</span>.
+          </h1>
+          <p className="mt-6 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">
+            I build tools for everyday business operations and help engineering teams ship reliable products. I also integrate AI where it can help people find
+            information and complete useful work.
+          </p>
+          <div className="mt-8 flex flex-wrap gap-3">
+            <Link href="#work" className={primaryButton}>
+              See what I&apos;ve built <ArrowRight className="h-4 w-4" aria-hidden="true" />
+            </Link>
+            <Link href="#contact" className={secondaryButton}>
+              Let&apos;s talk
+            </Link>
+          </div>
         </div>
+        <TerminalIllustration />
       </div>
-      <TerminalIllustration />
+      <div className="flex justify-center pb-[calc(1.5rem+env(safe-area-inset-bottom,0px))]">
+        <Link
+          href="#work"
+          className="group inline-flex min-h-11 flex-col items-center gap-1 rounded-md px-3 py-1 font-mono text-[11px] uppercase tracking-wider text-muted-foreground transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        >
+          Scroll to work
+          <ArrowDown className="h-4 w-4 motion-safe:animate-bounce" aria-hidden="true" />
+        </Link>
+      </div>
     </section>
   );
 }

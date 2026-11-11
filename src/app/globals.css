@@ -95,6 +95,14 @@
     scrollbar-gutter: stable;
     /* Keep anchor targets clear of the sticky top navigation. */
     scroll-padding-top: 5rem;
+  }
+
+  /* Smooth in-page anchor scrolling (route changes stay instant via
+     data-scroll-behavior on <html>); off for reduced-motion users. */
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
     -webkit-text-size-adjust: 100%;
   }
 
