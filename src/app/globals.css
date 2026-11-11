@@ -95,6 +95,7 @@
     scrollbar-gutter: stable;
     /* Keep anchor targets clear of the sticky top navigation. */
     scroll-padding-top: 5rem;
+    -webkit-text-size-adjust: 100%;
   }
 
   /* Smooth in-page anchor scrolling (route changes stay instant via
@@ -103,7 +104,6 @@
     html {
       scroll-behavior: smooth;
     }
-    -webkit-text-size-adjust: 100%;
   }
 
   body {

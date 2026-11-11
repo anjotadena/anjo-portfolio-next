@@ -48,29 +48,29 @@ const TERMINAL_LINES: Array<[string, string]> = [
   ["ship", "useful software"],
 ];
 
-/** Decorative terminal vignette. Hidden from assistive technology. */
+/** Decorative terminal vignette (1.25× scale from `xl`, where the column has room). Hidden from assistive technology. */
 function TerminalIllustration() {
   return (
     <div aria-hidden="true" className="relative hidden select-none lg:block">
       <div className="bg-dot-grid absolute -inset-8 rounded-3xl opacity-60 [mask-image:radial-gradient(closest-side,black,transparent)]" />
-      <div className="relative rounded-xl border border-border bg-card shadow-2xl shadow-black/40">
-        <div className="flex items-center gap-1.5 border-b border-border px-4 py-3">
-          <span className="h-2.5 w-2.5 rounded-full bg-primary" />
-          <span className="h-2.5 w-2.5 rounded-full bg-muted-foreground/40" />
-          <span className="h-2.5 w-2.5 rounded-full bg-muted-foreground/40" />
+      <div className="relative rounded-xl border border-border bg-card shadow-2xl shadow-black/40 xl:rounded-2xl">
+        <div className="flex items-center gap-1.5 border-b border-border px-4 py-3 xl:gap-2 xl:px-5 xl:py-[0.9375rem]">
+          <span className="h-2.5 w-2.5 rounded-full xl:h-[0.78125rem] xl:w-[0.78125rem] bg-primary" />
+          <span className="h-2.5 w-2.5 rounded-full xl:h-[0.78125rem] xl:w-[0.78125rem] bg-muted-foreground/40" />
+          <span className="h-2.5 w-2.5 rounded-full xl:h-[0.78125rem] xl:w-[0.78125rem] bg-muted-foreground/40" />
         </div>
-        <div className="px-5 py-5 font-mono text-[13px] leading-7">
+        <div className="whitespace-nowrap px-5 py-5 font-mono text-[13px] leading-7 xl:px-[1.5625rem] xl:py-[1.5625rem] xl:text-[1.015625rem] xl:leading-[2.1875rem]">
           <p>
             <span className="text-primary">&gt;</span> <span className="text-primary">build_software()</span>
           </p>
           {TERMINAL_LINES.map(([step, detail]) => (
-            <p key={step} className="pl-4 text-muted-foreground">
+            <p key={step} className="pl-4 text-muted-foreground xl:pl-5">
               <span className="text-border">│</span> <span className="text-foreground">{step}</span> <span className="text-primary">→</span> {detail}
             </p>
           ))}
-          <p className="mt-1">
+          <p className="mt-1 xl:mt-[0.3125rem]">
             <span className="text-primary">&gt;</span>
-            <span className="animate-caret ml-1 inline-block h-4 w-2 translate-y-0.5 bg-primary" />
+            <span className="animate-caret ml-1 inline-block h-4 w-2 translate-y-0.5 bg-primary xl:h-5 xl:w-2.5 xl:translate-y-[0.15625rem]" />
           </p>
         </div>
       </div>
@@ -92,7 +92,7 @@ export function Hero() {
             <span aria-hidden="true" className="text-muted-foreground">·</span>
             <span>Cebu, Philippines</span>
           </p>
-          <h1 id="hero-heading" className="mt-6 text-4xl font-extrabold leading-[1.05] tracking-tight text-foreground sm:text-5xl lg:text-6xl">
+          <h1 id="hero-heading" className="mt-6 text-[2.8125rem] font-extrabold leading-[1.05] tracking-tight text-foreground sm:text-[3.75rem] lg:text-[4.6875rem]">
             I build software that makes work <span className="text-primary">easier</span>.
           </h1>
           <p className="mt-6 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">
