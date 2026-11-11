@@ -54,6 +54,12 @@ export interface ProjectFacts {
   docsUrl: string | null;
   demoUrl: string | null;
   license: string | null;
+  /** Who the project serves (short card copy). */
+  audience: string | null;
+  /** The problem it addresses (short card copy). */
+  problem: string | null;
+  /** What was built (short card copy). */
+  built: string | null;
 }
 
 export interface CaseStudyFacts {

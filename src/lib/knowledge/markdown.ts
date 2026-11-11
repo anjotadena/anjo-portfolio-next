@@ -87,6 +87,9 @@ export function parseMarkdownDocument(raw: string, sourcePath: string): ContentD
           docsUrl: fm.project.docsUrl ?? null,
           demoUrl: fm.project.demoUrl ?? null,
           license: fm.project.license ?? null,
+          audience: fm.project.audience ?? null,
+          problem: fm.project.problem ?? null,
+          built: fm.project.built ?? null,
         }
       : null,
     caseStudy: fm.caseStudy

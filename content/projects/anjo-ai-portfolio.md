@@ -2,11 +2,11 @@
 title: "Anjo AI Portfolio"
 slug: anjo-ai-portfolio
 type: project
-summary: "This portfolio: a Next.js site whose primary experience is an AI assistant grounded in retrieval-augmented generation over Markdown files in the repository, with pgvector search, streaming answers, citations, and rich portfolio cards."
+summary: "This portfolio and its Anjo AI assistant: a Next.js site that presents Anjo's work directly, with a floating AI assistant grounded in retrieval-augmented generation over the same Markdown files, streaming answers, citations, and rich portfolio cards."
 tags: ["ai", "rag", "llm", "next.js", "react", "typescript", "pgvector", "postgresql", "openai", "full-stack", "open-source"]
 technologies: ["Next.js", "React", "TypeScript", "Tailwind CSS", "PostgreSQL", "pgvector", "OpenAI API", "Zod", "Docker", "GitHub Actions", "Vitest", "Playwright"]
 date: 2026-08-17
-updated: 2026-09-20
+updated: 2026-11-11
 featured: true
 visibility: public
 related: ["ai-engineering", "architecture", "devops", "asterweave"]
@@ -16,11 +16,14 @@ project:
   status: "active"
   category: "AI"
   repoUrl: "https://github.com/anjotadena/anjo-portfolio-next"
+  audience: "Hiring teams, business owners, and founders who want to understand Anjo's work quickly."
+  problem: "Finding one fact means reading many pages, and generic chatbots invent details instead of citing sources."
+  built: "Anjo AI, a portfolio assistant that answers from this site's public content and cites the sections it used."
 ---
 
 ## Overview
 
-Anjo's portfolio is built as an AI application rather than a static résumé site. Visitors ask questions in a chat interface — "What is his .NET experience?", "Tell me about Asterweave", "How can I contact him?" — and the assistant answers from Markdown files stored in the repository, streaming the response and citing the sections it used. Traditional pages (About, Experience, Projects, Skills, Contact) are generated from the same Markdown so there is never a second copy of the information.
+Anjo's portfolio presents his work directly — selected projects, how he can help, background, and contact details — and includes Anjo AI, a floating assistant available in the bottom-right corner of every page. Visitors can ask it questions such as "What is Unexaro?", "How does Asterweave work?", or "How can I contact Anjo?", and it answers from Markdown files stored in the repository, streaming the response and citing the sections it used. The pages and the assistant are generated from the same Markdown, so there is never a second copy of the information.
 
 ## Problem
 

@@ -18,11 +18,11 @@ export interface PageLayoutProps {
   width?: "narrow" | "wide";
 }
 
-/** Scrollable page wrapper for non-chat routes: breadcrumbs, heading, content. */
+/** Page wrapper for secondary routes: breadcrumbs, heading, content (document scrolling). */
 export function PageLayout({ title, description, eyebrow, crumbs, actions, children, width = "narrow" }: PageLayoutProps) {
   return (
-    <div className="min-h-0 flex-1 overflow-y-auto">
-      <div className={cn("mx-auto w-full px-4 py-8 sm:px-6 sm:py-10", width === "narrow" ? "max-w-3xl" : "max-w-5xl")}>
+    <div className="flex-1">
+      <div className={cn("mx-auto w-full px-4 py-8 sm:px-6 sm:py-12", width === "narrow" ? "max-w-3xl" : "max-w-5xl")}>
         {crumbs && crumbs.length > 0 && (
           <nav aria-label="Breadcrumb" className="mb-4">
             <ol className="flex flex-wrap items-center gap-1 text-xs text-muted-foreground">
@@ -45,8 +45,8 @@ export function PageLayout({ title, description, eyebrow, crumbs, actions, child
         )}
         <header className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            {eyebrow && <p className="mb-1 text-xs font-semibold uppercase tracking-wider text-primary">{eyebrow}</p>}
-            <h1 className="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">{title}</h1>
+            {eyebrow && <p className="mb-2 font-mono text-xs uppercase tracking-wider text-primary">/ {eyebrow}</p>}
+            <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">{title}</h1>
             {description && <p className="mt-2 max-w-2xl text-sm text-muted-foreground sm:text-base">{description}</p>}
           </div>
           {actions && <div className="flex shrink-0 flex-wrap items-center gap-2">{actions}</div>}

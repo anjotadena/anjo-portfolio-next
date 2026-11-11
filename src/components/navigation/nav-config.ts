@@ -24,15 +24,22 @@ export type NavIcon =
   | "pen"
   | "compass";
 
+/** Top navigation: homepage sections. Absolute `/#…` hrefs work from every route. */
 export const PRIMARY_NAV: NavItem[] = [
-  { href: "/", label: "Chat", icon: "chat", description: "Ask Anjo AI anything" },
-  { href: "/about", label: "About", icon: "user" },
-  { href: "/experience", label: "Experience", icon: "briefcase" },
+  { href: "/#work", label: "Work", icon: "folder" },
+  { href: "/#help", label: "How I help", icon: "briefcase" },
+  { href: "/#about", label: "About", icon: "user" },
+  { href: "/#contact", label: "Contact", icon: "mail" },
+];
+
+/** Deeper pages, listed in the footer and the mobile menu. */
+export const EXPLORE_NAV: NavItem[] = [
   { href: "/projects", label: "Projects", icon: "folder" },
-  { href: "/case-studies", label: "Case Studies", icon: "book" },
+  { href: "/case-studies", label: "Case studies", icon: "book" },
   { href: "/blog", label: "Blog", icon: "pen" },
   { href: "/skills", label: "Skills", icon: "layers" },
-  { href: "/contact", label: "Contact", icon: "mail" },
+  { href: "/about", label: "About page", icon: "user" },
+  { href: "/contact", label: "Contact page", icon: "mail" },
 ];
 
 /** Topic document types that get a `/topics/[slug]` page and a sidebar entry. */

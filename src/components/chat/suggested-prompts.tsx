@@ -28,7 +28,7 @@ function iconFor(prompt: string) {
 export function SuggestedPrompts({ prompts, onSelect, disabled, variant = "grid", className }: SuggestedPromptsProps) {
   if (prompts.length === 0) return null;
   return (
-    <ul className={cn(variant === "grid" ? "grid grid-cols-1 gap-2 sm:grid-cols-2" : "flex flex-wrap gap-2", className)} aria-label="Suggested questions">
+    <ul className={cn(variant === "grid" ? "grid grid-cols-1 gap-2 @md:grid-cols-2" : "flex flex-wrap gap-2", className)} aria-label="Suggested questions">
       {prompts.map((prompt) => {
         const Icon = iconFor(prompt);
         return (

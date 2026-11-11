@@ -1,15 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Suspense } from "react";
 import { ArrowRight, BookOpen, BookOpenText, ExternalLink, Github } from "lucide-react";
 import { PageLayout } from "@/components/layout/page-layout";
-import { ChatContainer } from "@/components/chat/chat-container";
+import { AskAiLink } from "@/components/portfolio/ask-ai-link";
 import { DocumentBody } from "@/components/portfolio/document-body";
 import { BreadcrumbJsonLd, ProjectJsonLd } from "@/components/seo/json-ld";
 import { Badge } from "@/components/ui/badge";
 import { getCaseStudyForProject, getProfile, getProjects, getPublicDocumentBySlug } from "@/lib/knowledge/repository";
-import { initialsFor } from "@/lib/utils/initials";
 
 // Every slug is known at build time (content lives in the repo); unknown
 // slugs must be a real 404, not a streamed soft-404 behind the loading boundary.
@@ -35,7 +33,7 @@ export async function generateMetadata({ params }: PageProps<"/projects/[slug]">
 const externalLink =
   "inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3.5 py-2 text-sm font-medium text-foreground transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring";
 
-const STATUS_LABELS: Record<string, string> = { active: "Active", maintained: "Maintained", "in-progress": "In progress", archived: "Archived" };
+const STATUS_LABELS: Record<string, string> = { active: "Active", maintained: "Maintained", "in-progress": "In development", archived: "Archived" };
 
 export default async function ProjectPage({ params }: PageProps<"/projects/[slug]">) {
   const { slug } = await params;
@@ -43,6 +41,7 @@ export default async function ProjectPage({ params }: PageProps<"/projects/[slug
   if (!project || project.type !== "project") notFound();
 
   const { profile } = getProfile();
+  const firstName = profile.name.split(" ")[0] ?? profile.name;
   const facts = project.project;
   const caseStudy = getCaseStudyForProject(project.slug);
   const crumbs = [
@@ -127,6 +126,7 @@ export default async function ProjectPage({ params }: PageProps<"/projects/[slug
                 <dd className="mt-0.5 text-foreground">{facts.license}</dd>
               </div>
             )}
+            {project.technologies.length > 0 && (
             <div>
               <dt className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Technology stack</dt>
               <dd className="mt-1.5 flex flex-wrap gap-1.5">
@@ -137,6 +137,7 @@ export default async function ProjectPage({ params }: PageProps<"/projects/[slug
                 ))}
               </dd>
             </div>
+            )}
             {project.tags.length > 0 && (
               <div>
                 <dt className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Tags</dt>
@@ -159,25 +160,18 @@ export default async function ProjectPage({ params }: PageProps<"/projects/[slug
         </aside>
       </div>
 
-      <section className="mt-12 flex h-[32rem] flex-col overflow-hidden rounded-2xl border border-border bg-surface" aria-labelledby="ask-ai-heading">
-        <h2 id="ask-ai-heading" className="border-b border-border px-4 py-3 text-sm font-semibold text-foreground">
-          Ask AI about {project.title}
+      <section className="mt-12 rounded-xl border border-border bg-card p-5" aria-labelledby="ask-ai-heading">
+        <h2 id="ask-ai-heading" className="text-base font-semibold text-foreground">
+          Ask Anjo AI about {project.title}
         </h2>
-        <Suspense fallback={null}>
-          <ChatContainer
-            assistantName="Anjo AI"
-            assistantInitials={initialsFor(profile.name)}
-            ownerFirstName={profile.name.split(" ")[0] ?? profile.name}
-            contextSlug={project.slug}
-            compact
-            suggestedPrompts={[
-              `What problem does ${project.title} solve?`,
-              `How is ${project.title} architected?`,
-              `What was ${profile.name.split(" ")[0]}'s role in ${project.title}?`,
-              `What technologies does ${project.title} use?`,
-            ]}
-          />
-        </Suspense>
+        <p className="mt-1 text-sm text-muted-foreground">The assistant answers from this portfolio and cites its sources. Pick a question to open it:</p>
+        <ul className="mt-4 flex flex-wrap gap-2">
+          {[`What problem does ${project.title} solve?`, `What was ${firstName}'s role in ${project.title}?`, `What is the current status of ${project.title}?`].map((question) => (
+            <li key={question}>
+              <AskAiLink question={question} contextSlug={project.slug} label={question} />
+            </li>
+          ))}
+        </ul>
       </section>
     </PageLayout>
   );

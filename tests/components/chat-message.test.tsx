@@ -53,7 +53,7 @@ describe("ChatMessageItem", () => {
     const onOpenSource = vi.fn();
     render(
       <ol>
-        <ChatMessageItem message={assistant()} assistantInitials="AT" isLast onFollowUp={noop} onRetry={noop} onOpenSource={onOpenSource} />
+        <ChatMessageItem message={assistant()} isLast onFollowUp={noop} onRetry={noop} onOpenSource={onOpenSource} />
       </ol>,
     );
     const chip = screen.getByRole("button", { name: "Source 1: Asterweave — Overview" });
@@ -65,7 +65,7 @@ describe("ChatMessageItem", () => {
     const onFollowUp = vi.fn();
     render(
       <ol>
-        <ChatMessageItem message={assistant()} assistantInitials="AT" isLast onFollowUp={onFollowUp} onRetry={noop} onOpenSource={noop} />
+        <ChatMessageItem message={assistant()} isLast onFollowUp={onFollowUp} onRetry={noop} onOpenSource={noop} />
       </ol>,
     );
     expect(screen.getByRole("article", { name: "Project: Asterweave" })).toBeInTheDocument();
@@ -77,7 +77,7 @@ describe("ChatMessageItem", () => {
   it("shows the typing indicator while streaming with no content, and no actions", () => {
     render(
       <ol>
-        <ChatMessageItem message={assistant({ content: "", status: "streaming", meta: undefined })} assistantInitials="AT" isLast onFollowUp={noop} onRetry={noop} onOpenSource={noop} />
+        <ChatMessageItem message={assistant({ content: "", status: "streaming", meta: undefined })} isLast onFollowUp={noop} onRetry={noop} onOpenSource={noop} />
       </ol>,
     );
     expect(screen.queryByRole("button", { name: "Copy answer" })).not.toBeInTheDocument();
@@ -88,7 +88,7 @@ describe("ChatMessageItem", () => {
     const onRetry = vi.fn();
     render(
       <ol>
-        <ChatMessageItem message={assistant({ status: "error", errorMessage: "Boom", meta: undefined })} assistantInitials="AT" isLast onFollowUp={noop} onRetry={onRetry} onOpenSource={noop} />
+        <ChatMessageItem message={assistant({ status: "error", errorMessage: "Boom", meta: undefined })} isLast onFollowUp={noop} onRetry={onRetry} onOpenSource={noop} />
       </ol>,
     );
     expect(screen.getByText("Boom")).toBeInTheDocument();
@@ -99,7 +99,7 @@ describe("ChatMessageItem", () => {
   it("renders the visitor bubble as plain text", () => {
     render(
       <ol>
-        <ChatMessageItem message={{ id: "u1", role: "user", content: "<b>hi</b> [1]", status: "complete", createdAt: 0 }} assistantInitials="AT" isLast={false} onFollowUp={noop} onRetry={noop} onOpenSource={noop} />
+        <ChatMessageItem message={{ id: "u1", role: "user", content: "<b>hi</b> [1]", status: "complete", createdAt: 0 }} isLast={false} onFollowUp={noop} onRetry={noop} onOpenSource={noop} />
       </ol>,
     );
     expect(screen.getByText("<b>hi</b> [1]")).toBeInTheDocument();

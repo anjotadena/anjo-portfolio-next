@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { AlertTriangle, Check, Copy, RefreshCw, ThumbsDown, ThumbsUp } from "lucide-react";
-import { Avatar } from "@/components/ui/avatar";
+import { MarkTile } from "@/components/brand/logo";
 import { Prose } from "@/components/ui/prose";
 import { cn } from "@/components/ui/utils";
 import { CitationProvider, Markdown } from "@/components/markdown/markdown";
@@ -16,8 +16,9 @@ import type { ChatUiMessage } from "./chat-types";
 
 export interface ChatMessageItemProps {
   message: ChatUiMessage;
-  assistantInitials: string;
   isLast: boolean;
+  /** False while another answer is streaming (retry is single-flight). */
+  canRetry?: boolean;
   onFollowUp: (question: string) => void;
   onRetry: (assistantId: string) => void;
   onOpenSource: (message: ChatUiMessage, index: number) => void;
@@ -30,7 +31,7 @@ function formatTime(timestamp: number): string {
 const actionClassName =
   "inline-flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-40";
 
-function MessageActions({ message, onRetry }: { message: ChatUiMessage; onRetry: (id: string) => void }) {
+function MessageActions({ message, onRetry, canRetry }: { message: ChatUiMessage; onRetry: (id: string) => void; canRetry: boolean }) {
   const [copied, setCopied] = useState(false);
   const [feedback, setFeedback] = useState<"up" | "down" | null>(null);
 
@@ -60,7 +61,7 @@ function MessageActions({ message, onRetry }: { message: ChatUiMessage; onRetry:
       <button type="button" onClick={() => rate("down")} aria-pressed={feedback === "down"} aria-label="Not helpful" className={cn(actionClassName, feedback === "down" && "text-primary")}>
         <ThumbsDown className="h-3.5 w-3.5" aria-hidden="true" />
       </button>
-      <button type="button" onClick={() => onRetry(message.id)} aria-label="Regenerate answer" className={actionClassName}>
+      <button type="button" onClick={() => onRetry(message.id)} disabled={!canRetry} aria-label="Regenerate answer" className={actionClassName}>
         <RefreshCw className="h-3.5 w-3.5" aria-hidden="true" />
       </button>
       <span className="ml-2 text-[11px] text-muted-foreground">{formatTime(message.createdAt)}</span>
@@ -69,18 +70,18 @@ function MessageActions({ message, onRetry }: { message: ChatUiMessage; onRetry:
 }
 
 /** One turn: right-aligned visitor bubble, or the assistant's answer with citations, cards, sources and follow-ups. */
-export function ChatMessageItem({ message, assistantInitials, isLast, onFollowUp, onRetry, onOpenSource }: ChatMessageItemProps) {
+export function ChatMessageItem({ message, isLast, canRetry = true, onFollowUp, onRetry, onOpenSource }: ChatMessageItemProps) {
   const citedIndices = useMemo(() => (message.role === "assistant" ? extractCitedIndices(message.content) : []), [message.content, message.role]);
   const labels = useMemo(() => Object.fromEntries((message.meta?.sources ?? []).map((source) => [source.index, source.section ? `${source.title} — ${source.section}` : source.title])), [message.meta]);
 
   if (message.role === "user") {
     return (
-      <li className="flex justify-end gap-3 animate-fade-up">
+      <li className="flex justify-end animate-fade-up">
         <div className="flex max-w-[85%] flex-col items-end gap-1">
-          <p className="whitespace-pre-wrap break-words rounded-2xl rounded-br-md bg-primary px-4 py-2.5 text-sm text-primary-foreground">{message.content}</p>
+          <span className="sr-only">You said:</span>
+          <p className="whitespace-pre-wrap break-words rounded-xl rounded-br-sm bg-primary px-3.5 py-2 text-sm text-primary-foreground">{message.content}</p>
           <span className="text-[11px] text-muted-foreground">{formatTime(message.createdAt)}</span>
         </div>
-        <Avatar initials="You" size="sm" variant="outline" className="mt-1 text-[9px]" />
       </li>
     );
   }
@@ -90,10 +91,11 @@ export function ChatMessageItem({ message, assistantInitials, isLast, onFollowUp
   const meta = message.meta;
 
   return (
-    <li className="flex gap-3 animate-fade-up">
-      <Avatar initials={assistantInitials} size="sm" className="mt-1" />
+    <li className="flex gap-2.5 animate-fade-up">
+      <MarkTile className="mt-0.5 h-7 w-7" />
       <div className="min-w-0 flex-1">
-        <div aria-busy={isStreaming} className="rounded-2xl rounded-tl-md border border-border bg-card px-4 py-3 shadow-sm">
+        <span className="sr-only">Anjo AI said:</span>
+        <div aria-busy={isStreaming} className="min-w-0 overflow-hidden rounded-xl rounded-tl-sm border border-border bg-card px-3.5 py-2.5">
           {isEmpty && isStreaming ? (
             <TypingIndicator startedAt={message.createdAt} />
           ) : (
@@ -108,13 +110,20 @@ export function ChatMessageItem({ message, assistantInitials, isLast, onFollowUp
             <div className="mt-2 flex flex-wrap items-center gap-2 text-sm text-destructive">
               <AlertTriangle className="h-4 w-4 shrink-0" aria-hidden="true" />
               <span>{message.errorMessage ?? "Something went wrong."}</span>
-              <button type="button" onClick={() => onRetry(message.id)} className="rounded-md font-medium underline underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+              <button type="button" onClick={() => onRetry(message.id)} disabled={!canRetry} className="rounded-md font-medium underline underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50">
                 Retry
               </button>
             </div>
           )}
           {message.status === "interrupted" && (
-            <p className="mt-2 text-xs italic text-muted-foreground">{message.errorMessage ?? "Stopped before finishing."}</p>
+            <p className="mt-2 flex flex-wrap items-center gap-2 text-xs italic text-muted-foreground">
+              <span>{message.errorMessage ?? (message.errorCode === "CANCELLED" ? "Stopped." : "Stopped before finishing.")}</span>
+              {message.errorCode === "CANCELLED" && message.content.length === 0 && (
+                <button type="button" onClick={() => onRetry(message.id)} disabled={!canRetry} className="rounded-md not-italic font-medium text-foreground underline underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50">
+                  Ask again
+                </button>
+              )}
+            </p>
           )}
           {message.status === "complete" && message.finishReason === "length" && (
             <p className="mt-2 text-xs italic text-muted-foreground">The answer was cut short at the length limit. Ask a narrower question for more detail.</p>
@@ -130,7 +139,7 @@ export function ChatMessageItem({ message, assistantInitials, isLast, onFollowUp
           <SourceList sources={meta.sources} citedIndices={citedIndices} onOpen={(index) => onOpenSource(message, index)} className="mt-3" />
         )}
 
-        {message.status !== "streaming" && <MessageActions message={message} onRetry={onRetry} />}
+        {message.status !== "streaming" && <MessageActions message={message} onRetry={onRetry} canRetry={canRetry} />}
 
         {isLast && meta && message.status === "complete" && meta.followUps.length > 0 && (
           <div className="mt-3">

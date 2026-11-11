@@ -1,7 +1,6 @@
 import { ImageResponse } from "next/og";
 import { notFound } from "next/navigation";
-import { getProfile } from "@/lib/knowledge/repository";
-import { initialsFor } from "@/lib/utils/initials";
+import { BRAND_BACKGROUND, BRAND_LIME, MARK } from "@/components/brand/logo";
 
 export const dynamic = "force-static";
 
@@ -18,18 +17,18 @@ export function generateStaticParams() {
 }
 
 /**
- * PNG app icons rendered at build time from the profile's monogram, so the
- * PWA has correct icons without committing binary assets. Maskable
- * variants keep the mark inside the safe zone (80 % of the canvas).
+ * PNG app icons rendered at build time from the vector `a_` mark on the
+ * charcoal tile. The mark spans ~37 % of the canvas, matching the approved
+ * icon artwork's padding; maskable variants use a full-bleed square so the
+ * mark stays well inside the 80 % safe zone.
  */
 export async function GET(_request: Request, context: RouteContext<"/icons/[name]">) {
   const { name } = await context.params;
   const variant = VARIANTS[name];
   if (!variant) notFound();
   const { size, maskable } = variant;
-  const initials = initialsFor(getProfile().profile.name);
-  const radius = maskable ? 0 : Math.round(size * 0.22);
-  const fontSize = Math.round(size * (maskable ? 0.36 : 0.42));
+  const markWidth = Math.round(size * (maskable ? 0.34 : 0.37));
+  const markHeight = Math.round((markWidth * MARK.height) / MARK.width);
 
   return new ImageResponse(
     (
@@ -40,16 +39,15 @@ export async function GET(_request: Request, context: RouteContext<"/icons/[name
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          background: "linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)",
-          borderRadius: radius,
-          color: "#ffffff",
-          fontSize,
-          fontWeight: 700,
-          letterSpacing: -fontSize * 0.04,
-          fontFamily: "sans-serif",
+          background: BRAND_BACKGROUND,
+          borderRadius: maskable ? 0 : Math.round(size * 0.22),
         }}
       >
-        {initials}
+        <svg width={markWidth} height={markHeight} viewBox={MARK.viewBox} fill={BRAND_LIME}>
+          <path d={MARK.aRing} fillRule="evenodd" />
+          <rect x={MARK.aStem.x} y={MARK.aStem.y} width={MARK.aStem.width} height={MARK.aStem.height} />
+          <rect x={MARK.underscore.x} y={MARK.underscore.y} width={MARK.underscore.width} height={MARK.underscore.height} />
+        </svg>
       </div>
     ),
     {

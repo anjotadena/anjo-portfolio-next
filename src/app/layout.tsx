@@ -19,13 +19,20 @@ export function generateMetadata(): Metadata {
     metadataBase: new URL(siteUrl),
     title: { default: title, template: `%s | ${profile.name}` },
     description: summary,
-    applicationName: "Anjo AI",
+    applicationName: profile.name,
     alternates: { canonical: "/" },
-    openGraph: { title, description: summary, url: siteUrl, siteName: `${profile.name} — Anjo AI`, type: "website", locale: "en_US" },
+    openGraph: { title, description: summary, url: siteUrl, siteName: profile.name, type: "website", locale: "en_US" },
     twitter: { card: "summary", title, description: summary },
     robots: { index: true, follow: true },
-    appleWebApp: { capable: true, title: "Anjo AI", statusBarStyle: "black-translucent" },
-    icons: { icon: "/favicon.ico", apple: "/icons/apple-180" },
+    appleWebApp: { capable: true, title: profile.name, statusBarStyle: "black-translucent" },
+    icons: {
+      icon: [
+        { url: "/favicon.ico", sizes: "any" },
+        { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+        { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+      ],
+      apple: { url: "/apple-touch-icon.png", sizes: "180x180" },
+    },
   };
 }
 
@@ -33,10 +40,11 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
-    { media: "(prefers-color-scheme: dark)", color: "#0b1220" },
-  ],
+  // Chrome on Android: the layout viewport shrinks with the software
+  // keyboard so the assistant composer stays visible.
+  interactiveWidget: "resizes-content",
+  colorScheme: "dark",
+  themeColor: "#111413",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

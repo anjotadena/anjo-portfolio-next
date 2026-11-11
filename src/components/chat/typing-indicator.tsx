@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Kbd } from "@/components/ui/kbd";
 
 const SPINNER = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"];
 
@@ -11,18 +10,16 @@ const STAGES = ["Reading the portfolio", "Retrieving sources", "Cross-checking f
 export interface TypingIndicatorProps {
   /** Timestamp the request started, for the elapsed counter. */
   startedAt?: number;
-  /** Show the "esc to stop" hint (desktop). */
-  showStopHint?: boolean;
 }
 
 /**
  * CLI-style "thinking" line shown before the first token arrives: a
- * braille spinner, a rotating stage word, elapsed seconds, and the stop
- * shortcut. Decorative for screen readers — the chat's single live region
+ * braille spinner, a rotating stage word, and elapsed seconds.
+ * Decorative for screen readers — the chat's single live region
  * announces start/complete/stop. Motion is neutralised under
  * `prefers-reduced-motion` by rendering the first frame only.
  */
-export function TypingIndicator({ startedAt, showStopHint = true }: TypingIndicatorProps) {
+export function TypingIndicator({ startedAt }: TypingIndicatorProps) {
   const [frame, setFrame] = useState(0);
   const [stage, setStage] = useState(0);
   const [elapsed, setElapsed] = useState(0);
@@ -47,11 +44,6 @@ export function TypingIndicator({ startedAt, showStopHint = true }: TypingIndica
         <span className="text-foreground">{STAGES[stage]}…</span>
       </span>
       <span className="tabular-nums">{elapsed}s</span>
-      {showStopHint && (
-        <span className="hidden items-center gap-1 sm:inline-flex">
-          <Kbd>esc</Kbd> to stop
-        </span>
-      )}
     </div>
   );
 }

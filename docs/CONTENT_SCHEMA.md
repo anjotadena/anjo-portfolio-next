@@ -11,7 +11,7 @@ Every Markdown file under `content/` is parsed with `gray-matter` and validated 
 | `type` | enum | yes | `profile`, `experience`, `skills`, `education`, `certifications`, `architecture`, `ai-engineering`, `cloud`, `devops`, `philosophy`, `contact`, `project`, `case-study`, `post` |
 | `summary` | string (20–500) | yes | Shown on cards/pages and used for SEO descriptions |
 | `tags` | string[] | no | Lower-cased and de-duplicated; scored as metadata |
-| `technologies` | string[] | projects: yes | Scored as metadata; rendered as badges |
+| `technologies` | string[] | projects: yes (except `in-progress`) | Scored as metadata; rendered as badges |
 | `related` | slug[] | no | Must reference existing documents; drives related questions |
 | `date` / `updated` | `YYYY-MM-DD` | no | Sitemap `lastModified`, JSON-LD dates, project ordering |
 | `featured` | boolean | no | Only public documents may be featured; featured projects appear on the home rail |
@@ -61,7 +61,13 @@ project:
   docsUrl: https://...
   demoUrl: https://...
   license: MIT
+  # Optional short, problem-led copy for the homepage Work cards:
+  audience: Who it serves (≤ 160 chars)
+  problem: The problem it addresses (≤ 200 chars)
+  built: What was built (≤ 200 chars)
 ```
+
+`technologies` must list at least one entry, except for projects with `status: in-progress`, whose stack may not be settled — never invent one.
 
 Recommended body sections (each becomes a chunk and a citation target): `## Overview`, `## Problem`, `## Solution`, `## Architecture`, `## Technologies`, `## My Role`, `## Key Challenges`, `## Results`.
 

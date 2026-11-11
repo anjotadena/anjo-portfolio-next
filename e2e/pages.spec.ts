@@ -1,17 +1,23 @@
 import { expect, test } from "./fixtures";
 
 test.describe("portfolio pages", () => {
-  test("project pages are generated from Markdown and link back into chat", async ({ page }) => {
+  test("project pages are generated from Markdown and offer explicit Ask Anjo AI questions", async ({ page }) => {
     await page.goto("/projects");
     await expect(page.getByRole("heading", { level: 1 })).toHaveText("Projects");
     await page.getByRole("link", { name: "Asterweave", exact: true }).first().click();
     await expect(page).toHaveURL(/\/projects\/asterweave$/);
     await expect(page.getByRole("heading", { level: 1 })).toHaveText("Asterweave");
     await expect(page.getByRole("heading", { name: "Overview" })).toBeVisible();
-    await expect(page.getByRole("heading", { name: /Ask AI about Asterweave/ })).toBeVisible();
+    await expect(page.getByRole("heading", { name: /Ask Anjo AI about Asterweave/ })).toBeVisible();
     // JSON-LD present for the project.
     const jsonLd = await page.locator('script[type="application/ld+json"]').allTextContents();
     expect(jsonLd.some((text) => text.includes('"SoftwareSourceCode"'))).toBe(true);
+  });
+
+  test("Unexaro has a project page that is honest about being in development", async ({ page }) => {
+    await page.goto("/projects/unexaro");
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText("Unexaro");
+    await expect(page.getByRole("complementary", { name: "Project facts" })).toContainText("In development");
   });
 
   test("about, skills, experience, contact, and topic pages render", async ({ page }) => {
@@ -84,7 +90,7 @@ test.describe("search", () => {
 });
 
 test.describe("case studies", () => {
-  test("lists case studies and renders one with facts, table of contents, project link, and embedded chat", async ({ page }) => {
+  test("lists case studies and renders one with facts, table of contents, project link, and Ask Anjo AI questions", async ({ page }) => {
     await page.goto("/case-studies");
     await expect(page.getByRole("heading", { level: 1 })).toHaveText("Case Studies");
     await page.getByRole("link", { name: /Making agentic delivery deterministic/ }).first().click();
@@ -93,14 +99,14 @@ test.describe("case studies", () => {
     await expect(page.getByRole("complementary", { name: "Case study facts" })).toContainText("Creator and maintainer");
     await expect(page.getByRole("heading", { name: "Key Decisions" })).toHaveAttribute("id", "key-decisions");
     await expect(page.getByRole("link", { name: /Asterweave/ }).filter({ hasText: "Project" })).toHaveAttribute("href", "/projects/asterweave");
-    await expect(page.getByRole("heading", { name: /Ask AI about this case study/ })).toBeVisible();
+    await expect(page.getByRole("heading", { name: /Ask Anjo AI about this case study/ })).toBeVisible();
   });
 
   test("project pages link to their case study and the assistant attaches a case-study card", async ({ page }) => {
     await page.goto("/projects/asterweave");
     await expect(page.getByRole("link", { name: /Case study/ })).toHaveAttribute("href", "/case-studies/asterweave-deterministic-delivery");
     await page.goto("/?ask=Walk%20me%20through%20one%20of%20his%20case%20studies");
-    await expect(page.getByRole("article", { name: /Case study:/ }).first()).toBeVisible({ timeout: 20_000 });
+    await expect(page.getByTestId("assistant-panel").getByRole("article", { name: /Case study:/ }).first()).toBeVisible({ timeout: 20_000 });
   });
 });
 

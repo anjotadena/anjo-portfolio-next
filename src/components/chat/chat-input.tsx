@@ -12,6 +12,12 @@ export interface ChatInputProps {
   onStop: () => void;
   isStreaming: boolean;
   disabled?: boolean;
+  /** Keep the textarea editable but block sending (e.g. offline or rate-limited). */
+  canSubmit?: boolean;
+  /** Show the keyboard hint line (hidden in narrow surfaces such as the assistant panel). */
+  showHint?: boolean;
+  /** Stable id for the textarea so a container can focus it. */
+  inputId?: string;
   placeholder?: string;
   autoFocus?: boolean;
   className?: string;
@@ -24,11 +30,12 @@ const MAX_ROWS_PX = 180;
  * send button becomes Stop while streaming. Uses `enterKeyHint="send"` and
  * 16px text so iOS neither zooms nor mislabels the keyboard.
  */
-export function ChatInput({ value, onChange, onSubmit, onStop, isStreaming, disabled = false, placeholder = "Ask me anything about Anjo…", autoFocus = false, className }: ChatInputProps) {
-  const id = useId();
+export function ChatInput({ value, onChange, onSubmit, onStop, isStreaming, disabled = false, canSubmit = true, showHint = true, inputId, placeholder = "Ask me anything about Anjo…", autoFocus = false, className }: ChatInputProps) {
+  const generatedId = useId();
+  const id = inputId ?? generatedId;
   const ref = useRef<HTMLTextAreaElement>(null);
   const remaining = CHAT_MESSAGE_MAX_LENGTH - value.length;
-  const canSend = !disabled && !isStreaming && value.trim().length > 0 && remaining >= 0;
+  const canSend = !disabled && canSubmit && !isStreaming && value.trim().length > 0 && remaining >= 0;
 
   useEffect(() => {
     const el = ref.current;
@@ -57,7 +64,7 @@ export function ChatInput({ value, onChange, onSubmit, onStop, isStreaming, disa
 
   return (
     <form onSubmit={handleSubmit} className={cn("w-full", className)} aria-label="Ask Anjo AI">
-      <div className="flex items-end gap-2 rounded-2xl border border-border bg-card p-2 shadow-sm transition-shadow focus-within:border-primary/50 focus-within:shadow-md">
+      <div className="flex items-end gap-2 rounded-xl border border-input bg-input-background p-2 shadow-sm transition-shadow focus-within:border-primary focus-within:shadow-md">
         <label htmlFor={id} className="sr-only">
           Your question
         </label>
@@ -96,7 +103,7 @@ export function ChatInput({ value, onChange, onSubmit, onStop, isStreaming, disa
           </button>
         )}
       </div>
-      <p id={`${id}-hint`} className={cn("mt-1.5 hidden text-right text-[11px] text-muted-foreground sm:block", remaining < 0 && "text-destructive")}>
+      <p id={`${id}-hint`} className={cn("mt-1.5 text-right text-[11px] text-muted-foreground", showHint ? "hidden sm:block" : "sr-only", remaining < 0 && "not-sr-only block text-destructive")}>
         {remaining < 100 ? `${remaining} characters left · ` : ""}Press Enter to send · Shift + Enter for a new line
       </p>
     </form>

@@ -8,6 +8,8 @@ import { Dialog } from "@/components/ui/dialog";
 import { Kbd } from "@/components/ui/kbd";
 import { cn } from "@/components/ui/utils";
 import { track } from "@/lib/analytics/track";
+import { useAssistantActions } from "@/components/assistant/assistant-context";
+import { askHref } from "@/components/assistant/deep-link";
 
 interface Row {
   id: string;
@@ -15,6 +17,8 @@ interface Row {
   label: string;
   sublabel?: string;
   href: string;
+  /** For "ask" rows: the question handed to the floating assistant. */
+  question?: string;
   group?: string;
 }
 
@@ -27,6 +31,7 @@ const DEBOUNCE_MS = 180;
  */
 export function SearchPalette({ open, onClose }: { open: boolean; onClose: () => void }) {
   const router = useRouter();
+  const assistant = useAssistantActions();
   const inputId = useId();
   const listId = useId();
   const [query, setQuery] = useState("");
@@ -79,16 +84,18 @@ export function SearchPalette({ open, onClose }: { open: boolean; onClose: () =>
     const trimmed = query.trim();
     const list: Row[] = [];
     if (trimmed.length > 0) {
-      list.push({ id: "ask", kind: "ask", label: `Ask Anjo AI: "${trimmed}"`, href: `/?ask=${encodeURIComponent(trimmed)}` });
+      list.push({ id: "ask", kind: "ask", label: `Ask Anjo AI: "${trimmed}"`, href: askHref(trimmed), question: trimmed });
     }
     for (const group of hits) {
       for (const hit of group.hits) {
+        const fallbackQuestion = `Tell me about ${hit.title}`;
         list.push({
           id: `${group.group}:${hit.documentSlug}:${hit.section ?? ""}`,
           kind: "hit",
           label: hit.section ? `${hit.title} — ${hit.section}` : hit.title,
           sublabel: hit.excerpt,
-          href: hit.href ?? `/?ask=${encodeURIComponent(`Tell me about ${hit.title}`)}`,
+          href: hit.href ?? askHref(fallbackQuestion),
+          question: hit.href ? undefined : fallbackQuestion,
           group: group.label,
         });
       }
@@ -99,9 +106,11 @@ export function SearchPalette({ open, onClose }: { open: boolean; onClose: () =>
   const navigate = useCallback(
     (row: Row) => {
       close();
-      router.push(row.href);
+      // Questions go to the floating assistant in place — no page change.
+      if (row.question && assistant) assistant.askAbout(row.question, { source: "cta" });
+      else router.push(row.href);
     },
-    [close, router],
+    [assistant, close, router],
   );
 
   function onKeyDown(event: React.KeyboardEvent) {

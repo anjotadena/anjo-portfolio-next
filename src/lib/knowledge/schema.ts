@@ -68,6 +68,10 @@ export const projectFactsSchema = z.object({
   docsUrl: httpUrlSchema.optional(),
   demoUrl: httpUrlSchema.optional(),
   license: nonEmptyString.optional(),
+  /** Short, problem-led card copy (homepage "Work" cards). Keep each under ~160 characters. */
+  audience: nonEmptyString.max(160).optional(),
+  problem: nonEmptyString.max(200).optional(),
+  built: nonEmptyString.max(200).optional(),
 });
 
 export const caseStudyFactsSchema = z.object({
@@ -163,8 +167,9 @@ export const frontmatterSchema = z
     if (data.type !== "project" && data.project !== undefined) {
       ctx.addIssue({ code: "custom", path: ["project"], message: "`project` is only allowed on project documents" });
     }
-    if (data.type === "project" && data.technologies.length === 0) {
-      ctx.addIssue({ code: "custom", path: ["technologies"], message: "projects must list at least one technology" });
+    // A project still in development may not have a settled stack yet; never invent one.
+    if (data.type === "project" && data.technologies.length === 0 && data.project?.status !== "in-progress") {
+      ctx.addIssue({ code: "custom", path: ["technologies"], message: "projects must list at least one technology (unless status is in-progress)" });
     }
     if (data.featured && data.visibility !== "public") {
       ctx.addIssue({ code: "custom", path: ["featured"], message: "only public documents can be featured" });

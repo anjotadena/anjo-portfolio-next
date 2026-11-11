@@ -123,7 +123,7 @@ export function PostCard({ card }: { card: PostCardData }) {
 export function SkillCard({ card }: { card: SkillCardData }) {
   return (
     <section className={cardClassName} aria-label="Skills">
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+      <div className="grid grid-cols-1 gap-3 @md:grid-cols-2">
         {card.groups.map((group) => (
           <div key={group.id}>
             <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{group.title}</h3>
@@ -159,7 +159,7 @@ export function ContactCard({ card }: { card: ContactCardData }) {
           </>
         )}
       </p>
-      <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
+      <div className="mt-3 grid grid-cols-1 gap-2 @md:grid-cols-2">
         <a href={`mailto:${card.email}`} className={action} onClick={() => track("contact_clicked", { channel: "email" })}>
           <Mail className="h-4 w-4 text-primary" aria-hidden="true" /> <span className="truncate">{card.email}</span>
         </a>
@@ -234,7 +234,7 @@ export function ChatCards({ cards }: { cards: ChatCard[] }) {
   return (
     <div className="mt-4 flex flex-col gap-3">
       {projects.length > 0 && (
-        <div className={projects.length > 1 ? "grid grid-cols-1 gap-3 md:grid-cols-2" : ""}>
+        <div className={projects.length > 1 ? "grid grid-cols-1 gap-3 @lg:grid-cols-2" : ""}>
           {projects.map((card) => (
             <ProjectCard key={card.slug} card={card} />
           ))}

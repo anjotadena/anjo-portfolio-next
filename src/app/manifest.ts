@@ -5,25 +5,25 @@ export default function manifest(): MetadataRoute.Manifest {
   const { profile } = getProfile();
   return {
     id: "/",
-    name: `Anjo AI — ${profile.name}`,
-    short_name: "Anjo AI",
-    description: `Ask ${profile.name}'s AI portfolio about his experience, projects, and skills.`,
+    name: `${profile.name} — Portfolio`,
+    short_name: "anjo_",
+    description: `${profile.name} builds software that makes work easier. See his work and ask Anjo AI about it.`,
     start_url: "/?source=pwa",
     scope: "/",
     display: "standalone",
     orientation: "portrait",
-    background_color: "#0b1220",
-    theme_color: "#0b1220",
+    background_color: "#111413",
+    theme_color: "#111413",
     lang: "en",
     categories: ["productivity", "business"],
     icons: [
-      { src: "/icons/icon-192", sizes: "192x192", type: "image/png", purpose: "any" },
-      { src: "/icons/icon-512", sizes: "512x512", type: "image/png", purpose: "any" },
+      { src: "/android-chrome-192x192.png", sizes: "192x192", type: "image/png", purpose: "any" },
+      { src: "/android-chrome-512x512.png", sizes: "512x512", type: "image/png", purpose: "any" },
       { src: "/icons/maskable-512", sizes: "512x512", type: "image/png", purpose: "maskable" },
     ],
     shortcuts: [
-      { name: "Ask about projects", url: "/?ask=Show%20me%20his%20AI%20projects", icons: [{ src: "/icons/icon-192", sizes: "192x192" }] },
-      { name: "Contact", url: "/contact", icons: [{ src: "/icons/icon-192", sizes: "192x192" }] },
+      { name: "Ask Anjo AI", url: "/?assistant=open", icons: [{ src: "/android-chrome-192x192.png", sizes: "192x192" }] },
+      { name: "Contact", url: "/contact", icons: [{ src: "/android-chrome-192x192.png", sizes: "192x192" }] },
     ],
   };
 }

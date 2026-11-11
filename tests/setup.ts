@@ -24,3 +24,7 @@ if (typeof window !== "undefined" && !window.matchMedia) {
 if (typeof window !== "undefined" && !window.scrollTo) {
   Object.defineProperty(window, "scrollTo", { writable: true, value: () => {} });
 }
+
+if (typeof Element !== "undefined" && !Element.prototype.scrollTo) {
+  Element.prototype.scrollTo = function scrollTo() {};
+}

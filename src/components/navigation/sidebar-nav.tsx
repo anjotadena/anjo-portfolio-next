@@ -6,19 +6,25 @@ import { cn } from "@/components/ui/utils";
 import type { NavItem } from "./nav-config";
 import { NavIcon } from "./nav-icon";
 
+export interface NavSection {
+  label?: string;
+  items: NavItem[];
+}
+
 export interface SidebarNavProps {
-  primary: NavItem[];
-  topics: NavItem[];
-  /** Called after navigation (closes the mobile drawer). */
+  sections: NavSection[];
+  /** Called after navigation (closes the mobile menu). */
   onNavigate?: () => void;
 }
 
 function isActive(pathname: string, href: string): boolean {
+  if (href.includes("#")) return false; // section anchors are not pages
   if (href === "/") return pathname === "/";
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
-export function SidebarNav({ primary, topics, onNavigate }: SidebarNavProps) {
+/** Vertical navigation list used by the mobile menu. */
+export function SidebarNav({ sections, onNavigate }: SidebarNavProps) {
   const pathname = usePathname();
 
   const renderItem = (item: NavItem) => {
@@ -30,7 +36,7 @@ export function SidebarNav({ primary, topics, onNavigate }: SidebarNavProps) {
           onClick={onNavigate}
           aria-current={active ? "page" : undefined}
           className={cn(
-            "flex min-h-10 items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+            "flex min-h-11 items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
             active ? "bg-accent font-medium text-accent-foreground" : "text-muted-foreground hover:bg-muted hover:text-foreground",
           )}
         >
@@ -42,13 +48,14 @@ export function SidebarNav({ primary, topics, onNavigate }: SidebarNavProps) {
   };
 
   return (
-    <nav aria-label="Primary" className="flex flex-col gap-6">
-      <ul className="flex flex-col gap-0.5">{primary.map(renderItem)}</ul>
-      {topics.length > 0 && (
-        <div>
-          <p className="mb-1.5 px-3 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Topics</p>
-          <ul className="flex flex-col gap-0.5">{topics.map(renderItem)}</ul>
-        </div>
+    <nav aria-label="Menu" className="flex flex-col gap-6">
+      {sections.map((section, index) =>
+        section.items.length > 0 ? (
+          <div key={section.label ?? index}>
+            {section.label && <p className="mb-1.5 px-3 font-mono text-[11px] uppercase tracking-wider text-muted-foreground">{section.label}</p>}
+            <ul className="flex flex-col gap-0.5">{section.items.map(renderItem)}</ul>
+          </div>
+        ) : null,
       )}
     </nav>
   );

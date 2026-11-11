@@ -1,16 +1,14 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Suspense } from "react";
 import { ArrowRight, Clock, FolderKanban } from "lucide-react";
 import { PageLayout } from "@/components/layout/page-layout";
-import { ChatContainer } from "@/components/chat/chat-container";
+import { AskAiLink } from "@/components/portfolio/ask-ai-link";
 import { DocumentBody } from "@/components/portfolio/document-body";
 import { BreadcrumbJsonLd } from "@/components/seo/json-ld";
 import { Badge } from "@/components/ui/badge";
 import { slugifyHeading } from "@/lib/utils/slug";
 import { getCaseStudies, getProfile, getPublicDocumentBySlug } from "@/lib/knowledge/repository";
-import { initialsFor } from "@/lib/utils/initials";
 
 export const dynamicParams = false;
 
@@ -150,25 +148,18 @@ export default async function CaseStudyPage({ params }: PageProps<"/case-studies
         </aside>
       </div>
 
-      <section className="mt-12 flex h-[32rem] flex-col overflow-hidden rounded-2xl border border-border bg-surface" aria-labelledby="ask-ai-heading">
-        <h2 id="ask-ai-heading" className="border-b border-border px-4 py-3 text-sm font-semibold text-foreground">
-          Ask AI about this case study
+      <section className="mt-12 rounded-xl border border-border bg-card p-5" aria-labelledby="ask-ai-heading">
+        <h2 id="ask-ai-heading" className="text-base font-semibold text-foreground">
+          Ask Anjo AI about this case study
         </h2>
-        <Suspense fallback={null}>
-          <ChatContainer
-            assistantName="Anjo AI"
-            assistantInitials={initialsFor(profile.name)}
-            ownerFirstName={firstName}
-            contextSlug={doc.slug}
-            compact
-            suggestedPrompts={[
-              `What problem did ${doc.title} address?`,
-              `What were the key decisions in ${doc.title}?`,
-              `What were the results of ${doc.title}?`,
-              `What did ${firstName} learn from ${doc.title}?`,
-            ]}
-          />
-        </Suspense>
+        <p className="mt-1 text-sm text-muted-foreground">The assistant answers from this portfolio and cites its sources. Pick a question to open it:</p>
+        <ul className="mt-4 flex flex-wrap gap-2">
+          {[`What problem did ${doc.title} address?`, `What were the key decisions in ${doc.title}?`, `What did ${firstName} learn from ${doc.title}?`].map((question) => (
+            <li key={question}>
+              <AskAiLink question={question} contextSlug={doc.slug} label={question} />
+            </li>
+          ))}
+        </ul>
       </section>
     </PageLayout>
   );

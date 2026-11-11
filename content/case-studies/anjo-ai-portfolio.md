@@ -6,7 +6,7 @@ summary: "How this portfolio was designed as a retrieval-augmented AI assistant 
 tags: ["case-study", "ai", "rag", "llm", "next.js", "typescript", "architecture", "security", "vercel", "pwa"]
 technologies: ["Next.js", "React", "TypeScript", "OpenAI API", "Zod", "Tailwind CSS", "Vitest", "Playwright", "Docker", "GitHub Actions"]
 date: 2026-09-20
-updated: 2026-09-20
+updated: 2026-11-11
 featured: true
 visibility: public
 related: ["anjo-ai-portfolio", "ai-engineering", "architecture", "devops"]
@@ -26,6 +26,8 @@ caseStudy:
 ## Context
 
 Most developer portfolios are pages a recruiter scrolls through. The goal here was different: make the portfolio *itself* an assistant that a recruiter, engineer, or collaborator can simply ask — "What is his .NET experience?", "Tell me about Asterweave", "How can I contact him?" — and get a fast, honest answer with sources. It had to be production-grade (security, cost control, accessibility, mobile) rather than a chatbot widget bolted onto a static site, and it had to be honest: an assistant that invents an employer or a credential is worse than no assistant at all.
+
+In a later redesign (November 2026), the homepage became a conventional portfolio that leads with selected work, and the assistant moved into a floating Anjo AI widget available on every page. The widget uses the same grounded retrieval pipeline, citations, validation, and rate limiting described in this case study.
 
 The project was delivered in a single, tightly scoped build on top of an existing Next.js 16 scaffold, with the Asterweave repository-analysis agents used for the initial codebase discovery.
 

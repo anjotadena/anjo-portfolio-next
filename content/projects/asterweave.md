@@ -19,6 +19,9 @@ project:
   docsUrl: "https://anjotadena.github.io/asterweave/"
   demoUrl: "https://asterweave.vercel.app"
   license: "MIT"
+  audience: "Developers and teams who use Claude Code on real repositories and need changes they can trust."
+  problem: "Autonomous coding agents get unreliable when requirements are vague, repository context is lost, and tests are not used as gates."
+  built: "An open-source Claude Code plugin that takes a change from requirements through planning, implementation, verification, and review."
 ---
 
 ## Overview

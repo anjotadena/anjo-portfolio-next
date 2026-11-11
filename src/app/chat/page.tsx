@@ -1,8 +1,14 @@
 import { redirect } from "next/navigation";
 
-/** `/chat` is an alias for the home page; the query string (e.g. `?ask=`) is preserved. */
+/**
+ * Legacy `/chat` links: the assistant is now a site-wide floating widget.
+ * `/chat?ask=…` becomes `/?ask=…` (submitted once, then stripped from the
+ * URL) and bare `/chat` becomes `/?assistant=open`. The question is
+ * re-encoded so punctuation and non-ASCII characters survive intact.
+ */
 export default async function ChatPage({ searchParams }: PageProps<"/chat">) {
   const params = await searchParams;
-  const ask = typeof params.ask === "string" ? params.ask : undefined;
-  redirect(ask ? `/?ask=${encodeURIComponent(ask)}` : "/");
+  const raw = Array.isArray(params.ask) ? params.ask[0] : params.ask;
+  const ask = typeof raw === "string" ? raw.trim() : "";
+  redirect(ask ? `/?ask=${encodeURIComponent(ask)}` : "/?assistant=open");
 }

@@ -10,6 +10,7 @@ export const ANALYTICS_EVENTS = [
   "contact_clicked",
   "search_used",
   "answer_feedback",
+  "assistant_opened",
 ] as const;
 
 export type AnalyticsEvent = (typeof ANALYTICS_EVENTS)[number];

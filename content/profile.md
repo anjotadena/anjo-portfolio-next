@@ -4,10 +4,10 @@ slug: profile
 type: profile
 summary: "Anjo Tadena is a Senior Software Engineer and AI Engineer based in Cebu, Philippines, building scalable software, cloud systems, and AI-powered products."
 tags: ["profile", "about", "senior-software-engineer", "ai-engineer"]
-related: ["skills", "philosophy", "ai-engineering", "asterweave", "contact"]
+related: ["skills", "philosophy", "ai-engineering", "asterweave", "unexaro", "contact"]
 featured: false
 visibility: public
-updated: 2026-09-20
+updated: 2026-11-11
 profile:
   name: "Anjo Tadena"
   headline: "AI Engineer • Senior Software Engineer"
@@ -30,7 +30,9 @@ He works across the stack: C# and ASP.NET Core on the backend, Angular, React, a
 
 Anjo is the author of Asterweave, an open-source agentic software delivery framework for Claude Code that coordinates specialist agents through a deterministic delivery graph and drives changes toward a reviewed pull request. He also maintains a number of open-source starter kits and developer tools on GitHub, including a .NET 9 Clean Architecture Web API starter and a CLI that generates developer context for unfamiliar codebases.
 
-This portfolio is itself one of his AI projects: the site is an AI assistant grounded in retrieval-augmented generation over Markdown files stored in the repository, rather than an open-ended chatbot.
+He is also building Unexaro, a modular business platform for HR, payroll, point of sale, and inventory, which is currently in development.
+
+This portfolio is itself one of his AI projects: it includes Anjo AI, a floating assistant grounded in retrieval-augmented generation over the Markdown files stored in the repository, rather than an open-ended chatbot.
 
 ## Approach
 

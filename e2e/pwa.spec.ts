@@ -47,7 +47,7 @@ test.describe("progressive web app", () => {
     const version = (await (await page.request.get("/api/version")).json()) as { version: string };
     const menu = page.getByRole("button", { name: "Open menu" });
     if (await menu.isVisible()) await menu.click();
-    await expect(page.getByTestId("app-version").filter({ visible: true })).toContainText(`v${version.version}`);
+    await expect(page.getByTestId("app-version").filter({ visible: true }).last()).toContainText(`v${version.version}`);
   });
 
   test("an update waits for the answer to finish, then reloads with the conversation preserved", async ({ page, browserName }) => {
@@ -58,7 +58,13 @@ test.describe("progressive web app", () => {
     await page.evaluate(() => navigator.serviceWorker.ready);
 
     // Ask something so there is a conversation to preserve.
-    const input = page.getByLabel("Your question");
+    const launcher = page.getByTestId("assistant-launcher");
+    const panel = page.getByTestId("assistant-panel");
+    await expect(async () => {
+      await launcher.click();
+      await expect(panel).toBeVisible({ timeout: 1_000 });
+    }).toPass({ timeout: 10_000 });
+    const input = panel.getByLabel("Your question");
     await input.fill("What is Asterweave?");
     await input.press("Enter");
     await expect(page.getByRole("list", { name: "Sources" })).toBeVisible({ timeout: 20_000 });
@@ -69,8 +75,12 @@ test.describe("progressive web app", () => {
     await expect(page.getByRole("status").filter({ hasText: /Updated to v/ })).toBeVisible();
     await reloaded;
 
-    // The conversation survived the reload.
-    await expect(page.getByRole("list", { name: "Conversation" })).toContainText("What is Asterweave?");
+    // The conversation survived the reload (the widget starts closed again).
+    await expect(async () => {
+      await launcher.click();
+      await expect(panel).toBeVisible({ timeout: 1_000 });
+    }).toPass({ timeout: 10_000 });
+    await expect(panel.getByRole("list", { name: "Conversation" })).toContainText("What is Asterweave?");
   });
 
   test("the offline page is available", async ({ page }) => {
